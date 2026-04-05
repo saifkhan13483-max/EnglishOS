@@ -161,10 +161,36 @@ The router (`client/src/router/AppRouter.tsx`) uses React Router v6 with two rou
 | `recharts` | Feynman score line chart in Progress page |
 | `framer-motion` | Animations throughout |
 
+## Database Schema
+
+Migration `20260405143747_init` applied. All tables live in the `heliumdb` PostgreSQL database.
+
+### Enums
+| Enum | Values |
+|---|---|
+| `ContentType` | VOCAB, GRAMMAR, SENTENCE, PHRASE, ALPHABET |
+| `SessionType` | MORNING, EVENING |
+| `SessionStatus` | NOT_STARTED, IN_PROGRESS, COMPLETE |
+| `ModuleStatus` | LOCKED, ACTIVE, COMPLETE |
+
+### Tables
+| Table | Key Fields | Notes |
+|---|---|---|
+| `Learner` | id, email (unique), passwordHash, name, levelCurrent, xp, streak, rank, brainCompoundPct | Core user record |
+| `ContentItem` | id, level, module, groupName, type, english, urduRoman, exampleSentence, isPowerPack, sortOrder | Course content |
+| `SRQueueItem` | learnerId + itemId (unique), intervalDays, nextReviewDate, easeFactor, correctCount, incorrectCount, isKnowledgeGap | Spaced repetition queue |
+| `MissionSession` | learnerId, sessionDate, type, status, xpEarned, feynmanScore, feynmanText | Daily mission tracking |
+| `LevelProgress` | learnerId + level + module (unique), status, gateScore, gateAttempts | Module/level unlock state |
+| `Badge` | learnerId, badgeType, module, earnedAt | Achievement badges |
+| `FeynmanResponse` | learnerId, missionId, module, prompt, responseText, clarityScore, vocabScore, relevanceScore, knowledgeGapItems (String[]) | AI-evaluated Feynman answers |
+| `RefreshToken` | learnerId, token (unique), expiresAt | JWT refresh token rotation |
+| `LeaderboardEntry` | learnerId, week (ISO format "2026-W14"), module, prompt, responseText, clarityScore, upvoteCount | Weekly leaderboard submissions |
+
+All FK relations use `CASCADE` delete. Prisma migration file: `server/prisma/migrations/20260405143747_init/migration.sql`
+
 ## Notes
 
 - Vite runs on port **5000** (adjusted from 5173 for Replit preview pane compatibility); the dev server proxies `/api/*` to Express on port **3000**
 - Tailwind custom color/font tokens are fully configured — see Design System section above
-- Prisma schema is minimal; models will be added when features are implemented
-- Environment variables: copy `server/.env.example` to `server/.env` and fill in values
+- Environment variables live in `server/.env` — JWT_SECRET, JWT_REFRESH_SECRET, DATABASE_URL, PORT, CLIENT_URL are all set
 - All pages use static mock data — backend API integration is a future phase

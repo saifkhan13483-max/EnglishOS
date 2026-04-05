@@ -6,3 +6,175 @@ datasource db {
   provider = "postgresql"
   url      = env("DATABASE_URL")
 }
+
+enum ContentType {
+  VOCAB
+  GRAMMAR
+  SENTENCE
+  PHRASE
+  ALPHABET
+}
+
+enum SessionType {
+  MORNING
+  EVENING
+}
+
+enum SessionStatus {
+  NOT_STARTED
+  IN_PROGRESS
+  COMPLETE
+}
+
+enum ModuleStatus {
+  LOCKED
+  ACTIVE
+  COMPLETE
+}
+
+model Learner {
+  id                    String    @id @default(cuid())
+  email                 String    @unique
+  passwordHash          String
+  name                  String
+  levelCurrent          Int       @default(1)
+  whyMotivation         String?
+  stakesStatement       String?
+  accountabilityEmail   String?
+  morningSessionTime    String?
+  eveningSessionTime    String?
+  streak                Int       @default(0)
+  batmanModeActive      Boolean   @default(false)
+  xp                    Int       @default(0)
+  rank                  String    @default("Rookie")
+  brainCompoundPct      Float     @default(0)
+  lastActiveDt          DateTime?
+  createdAt             DateTime  @default(now())
+  updatedAt             DateTime  @updatedAt
+
+  srQueue           SRQueueItem[]
+  missions          MissionSession[]
+  levelProgress     LevelProgress[]
+  badges            Badge[]
+  feynmanResponses  FeynmanResponse[]
+  refreshTokens     RefreshToken[]
+  leaderboardEntries LeaderboardEntry[]
+}
+
+model ContentItem {
+  id              String      @id @default(cuid())
+  level           Int
+  module          Int
+  groupName       String
+  type            ContentType
+  english         String
+  urduRoman       String
+  audioUrl        String?
+  exampleSentence String
+  isPowerPack     Boolean
+  sortOrder       Int
+  createdAt       DateTime    @default(now())
+
+  srQueue         SRQueueItem[]
+}
+
+model SRQueueItem {
+  id              String    @id @default(cuid())
+  learnerId       String
+  itemId          String
+  intervalDays    Int       @default(1)
+  nextReviewDate  DateTime
+  easeFactor      Float     @default(2.5)
+  correctCount    Int       @default(0)
+  incorrectCount  Int       @default(0)
+  isKnowledgeGap  Boolean   @default(false)
+  lastReviewedAt  DateTime?
+
+  learner         Learner     @relation(fields: [learnerId], references: [id], onDelete: Cascade)
+  item            ContentItem @relation(fields: [itemId], references: [id], onDelete: Cascade)
+
+  @@unique([learnerId, itemId])
+}
+
+model MissionSession {
+  id            String        @id @default(cuid())
+  learnerId     String
+  sessionDate   DateTime
+  type          SessionType
+  status        SessionStatus @default(NOT_STARTED)
+  xpEarned      Int           @default(0)
+  feynmanScore  Float?
+  feynmanText   String?
+  completedAt   DateTime?
+  createdAt     DateTime      @default(now())
+
+  learner         Learner           @relation(fields: [learnerId], references: [id], onDelete: Cascade)
+  feynmanResponses FeynmanResponse[]
+}
+
+model LevelProgress {
+  id            String       @id @default(cuid())
+  learnerId     String
+  level         Int
+  module        Int
+  status        ModuleStatus @default(LOCKED)
+  gateScore     Float?
+  gateAttempts  Int          @default(0)
+  unlockedAt    DateTime?
+  completedAt   DateTime?
+
+  learner       Learner @relation(fields: [learnerId], references: [id], onDelete: Cascade)
+
+  @@unique([learnerId, level, module])
+}
+
+model Badge {
+  id          String   @id @default(cuid())
+  learnerId   String
+  badgeType   String
+  module      Int?
+  earnedAt    DateTime
+
+  learner     Learner @relation(fields: [learnerId], references: [id], onDelete: Cascade)
+}
+
+model FeynmanResponse {
+  id                String   @id @default(cuid())
+  learnerId         String
+  missionId         String
+  module            Int
+  prompt            String
+  responseText      String?
+  clarityScore      Float?
+  vocabScore        Float?
+  relevanceScore    Float?
+  knowledgeGapItems String[]
+  createdAt         DateTime @default(now())
+
+  learner   Learner        @relation(fields: [learnerId], references: [id], onDelete: Cascade)
+  mission   MissionSession @relation(fields: [missionId], references: [id], onDelete: Cascade)
+}
+
+model RefreshToken {
+  id          String   @id @default(cuid())
+  learnerId   String
+  token       String   @unique
+  expiresAt   DateTime
+  createdAt   DateTime @default(now())
+
+  learner     Learner @relation(fields: [learnerId], references: [id], onDelete: Cascade)
+}
+
+model LeaderboardEntry {
+  id            String   @id @default(cuid())
+  learnerId     String
+  week          String
+  module        Int
+  prompt        String
+  responseText  String
+  clarityScore  Float
+  submittedAt   DateTime
+  upvoteCount   Int      @default(0)
+
+  learner       Learner @relation(fields: [learnerId], references: [id], onDelete: Cascade)
+}
