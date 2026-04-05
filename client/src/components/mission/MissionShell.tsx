@@ -1,21 +1,35 @@
 import { useState } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { motion, AnimatePresence } from 'framer-motion'
-import WarmupFlash   from './WarmupFlash'
-import CoreDrop      from './CoreDrop'
-import ApplyIt       from './ApplyIt'
-import FeynmanMoment from './FeynmanMoment'
 
-const PHASES = ['Warm-Up', 'Core Drop', 'Apply It', 'Feynman']
-const TOTAL  = PHASES.length
+import WarmupFlash      from './WarmupFlash'
+import CoreDrop         from './CoreDrop'
+import ApplyIt          from './ApplyIt'
+import FeynmanMoment    from './FeynmanMoment'
+
+import StoryReplay      from './StoryReplay'
+import SentenceBuilder  from './SentenceBuilder'
+import ConversationSim  from './ConversationSim'
+import DayClose         from './DayClose'
+
+const MORNING_PHASES = ['Warm-Up', 'Core Drop', 'Apply It', 'Feynman']
+const EVENING_PHASES = ['Story', 'Sentences', 'Conversation', 'Day Close']
 
 interface XpToast { id: number; amount: number }
 
-export default function MissionShell() {
+interface MissionShellProps {
+  type?: 'morning' | 'evening'
+}
+
+export default function MissionShell({ type = 'morning' }: MissionShellProps) {
   const navigate = useNavigate()
-  const [phase,    setPhase]    = useState(1)
-  const [dir,      setDir]      = useState(1)
-  const [toasts,   setToasts]   = useState<XpToast[]>([])
+  const [phase,  setPhase]  = useState(1)
+  const [dir,    setDir]    = useState(1)
+  const [toasts, setToasts] = useState<XpToast[]>([])
+
+  const isEvening = type === 'evening'
+  const PHASES    = isEvening ? EVENING_PHASES : MORNING_PHASES
+  const TOTAL     = PHASES.length
 
   function advance() {
     setDir(1)
@@ -57,7 +71,9 @@ export default function MissionShell() {
           </button>
 
           <div className="flex-1 text-center">
-            <p className="font-display font-semibold text-text-primary text-sm">Morning Mission</p>
+            <p className="font-display font-semibold text-text-primary text-sm">
+              {isEvening ? '🌙 Evening Mission' : '☀️ Morning Mission'}
+            </p>
           </div>
 
           <span className="text-xs font-mono text-text-muted w-7 text-right">
@@ -74,7 +90,7 @@ export default function MissionShell() {
               animate={{
                 backgroundColor:
                   i + 1 < phase  ? '#2ECC71' :
-                  i + 1 === phase ? '#E94560' :
+                  i + 1 === phase ? (isEvening ? '#4A9EFF' : '#E94560') :
                   '#2A2A3E',
               }}
               transition={{ duration: 0.3 }}
@@ -88,7 +104,11 @@ export default function MissionShell() {
             <div key={name} className="flex-1 text-center">
               <span
                 className={`text-[10px] font-mono transition-colors duration-200 ${
-                  i + 1 === phase ? 'text-brand-red font-semibold' : 'text-text-muted'
+                  i + 1 === phase
+                    ? isEvening
+                      ? 'text-brand-blue font-semibold'
+                      : 'text-brand-red font-semibold'
+                    : 'text-text-muted'
                 }`}
               >
                 {name}
@@ -99,7 +119,7 @@ export default function MissionShell() {
       </div>
 
       {/* ── Phase content ── */}
-      <div className="flex-1 overflow-y-auto">
+      <div className="flex-1 overflow-y-auto flex flex-col">
         <AnimatePresence mode="wait" custom={dir}>
           <motion.div
             key={phase}
@@ -108,17 +128,19 @@ export default function MissionShell() {
             initial="enter"
             animate="center"
             exit="exit"
-            className="min-h-full"
+            className="flex-1 flex flex-col"
           >
-            {phase === 1 && (
-              <WarmupFlash
-                onComplete={advance}
-                onXpEarned={showXp}
-              />
-            )}
-            {phase === 2 && <CoreDrop      onComplete={advance} />}
-            {phase === 3 && <ApplyIt       onComplete={advance} />}
-            {phase === 4 && <FeynmanMoment onComplete={handleMissionComplete} />}
+            {/* ── Morning phases ── */}
+            {!isEvening && phase === 1 && <WarmupFlash   onComplete={advance} onXpEarned={showXp} />}
+            {!isEvening && phase === 2 && <CoreDrop      onComplete={advance} />}
+            {!isEvening && phase === 3 && <ApplyIt       onComplete={advance} />}
+            {!isEvening && phase === 4 && <FeynmanMoment onComplete={handleMissionComplete} />}
+
+            {/* ── Evening phases ── */}
+            {isEvening && phase === 1 && <StoryReplay     onComplete={advance} />}
+            {isEvening && phase === 2 && <SentenceBuilder onComplete={advance} onXpEarned={showXp} />}
+            {isEvening && phase === 3 && <ConversationSim onComplete={advance} onXpEarned={showXp} />}
+            {isEvening && phase === 4 && <DayClose        onComplete={handleMissionComplete} />}
           </motion.div>
         </AnimatePresence>
       </div>
