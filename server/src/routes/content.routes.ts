@@ -5,6 +5,7 @@ import {
   getItem,
   getLevels,
   getTodayQueue,
+  getTomorrowQueue,
   reviewQueueItem,
 } from '../controllers/content.controller'
 
@@ -14,6 +15,7 @@ router.use(authenticate)
 
 router.get('/levels', getLevels)
 router.get('/sr-queue/today', getTodayQueue)
+router.get('/sr-queue/tomorrow', getTomorrowQueue)
 router.patch('/sr-queue/:id', reviewQueueItem)
 router.get('/module/:level/:module', getModule)
 router.get('/item/:id', getItem)

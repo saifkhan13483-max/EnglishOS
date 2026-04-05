@@ -88,6 +88,35 @@ export async function getTodayQueue(req: AuthRequest, res: Response): Promise<vo
   res.json({ success: true, data: sorted })
 }
 
+// GET /api/v1/content/sr-queue/tomorrow — items due for review tomorrow
+export async function getTomorrowQueue(req: AuthRequest, res: Response): Promise<void> {
+  const learnerId = req.learnerId as string
+
+  const startOfTomorrow = new Date()
+  startOfTomorrow.setDate(startOfTomorrow.getDate() + 1)
+  startOfTomorrow.setHours(0, 0, 0, 0)
+
+  const endOfTomorrow = new Date(startOfTomorrow)
+  endOfTomorrow.setHours(23, 59, 59, 999)
+
+  const items = await prisma.sRQueueItem.findMany({
+    where: {
+      learnerId,
+      nextReviewDate: { gte: startOfTomorrow, lte: endOfTomorrow },
+    },
+    include: { item: { select: { english: true, isPowerPack: true } } },
+    orderBy: [{ isKnowledgeGap: 'desc' }, { nextReviewDate: 'asc' }],
+  })
+
+  res.json({
+    success: true,
+    data: {
+      count: items.length,
+      words: items.slice(0, 5).map((i) => i.item.english),
+    },
+  })
+}
+
 // PATCH /api/v1/content/sr-queue/:id — mark a queue item as reviewed
 // SM-2 simplified: correct → extend interval; incorrect → reset to 1 day + flag gap
 export async function reviewQueueItem(req: AuthRequest, res: Response): Promise<void> {
