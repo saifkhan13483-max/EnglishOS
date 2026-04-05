@@ -1,62 +1,22 @@
 import { useState, useEffect, useRef, useCallback } from 'react'
 import { motion, AnimatePresence } from 'framer-motion'
 import Button from '@/components/ui/Button'
+import { api } from '@/services/api'
+import { useProgressStore } from '@/stores/progressStore'
+import { getScenario } from '@/constants/scenarios'
 
-// ── Types ────────────────────────────────────────────────────────────────────
 interface Message {
   id: number
   role: 'ai' | 'user'
   text: string
+  isNotUnderstood?: boolean
 }
 
-// ── Mock AI responses ────────────────────────────────────────────────────────
-const SCENARIO = 'Introducing yourself'
-
-const AI_OPENER = "Hello! My name is Alex. What is your name? Where are you from?"
-
-const RESPONSE_MAP: Array<{ keywords: string[]; reply: string }> = [
-  {
-    keywords: ['name', 'my name', "i'm", 'i am', 'call me'],
-    reply: "Nice to meet you! That is a great name. How old are you? What do you do for work?",
-  },
-  {
-    keywords: ['years', 'old', 'age', 'am 2', 'am 3', 'am 1'],
-    reply: "Wow, that is good! Do you like your work? What do you do in your free time?",
-  },
-  {
-    keywords: ['like', 'love', 'enjoy', 'hobby', 'free time', 'play', 'read', 'work'],
-    reply: "That sounds fun! I also love to learn new things. Do you have a family?",
-  },
-  {
-    keywords: ['family', 'brother', 'sister', 'mother', 'father', 'wife', 'husband', 'friend'],
-    reply: "That is wonderful! Family is very important. Where do you live? Which city?",
-  },
-  {
-    keywords: ['live', 'city', 'lahore', 'karachi', 'islamabad', 'pakistan', 'india', 'home'],
-    reply: "That is a great city! I hear it is beautiful. What is your goal for learning English?",
-  },
-  {
-    keywords: ['english', 'learn', 'fluent', 'job', 'work', 'career', 'speak', 'goal'],
-    reply: "That is an excellent goal! You are already speaking very well. I am impressed. Keep practicing every day!",
-  },
-  {
-    keywords: ['thank', 'thanks', 'okay', 'ok', 'bye', 'goodbye', 'see you'],
-    reply: "You are welcome! It was great talking to you. See you next time. Keep up the good work!",
-  },
-]
-
-const OFF_TOPIC = "I didn't quite get that. Can you try saying it differently?"
-
-function getAiReply(userText: string): string {
-  const lower = userText.toLowerCase()
-  for (const { keywords, reply } of RESPONSE_MAP) {
-    if (keywords.some(k => lower.includes(k))) return reply
-  }
-  if (lower.trim().length < 4) return OFF_TOPIC
-  return OFF_TOPIC
+interface ApiHistoryItem {
+  role: 'user' | 'assistant'
+  content: string
 }
 
-// ── Timer helpers ────────────────────────────────────────────────────────────
 const TOTAL_SECONDS = 15 * 60
 
 function formatTime(secs: number) {
@@ -65,7 +25,6 @@ function formatTime(secs: number) {
   return `${m}:${s}`
 }
 
-// ── Typing indicator ─────────────────────────────────────────────────────────
 function TypingDots() {
   return (
     <div className="flex items-center gap-1 px-4 py-3 bg-bg-secondary border border-border-subtle rounded-2xl rounded-tl-none w-fit">
@@ -81,38 +40,74 @@ function TypingDots() {
   )
 }
 
-// ── Main component ───────────────────────────────────────────────────────────
+function isNotUnderstoodResponse(text: string): boolean {
+  const lower = text.toLowerCase()
+  return (
+    lower.includes('did not understand') ||
+    lower.includes("didn't understand") ||
+    lower.includes('say that again') ||
+    lower.includes('can you try') ||
+    lower.includes('not quite understand')
+  )
+}
+
 interface ConversationSimProps {
   onComplete: () => void
   onXpEarned?: (xp: number) => void
 }
 
 export default function ConversationSim({ onComplete, onXpEarned }: ConversationSimProps) {
-  const [messages,  setMessages]  = useState<Message[]>([])
-  const [input,     setInput]     = useState('')
-  const [typing,    setTyping]    = useState(false)
+  const learnerProfile = useProgressStore(s => s.learnerProfile)
+  const currentModule = learnerProfile?.currentModule ?? 2
+
+  const scenario = getScenario(currentModule)
+
+  const [messages, setMessages] = useState<Message[]>([])
+  const [apiHistory, setApiHistory] = useState<ApiHistoryItem[]>([])
+  const [input, setInput] = useState('')
+  const [typing, setTyping] = useState(false)
   const [completed, setCompleted] = useState(false)
-  const [timeLeft,  setTimeLeft]  = useState(TOTAL_SECONDS)
+  const [timeLeft, setTimeLeft] = useState(TOTAL_SECONDS)
+
   const nextId = useRef(1)
   const bottomRef = useRef<HTMLDivElement>(null)
-  const inputRef  = useRef<HTMLInputElement>(null)
+  const inputRef = useRef<HTMLInputElement>(null)
+  const hasFetchedOpener = useRef(false)
 
-  // Send AI message
   const pushAi = useCallback((text: string) => {
-    setMessages(m => [...m, { id: nextId.current++, role: 'ai', text }])
+    setMessages(m => [
+      ...m,
+      { id: nextId.current++, role: 'ai', text, isNotUnderstood: isNotUnderstoodResponse(text) },
+    ])
   }, [])
 
-  // AI opener on mount
+  // Fetch AI opening message on mount
   useEffect(() => {
-    const t = setTimeout(() => {
-      setTyping(true)
-      setTimeout(() => {
+    if (hasFetchedOpener.current) return
+    hasFetchedOpener.current = true
+
+    setTyping(true)
+    api
+      .post<{ success: boolean; data: { message: string } }>('/api/v1/conversation/message', {
+        module: currentModule,
+        scenario: scenario.title,
+        messageHistory: [],
+      })
+      .then(res => {
         setTyping(false)
-        pushAi(AI_OPENER)
-      }, 1400)
-    }, 600)
-    return () => clearTimeout(t)
-  }, [pushAi])
+        const text = res.data.message
+        pushAi(text)
+        setApiHistory([{ role: 'assistant', content: text }])
+      })
+      .catch(() => {
+        setTyping(false)
+        const fallback = scenario.hint
+          ? `Hello! Let's practice: ${scenario.description}`
+          : 'Hello! How are you today? Let us practice speaking English together.'
+        pushAi(fallback)
+        setApiHistory([{ role: 'assistant', content: fallback }])
+      })
+  }, [currentModule, scenario, pushAi])
 
   // Countdown timer
   useEffect(() => {
@@ -130,12 +125,12 @@ export default function ConversationSim({ onComplete, onXpEarned }: Conversation
     return () => clearInterval(id)
   }, [completed])
 
-  // Auto-scroll to bottom
+  // Auto-scroll
   useEffect(() => {
     bottomRef.current?.scrollIntoView({ behavior: 'smooth' })
   }, [messages, typing])
 
-  function sendMessage() {
+  async function sendMessage() {
     const text = input.trim()
     if (!text || typing || completed) return
     setInput('')
@@ -143,17 +138,37 @@ export default function ConversationSim({ onComplete, onXpEarned }: Conversation
     const userMsg: Message = { id: nextId.current++, role: 'user', text }
     setMessages(m => [...m, userMsg])
 
+    const newHistory: ApiHistoryItem[] = [...apiHistory, { role: 'user', content: text }]
+    setApiHistory(newHistory)
+
     setTyping(true)
-    setTimeout(() => {
+    try {
+      const res = await api.post<{ success: boolean; data: { message: string } }>(
+        '/api/v1/conversation/message',
+        {
+          module: currentModule,
+          scenario: scenario.title,
+          messageHistory: newHistory,
+        }
+      )
       setTyping(false)
-      const reply = getAiReply(text)
+      const reply = res.data.message
       pushAi(reply)
+      setApiHistory(prev => [...prev, { role: 'assistant', content: reply }])
       if (onXpEarned) onXpEarned(10)
-    }, 1200 + Math.random() * 600)
+    } catch {
+      setTyping(false)
+      const fallback = 'I understand. Please tell me more.'
+      pushAi(fallback)
+      setApiHistory(prev => [...prev, { role: 'assistant', content: fallback }])
+    }
   }
 
   function handleKeyDown(e: React.KeyboardEvent) {
-    if (e.key === 'Enter' && !e.shiftKey) { e.preventDefault(); sendMessage() }
+    if (e.key === 'Enter' && !e.shiftKey) {
+      e.preventDefault()
+      sendMessage()
+    }
   }
 
   function handleComplete() {
@@ -173,22 +188,20 @@ export default function ConversationSim({ onComplete, onXpEarned }: Conversation
             <p className="text-xs font-mono text-text-muted uppercase tracking-wider">Phase 3</p>
             <p className="text-sm font-display font-semibold text-text-primary">Conversation Practice</p>
           </div>
-          <div className="flex items-center gap-3">
-            <div className={[
-              'px-3 py-1.5 rounded-lg border font-mono text-sm font-bold',
-              timerWarning
-                ? 'bg-brand-red/10 border-brand-red/40 text-brand-red'
-                : 'bg-bg-secondary border-border-subtle text-text-secondary',
-            ].join(' ')}>
-              ⏱ {formatTime(timeLeft)}
-            </div>
+          <div className={[
+            'px-3 py-1.5 rounded-lg border font-mono text-sm font-bold',
+            timerWarning
+              ? 'bg-brand-red/10 border-brand-red/40 text-brand-red'
+              : 'bg-bg-secondary border-border-subtle text-text-secondary',
+          ].join(' ')}>
+            ⏱ {formatTime(timeLeft)}
           </div>
         </div>
 
         {/* Scenario pill */}
         <div className="mt-2 inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-brand-gold/10 border border-brand-gold/30">
-          <span className="text-xs font-mono text-brand-gold">Scenario:</span>
-          <span className="text-xs font-body text-brand-gold font-medium">{SCENARIO}</span>
+          <span className="text-xs font-mono text-brand-gold">{scenario.icon} Scenario:</span>
+          <span className="text-xs font-body text-brand-gold font-medium">{scenario.title}</span>
         </div>
       </div>
 
@@ -199,7 +212,7 @@ export default function ConversationSim({ onComplete, onXpEarned }: Conversation
             <motion.div
               key={msg.id}
               initial={{ opacity: 0, y: 12, scale: 0.96 }}
-              animate={{ opacity: 1, y: 0,  scale: 1 }}
+              animate={{ opacity: 1, y: 0, scale: 1 }}
               transition={{ duration: 0.22, ease: 'easeOut' }}
               className={`flex ${msg.role === 'user' ? 'justify-end' : 'justify-start'}`}
             >
@@ -208,8 +221,18 @@ export default function ConversationSim({ onComplete, onXpEarned }: Conversation
                   <div className="w-7 h-7 rounded-full bg-brand-blue/20 border border-brand-blue/40 flex items-center justify-center text-sm shrink-0 mb-1">
                     🤖
                   </div>
-                  <div className="bg-bg-secondary border border-border-subtle rounded-2xl rounded-tl-none px-4 py-3">
-                    <p className="text-sm text-text-primary font-body leading-relaxed">{msg.text}</p>
+                  <div className={[
+                    'rounded-2xl rounded-tl-none px-4 py-3',
+                    msg.isNotUnderstood
+                      ? 'bg-bg-secondary/60 border border-border-subtle/50'
+                      : 'bg-bg-secondary border border-border-subtle',
+                  ].join(' ')}>
+                    <p className={[
+                      'text-sm font-body leading-relaxed',
+                      msg.isNotUnderstood ? 'text-text-muted' : 'text-text-primary',
+                    ].join(' ')}>
+                      {msg.text}
+                    </p>
                   </div>
                 </div>
               )}
@@ -249,7 +272,12 @@ export default function ConversationSim({ onComplete, onXpEarned }: Conversation
             animate={{ opacity: 1, height: 'auto' }}
             className="overflow-hidden"
           >
-            <Button variant="ghost" size="sm" className="w-full text-brand-green border border-brand-green/30" onClick={handleComplete}>
+            <Button
+              variant="ghost"
+              size="sm"
+              className="w-full text-brand-green border border-brand-green/30"
+              onClick={handleComplete}
+            >
               ✓ End Conversation ({msgCount} exchanges)
             </Button>
           </motion.div>

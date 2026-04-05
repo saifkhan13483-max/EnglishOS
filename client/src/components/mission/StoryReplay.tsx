@@ -1,159 +1,50 @@
-import { useState, useRef } from 'react'
+import { useState, useRef, useMemo } from 'react'
 import { motion, AnimatePresence } from 'framer-motion'
 import Button from '@/components/ui/Button'
+import { getStory, SCENE_GRADIENTS } from '@/constants/stories'
+import { useProgressStore } from '@/stores/progressStore'
+import { useMissionStore } from '@/stores/missionStore'
 
-// ── Vocabulary map (word → Roman Urdu) ──────────────────────────────────────
-const VOCAB: Record<string, string> = {
-  want: 'chahna',
-  water: 'paani',
-  food: 'khaana',
-  friend: 'dost',
-  good: 'acha',
-  morning: 'subah',
-  hello: 'salam',
-  please: 'meherbani',
-  need: 'zaroorat',
-  have: 'rakhna',
-  home: 'ghar',
-  happy: 'khush',
-  eat: 'khaana',
-  drink: 'peena',
-  money: 'paisa',
-  work: 'kaam',
-  come: 'aana',
-  go: 'jaana',
-  man: 'aadmi',
-  speak: 'bolna',
+const STORY_XP = 50
+
+// Build a vocab map from the learner's loaded module content
+function useVocabMap(): Record<string, string> {
+  const moduleContent = useMissionStore(s => s.moduleContent)
+  return useMemo(() => {
+    const map: Record<string, string> = {}
+    for (const item of moduleContent) {
+      if (item.english && item.urduRoman) {
+        map[item.english.toLowerCase()] = item.urduRoman
+      }
+    }
+    return map
+  }, [moduleContent])
 }
 
-// ── Scene gradients ──────────────────────────────────────────────────────────
-const SCENES: Record<string, string> = {
-  market:   'linear-gradient(135deg, #1a0a2e 0%, #2d1b4e 50%, #0d2137 100%)',
-  tea:      'linear-gradient(135deg, #1a1200 0%, #3d2800 50%, #1a0c00 100%)',
-  shop:     'linear-gradient(135deg, #001a1a 0%, #003333 50%, #001a2e 100%)',
-  street:   'linear-gradient(135deg, #0d0d1a 0%, #1a1a3d 50%, #0a0d1a 100%)',
-  evening:  'linear-gradient(135deg, #1a0a00 0%, #3d1500 50%, #0d0000 100%)',
-}
-
-// ── Story data ───────────────────────────────────────────────────────────────
-type PanelNode = {
-  type: 'panel'
-  scene: keyof typeof SCENES
-  speaker: string
-  speakerColor: string
-  text: string
-}
-
-type ChoiceNode = {
-  type: 'choice'
-  scene: keyof typeof SCENES
-  speaker: string
-  speakerColor: string
-  prompt: string
-  options: [string, string]
-  acks: [string, string]
-}
-
-type StoryNode = PanelNode | ChoiceNode
-
-const STORY: StoryNode[] = [
-  {
-    type: 'panel',
-    scene: 'street',
-    speaker: 'Narrator',
-    speakerColor: '#6A6A8A',
-    text: 'Bilal walks down a busy street in Lahore. He is happy today — it is his first morning of English practice.',
-  },
-  {
-    type: 'panel',
-    scene: 'market',
-    speaker: 'Narrator',
-    speakerColor: '#6A6A8A',
-    text: 'A friendly man at the market smiles at him. The man wants to speak English too.',
-  },
-  {
-    type: 'panel',
-    scene: 'market',
-    speaker: 'Shopkeeper',
-    speakerColor: '#4A9EFF',
-    text: '"Good morning, friend! Come, come. What do you need today?"',
-  },
-  {
-    type: 'choice',
-    scene: 'market',
-    speaker: 'Narrator',
-    speakerColor: '#6A6A8A',
-    prompt: 'How does Bilal reply to the shopkeeper?',
-    options: ['"Hello! I want some water, please."', '"Good morning! I need food."'],
-    acks: [
-      '"Hello! I want some water, please." — The shopkeeper smiles. "Good English! You speak very well."',
-      '"Good morning! I need food." — The shopkeeper nods. "Yes, yes! Good morning to you too."',
-    ],
-  },
-  {
-    type: 'panel',
-    scene: 'shop',
-    speaker: 'Shopkeeper',
-    speakerColor: '#4A9EFF',
-    text: '"We have fresh tea and cold water. What do you want to eat today?"',
-  },
-  {
-    type: 'panel',
-    scene: 'shop',
-    speaker: 'Narrator',
-    speakerColor: '#6A6A8A',
-    text: 'Bilal looks at the items. He has money and he is ready to speak English again.',
-  },
-  {
-    type: 'choice',
-    scene: 'tea',
-    speaker: 'Narrator',
-    speakerColor: '#6A6A8A',
-    prompt: 'What does Bilal decide to do?',
-    options: ['"I want tea, please."', '"I want food. How much money?"'],
-    acks: [
-      'Bilal says "I want tea, please." The shopkeeper gives him a warm cup. "Very good English, friend!"',
-      'Bilal asks about money. "Good question!" says the shopkeeper and shows him the price.',
-    ],
-  },
-  {
-    type: 'panel',
-    scene: 'evening',
-    speaker: 'Shopkeeper',
-    speakerColor: '#4A9EFF',
-    text: '"Come again tomorrow, friend. You speak good English. Practice every day — you will go far!"',
-  },
-  {
-    type: 'panel',
-    scene: 'street',
-    speaker: 'Narrator',
-    speakerColor: '#6A6A8A',
-    text: 'Bilal walks home happy. Today he used real English in a real situation. Tomorrow he will come back.',
-  },
-]
-
-// ── Highlighted text component ───────────────────────────────────────────────
-function HighlightedText({ text }: { text: string }) {
+function HighlightedText({ text, vocab }: { text: string; vocab: Record<string, string> }) {
   const [tooltip, setTooltip] = useState<{ word: string; x: number; y: number } | null>(null)
   const containerRef = useRef<HTMLSpanElement>(null)
 
-  const words = text.split(/(\s+|[",!?.]+)/)
+  const segments = text.split(/(\s+|[",!?.]+)/)
+
   return (
     <span ref={containerRef} className="relative">
-      {words.map((segment, i) => {
+      {segments.map((segment, i) => {
         const clean = segment.toLowerCase().replace(/[^a-z]/g, '')
-        const meaning = VOCAB[clean]
+        const meaning = vocab[clean]
         if (!meaning) return <span key={i}>{segment}</span>
         return (
           <span key={i} className="relative inline-block">
             <button
               className="underline decoration-dotted decoration-brand-blue/60 text-inherit cursor-pointer hover:text-brand-blue transition-colors"
-              onClick={(e) => {
+              onClick={e => {
                 e.stopPropagation()
                 const r = e.currentTarget.getBoundingClientRect()
                 const cr = containerRef.current?.getBoundingClientRect()
                 setTooltip(t =>
-                  t?.word === clean ? null : { word: clean, x: r.left - (cr?.left ?? 0), y: r.bottom - (cr?.top ?? 0) + 4 }
+                  t?.word === clean
+                    ? null
+                    : { word: clean, x: r.left - (cr?.left ?? 0), y: r.bottom - (cr?.top ?? 0) + 4 }
                 )
               }}
             >
@@ -171,28 +62,37 @@ function HighlightedText({ text }: { text: string }) {
           </span>
         )
       })}
-      {tooltip && (
-        <div className="fixed inset-0 z-40" onClick={() => setTooltip(null)} />
-      )}
+      {tooltip && <div className="fixed inset-0 z-40" onClick={() => setTooltip(null)} />}
     </span>
   )
 }
 
-// ── Main component ───────────────────────────────────────────────────────────
 interface StoryReplayProps {
   onComplete: () => void
 }
 
 export default function StoryReplay({ onComplete }: StoryReplayProps) {
+  const learnerProfile = useProgressStore(s => s.learnerProfile)
+  const addXp = useMissionStore(s => s.addXp)
+  const vocab = useVocabMap()
+
+  const level = learnerProfile?.currentLevel ?? 1
+  const module = learnerProfile?.currentModule ?? 2
+  const story = getStory(level, module)
+
   const [idx, setIdx] = useState(0)
   const [choiceMade, setChoiceMade] = useState<{ nodeIdx: number; ack: string } | null>(null)
   const [dir, setDir] = useState(1)
 
-  const node = STORY[idx]
+  const node = story.nodes[idx]
 
   function advance() {
     setDir(1)
-    if (idx >= STORY.length - 1) { onComplete(); return }
+    if (idx >= story.nodes.length - 1) {
+      addXp(STORY_XP)
+      onComplete()
+      return
+    }
     setIdx(i => i + 1)
     setChoiceMade(null)
   }
@@ -202,16 +102,28 @@ export default function StoryReplay({ onComplete }: StoryReplayProps) {
     setChoiceMade({ nodeIdx: idx, ack: node.acks[optionIdx] })
   }
 
-  const progress = ((idx + 1) / STORY.length) * 100
-  const isLast = idx === STORY.length - 1
+  const progress = ((idx + 1) / story.nodes.length) * 100
+  const isLast = idx === story.nodes.length - 1
+  const sceneGradient = SCENE_GRADIENTS[node.scene] ?? SCENE_GRADIENTS['street']
+
+  const speakerIcon =
+    node.speaker === 'Shopkeeper'   ? '🧔' :
+    node.speaker === 'Teacher'      ? '👩‍🏫' :
+    node.speaker === 'Bilal'        ? '🧑' :
+    node.speaker === 'Interviewer'  ? '💼' :
+    node.speaker === 'Colleague'    ? '👔' :
+    node.speaker === 'Sara'         ? '👩' :
+    node.speaker === 'Ali'          ? '🧑' :
+    node.speaker === 'Manager'      ? '👔' :
+    '📖'
 
   return (
     <div className="flex flex-col gap-5 py-8 px-4 max-w-lg mx-auto w-full">
       {/* Header */}
       <div className="text-center">
         <p className="text-xs font-mono text-text-muted uppercase tracking-widest mb-1">Phase 1</p>
-        <h2 className="font-display text-2xl font-bold text-text-primary">Story Time</h2>
-        <p className="text-sm text-text-muted mt-1">Practice in Context</p>
+        <h2 className="font-display text-2xl font-bold text-text-primary">{story.title}</h2>
+        <p className="text-sm text-text-muted mt-1">{story.subtitle}</p>
       </div>
 
       {/* Progress bar */}
@@ -221,6 +133,13 @@ export default function StoryReplay({ onComplete }: StoryReplayProps) {
           animate={{ width: `${progress}%` }}
           transition={{ duration: 0.4, ease: 'easeOut' }}
         />
+      </div>
+
+      {/* XP badge */}
+      <div className="flex justify-end">
+        <span className="px-2.5 py-1 rounded-full bg-brand-gold/10 border border-brand-gold/30 text-xs font-mono text-brand-gold">
+          +{STORY_XP} XP on complete
+        </span>
       </div>
 
       {/* Scene card */}
@@ -234,27 +153,28 @@ export default function StoryReplay({ onComplete }: StoryReplayProps) {
           transition={{ duration: 0.25, ease: 'easeInOut' }}
           className="rounded-2xl overflow-hidden"
         >
-          {/* Scene illustration */}
-          <div
-            className="h-32 flex items-end p-4"
-            style={{ background: SCENES[node.scene] }}
-          >
+          <div className="h-32 flex items-end p-4" style={{ background: sceneGradient }}>
             <div className="flex items-center gap-2">
               <div className="w-8 h-8 rounded-full bg-white/10 border border-white/20 flex items-center justify-center text-lg">
-                {node.speaker === 'Shopkeeper' ? '🧔' : node.speaker === 'Bilal' ? '🧑' : '📖'}
+                {speakerIcon}
               </div>
-              <span className="text-xs font-mono font-bold uppercase tracking-wider" style={{ color: node.speakerColor }}>
+              <span
+                className="text-xs font-mono font-bold uppercase tracking-wider"
+                style={{ color: node.speakerColor }}
+              >
                 {node.speaker}
               </span>
             </div>
           </div>
 
-          {/* Dialogue box */}
           <div className="bg-bg-secondary border border-border-subtle border-t-0 rounded-b-2xl p-5">
             <p className="text-text-primary text-base font-body leading-relaxed">
-              <HighlightedText text={node.type === 'choice' ? node.prompt : node.text} />
+              <HighlightedText
+                text={node.type === 'choice' ? node.prompt : node.text}
+                vocab={vocab}
+              />
             </p>
-            {node.type === 'panel' && (
+            {node.type === 'panel' && Object.keys(vocab).length > 0 && (
               <p className="text-xs text-text-muted mt-2 font-mono">
                 Tap highlighted words for Roman Urdu meaning
               </p>
@@ -274,7 +194,7 @@ export default function StoryReplay({ onComplete }: StoryReplayProps) {
           >
             <p className="text-xs font-mono text-brand-blue mb-1 uppercase tracking-wider">Story continues…</p>
             <p className="text-sm text-text-secondary leading-relaxed">
-              <HighlightedText text={choiceMade.ack} />
+              <HighlightedText text={choiceMade.ack} vocab={vocab} />
             </p>
           </motion.div>
         )}
@@ -308,13 +228,12 @@ export default function StoryReplay({ onComplete }: StoryReplayProps) {
           onClick={advance}
           disabled={node.type === 'choice' && !choiceMade}
         >
-          {isLast ? '✓ Complete Story' : 'Next →'}
+          {isLast ? `✓ Complete Story (+${STORY_XP} XP)` : 'Next →'}
         </Button>
       )}
 
-      {/* Panel counter */}
       <p className="text-center text-xs font-mono text-text-muted">
-        Panel {idx + 1} of {STORY.length}
+        Panel {idx + 1} of {story.nodes.length}
       </p>
     </div>
   )

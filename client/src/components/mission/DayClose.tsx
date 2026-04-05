@@ -3,15 +3,13 @@ import { motion } from 'framer-motion'
 import confetti from 'canvas-confetti'
 import { useNavigate } from 'react-router-dom'
 import Button from '@/components/ui/Button'
+import { useMissionStore } from '@/stores/missionStore'
+import { useProgressStore } from '@/stores/progressStore'
+import { api } from '@/services/api'
 
-// ── Mock summary data ────────────────────────────────────────────────────────
-const SUMMARY = {
-  xpToday:       150,
-  streak:        7,
-  brainCompound: 42,
-  reviewCount:   8,
-  reviewWords:   ['want', 'understand', 'remember'],
-  userWhy:       'speaking English confidently at work',
+interface TomorrowData {
+  count: number
+  words: string[]
 }
 
 // ── Animated number count-up hook ────────────────────────────────────────────
@@ -63,8 +61,43 @@ interface DayCloseProps {
 }
 
 export default function DayClose({ onComplete }: DayCloseProps) {
-  const navigate    = useNavigate()
-  const canvasRef   = useRef<HTMLCanvasElement>(null)
+  const navigate = useNavigate()
+  const canvasRef = useRef<HTMLCanvasElement>(null)
+  const completionCalled = useRef(false)
+
+  const { xpEarned, completeMission, isComplete } = useMissionStore()
+  const { streak, brainCompoundPct, learnerProfile } = useProgressStore()
+
+  const [tomorrow, setTomorrow] = useState<TomorrowData>({ count: 0, words: [] })
+  const [completionError, setCompletionError] = useState<string | null>(null)
+  const [isLoading, setIsLoading] = useState(true)
+
+  // Finalize the mission and fetch tomorrow's queue on mount
+  useEffect(() => {
+    if (completionCalled.current) return
+    completionCalled.current = true
+
+    async function finalize() {
+      try {
+        await completeMission()
+      } catch {
+        setCompletionError('Could not sync session to server. Your progress is saved locally.')
+      }
+
+      try {
+        const res = await api.get<{ success: boolean; data: TomorrowData }>(
+          '/api/v1/content/sr-queue/tomorrow'
+        )
+        setTomorrow(res.data)
+      } catch {
+        // Non-critical — just show 0 if fetch fails
+      }
+
+      setIsLoading(false)
+    }
+
+    finalize()
+  }, [completeMission])
 
   // Fire confetti burst on mount
   useEffect(() => {
@@ -73,9 +106,15 @@ export default function DayClose({ onComplete }: DayCloseProps) {
     const myConfetti = confetti.create(canvas, { resize: true, useWorker: true })
 
     const burst = (opts?: confetti.Options) =>
-      myConfetti({ particleCount: 120, spread: 80, origin: { y: 0.55 },
+      myConfetti({
+        particleCount: 120,
+        spread: 80,
+        origin: { y: 0.55 },
         colors: ['#E94560', '#4A9EFF', '#F5B014', '#2ECC71', '#FFFFFF'],
-        gravity: 0.9, scalar: 1.1, ...opts })
+        gravity: 0.9,
+        scalar: 1.1,
+        ...opts,
+      })
 
     burst()
     const t1 = setTimeout(() => burst(), 500)
@@ -84,7 +123,10 @@ export default function DayClose({ onComplete }: DayCloseProps) {
       myConfetti({ particleCount: 60, spread: 100, origin: { x: 0.9, y: 0.6 }, angle: 120 })
     }, 900)
 
-    return () => { clearTimeout(t1); clearTimeout(t2) }
+    return () => {
+      clearTimeout(t1)
+      clearTimeout(t2)
+    }
   }, [])
 
   function handleReturn() {
@@ -92,13 +134,16 @@ export default function DayClose({ onComplete }: DayCloseProps) {
     navigate('/dashboard')
   }
 
+  const displayXp = xpEarned
+  const displayStreak = streak
+  const displayBrain = Math.round(brainCompoundPct)
+  const userWhy = learnerProfile?.why ?? 'speaking English confidently'
+  const dayNumber = learnerProfile?.dayNumber ?? 1
+
   return (
     <div className="relative min-h-screen bg-bg-primary flex flex-col items-center">
-      {/* Confetti canvas (full-screen overlay, pointer-events none) */}
-      <canvas
-        ref={canvasRef}
-        className="pointer-events-none fixed inset-0 z-50 w-full h-full"
-      />
+      {/* Confetti canvas */}
+      <canvas ref={canvasRef} className="pointer-events-none fixed inset-0 z-50 w-full h-full" />
 
       <div className="flex flex-col gap-6 py-8 px-4 max-w-lg mx-auto w-full">
         {/* Title */}
@@ -112,16 +157,38 @@ export default function DayClose({ onComplete }: DayCloseProps) {
           <p className="text-xs font-mono text-text-muted uppercase tracking-widest mb-1">Phase 4</p>
           <h2 className="font-display text-3xl font-bold text-text-primary">Mission Complete!</h2>
           <p className="text-sm text-brand-green font-body mt-1">
-            Evening Mission — Day {SUMMARY.streak} ✓
+            Evening Mission — Day {dayNumber} ✓
           </p>
+          {isComplete && (
+            <p className="text-xs font-mono text-brand-green mt-1">✓ Synced to server</p>
+          )}
+          {completionError && (
+            <p className="text-xs font-mono text-text-muted mt-1">{completionError}</p>
+          )}
         </motion.div>
 
         {/* Stats row */}
-        <div className="flex gap-3">
-          <StatCard icon="⭐" label="XP Today"    value={SUMMARY.xpToday}       unit=" XP" color="#F5B014" delay={0.2}  />
-          <StatCard icon="🔥" label="Streak"      value={SUMMARY.streak}        unit="d"   color="#E94560" delay={0.35} />
-          <StatCard icon="🧠" label="Brain %"     value={SUMMARY.brainCompound} unit="%"   color="#2ECC71" delay={0.5}  />
-        </div>
+        {!isLoading && (
+          <div className="flex gap-3">
+            <StatCard icon="⭐" label="XP Today"  value={displayXp}     unit=" XP" color="#F5B014" delay={0.2}  />
+            <StatCard icon="🔥" label="Streak"    value={displayStreak} unit="d"   color="#E94560" delay={0.35} />
+            <StatCard icon="🧠" label="Brain %"   value={displayBrain}  unit="%"   color="#2ECC71" delay={0.5}  />
+          </div>
+        )}
+
+        {isLoading && (
+          <div className="flex gap-3">
+            {[0.2, 0.35, 0.5].map(d => (
+              <motion.div
+                key={d}
+                initial={{ opacity: 0, y: 20 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ delay: d }}
+                className="flex-1 bg-bg-secondary border border-border-subtle rounded-2xl p-4 h-[96px] animate-pulse"
+              />
+            ))}
+          </div>
+        )}
 
         {/* Brain Compound Meter bar */}
         <motion.div
@@ -140,7 +207,7 @@ export default function DayClose({ onComplete }: DayCloseProps) {
               </p>
             </div>
             <span className="font-display font-bold text-brand-green text-xl">
-              {SUMMARY.brainCompound}%
+              {displayBrain}%
             </span>
           </div>
           <div className="h-3 bg-bg-tertiary rounded-full overflow-hidden border border-border-subtle">
@@ -148,7 +215,7 @@ export default function DayClose({ onComplete }: DayCloseProps) {
               className="h-full rounded-full"
               style={{ background: 'linear-gradient(90deg, #2ECC71, #4A9EFF)' }}
               initial={{ width: 0 }}
-              animate={{ width: `${SUMMARY.brainCompound}%` }}
+              animate={{ width: `${displayBrain}%` }}
               transition={{ delay: 0.7, duration: 1.2, ease: [0.34, 1.56, 0.64, 1] }}
             />
           </div>
@@ -164,26 +231,36 @@ export default function DayClose({ onComplete }: DayCloseProps) {
           <p className="text-xs font-mono text-text-muted uppercase tracking-wider mb-1">
             Tomorrow's Review
           </p>
-          <p className="text-sm text-text-primary font-body mb-3">
-            You have{' '}
-            <span className="font-bold text-brand-blue">{SUMMARY.reviewCount} cards</span>{' '}
-            to review tomorrow
-          </p>
-          <div className="flex flex-wrap gap-2">
-            {SUMMARY.reviewWords.map(word => (
-              <span
-                key={word}
-                className="px-3 py-1 rounded-full bg-brand-blue/10 border border-brand-blue/30 text-xs font-mono text-brand-blue"
-              >
-                {word}
-              </span>
-            ))}
-            {SUMMARY.reviewCount > SUMMARY.reviewWords.length && (
-              <span className="px-3 py-1 rounded-full bg-bg-tertiary border border-border-subtle text-xs font-mono text-text-muted">
-                +{SUMMARY.reviewCount - SUMMARY.reviewWords.length} more
-              </span>
-            )}
-          </div>
+          {isLoading ? (
+            <div className="h-5 bg-bg-tertiary rounded animate-pulse w-48 mt-1" />
+          ) : tomorrow.count === 0 ? (
+            <p className="text-sm text-text-secondary font-body">
+              No items scheduled for tomorrow — great job staying on top of your reviews!
+            </p>
+          ) : (
+            <>
+              <p className="text-sm text-text-primary font-body mb-3">
+                You have{' '}
+                <span className="font-bold text-brand-blue">{tomorrow.count} cards</span>{' '}
+                to review tomorrow
+              </p>
+              <div className="flex flex-wrap gap-2">
+                {tomorrow.words.map(word => (
+                  <span
+                    key={word}
+                    className="px-3 py-1 rounded-full bg-brand-blue/10 border border-brand-blue/30 text-xs font-mono text-brand-blue"
+                  >
+                    {word}
+                  </span>
+                ))}
+                {tomorrow.count > tomorrow.words.length && (
+                  <span className="px-3 py-1 rounded-full bg-bg-tertiary border border-border-subtle text-xs font-mono text-text-muted">
+                    +{tomorrow.count - tomorrow.words.length} more
+                  </span>
+                )}
+              </div>
+            </>
+          )}
         </motion.div>
 
         {/* My Why */}
@@ -198,7 +275,7 @@ export default function DayClose({ onComplete }: DayCloseProps) {
             <p className="text-xs font-mono text-brand-gold uppercase tracking-wider mb-1">My Why</p>
             <p className="text-sm text-text-secondary font-body leading-relaxed">
               Every session brings you closer to{' '}
-              <span className="text-text-primary font-medium">{SUMMARY.userWhy}</span>.
+              <span className="text-text-primary font-medium">{userWhy}</span>.
               Today you took one more step. Keep going.
             </p>
           </div>

@@ -10,58 +10,13 @@ import {
 import { CSS } from '@dnd-kit/utilities'
 import { motion, AnimatePresence } from 'framer-motion'
 import Button from '@/components/ui/Button'
-
-// ── Exercise data ─────────────────────────────────────────────────────────────
-interface Zone { id: string; label: string }
-interface Exercise {
-  mode:    'Positive' | 'Negative' | 'Question'
-  hint:    string
-  zones:   Zone[]
-  tiles:   string[]
-  correct: Record<string, string>
-}
+import { getSentences } from '@/constants/sentences'
+import { useProgressStore } from '@/stores/progressStore'
+import { useSRStore } from '@/stores/srStore'
 
 function shuffle<T>(arr: T[]): T[] {
   return [...arr].sort(() => Math.random() - 0.5)
 }
-
-const EXERCISES: Exercise[] = [
-  {
-    mode:    'Positive',
-    hint:    'Subject + Verb + Object',
-    zones:   [{ id: 'subject', label: 'SUBJECT' }, { id: 'verb', label: 'VERB' }, { id: 'object', label: 'OBJECT' }],
-    tiles:   ['I', 'eat', 'food', 'She', 'drink', 'water'],
-    correct: { subject: 'I', verb: 'eat', object: 'food' },
-  },
-  {
-    mode:    'Positive',
-    hint:    'Subject + Verb + Object',
-    zones:   [{ id: 'subject', label: 'SUBJECT' }, { id: 'verb', label: 'VERB' }, { id: 'object', label: 'OBJECT' }],
-    tiles:   ['She', 'reads', 'books', 'He', 'writes', 'letters'],
-    correct: { subject: 'She', verb: 'reads', object: 'books' },
-  },
-  {
-    mode:    'Negative',
-    hint:    'Subject + NOT + Verb + Object',
-    zones:   [{ id: 'subject', label: 'SUBJECT' }, { id: 'negative', label: 'NEGATIVE' }, { id: 'verb', label: 'VERB' }, { id: 'object', label: 'OBJECT' }],
-    tiles:   ['He', 'does not', 'eat', 'meat', 'She', 'do not', 'drink', 'milk'],
-    correct: { subject: 'He', negative: 'does not', verb: 'eat', object: 'meat' },
-  },
-  {
-    mode:    'Negative',
-    hint:    'Subject + NOT + Verb',
-    zones:   [{ id: 'subject', label: 'SUBJECT' }, { id: 'negative', label: 'NEGATIVE' }, { id: 'verb', label: 'VERB' }],
-    tiles:   ['We', 'are not', 'ready', 'They', 'is not', 'happy'],
-    correct: { subject: 'We', negative: 'are not', verb: 'ready' },
-  },
-  {
-    mode:    'Question',
-    hint:    'Helper + Subject + Verb + Object + ?',
-    zones:   [{ id: 'helper', label: '? HELPER' }, { id: 'subject', label: 'SUBJECT' }, { id: 'verb', label: 'VERB' }, { id: 'object', label: 'OBJECT' }],
-    tiles:   ['Do', 'you', 'like', 'tea', 'Does', 'he', 'eat', 'food'],
-    correct: { helper: 'Do', subject: 'you', verb: 'like', object: 'tea' },
-  },
-]
 
 // ── Draggable tile ─────────────────────────────────────────────────────────
 function DraggableTile({ id, label, disabled }: { id: string; label: string; disabled?: boolean }) {
@@ -91,7 +46,7 @@ function DraggableTile({ id, label, disabled }: { id: string; label: string; dis
 function DroppableZone({
   zone, filledWith, onClear, shake, correct, checked,
 }: {
-  zone: Zone
+  zone: { id: string; label: string }
   filledWith?: string
   onClear: () => void
   shake?: boolean
@@ -99,7 +54,6 @@ function DroppableZone({
   checked?: boolean
 }) {
   const { isOver, setNodeRef } = useDroppable({ id: zone.id })
-
   return (
     <div className="flex flex-col items-center gap-1.5 flex-1">
       <span className="text-[10px] font-mono text-text-muted uppercase tracking-widest">{zone.label}</span>
@@ -147,31 +101,44 @@ function OverlayTile({ label }: { label: string }) {
 }
 
 // ── Main component ────────────────────────────────────────────────────────
-interface SentenceBuiderProps {
+interface SentenceBuilderProps {
   onComplete: () => void
   onXpEarned?: (xp: number) => void
 }
 
-export default function SentenceBuilder({ onComplete, onXpEarned }: SentenceBuiderProps) {
-  const [exIdx,     setExIdx]     = useState(0)
-  const [slots,     setSlots]     = useState<Record<string, string>>({})
-  const [pool,      setPool]      = useState<string[]>(() => shuffle(EXERCISES[0].tiles))
-  const [checked,   setChecked]   = useState(false)
+export default function SentenceBuilder({ onComplete, onXpEarned }: SentenceBuilderProps) {
+  const learnerProfile = useProgressStore(s => s.learnerProfile)
+  const currentModule = learnerProfile?.currentModule ?? 2
+  const { dailyQueue, markReviewed } = useSRStore()
+
+  const exercises = getSentences(currentModule)
+
+  const [exIdx, setExIdx] = useState(0)
+  const [slots, setSlots] = useState<Record<string, string>>({})
+  const [pool, setPool] = useState<string[]>(() => shuffle(exercises[0].tiles))
+  const [checked, setChecked] = useState(false)
   const [isCorrect, setIsCorrect] = useState(false)
-  const [shake,     setShake]     = useState(false)
-  const [dragging,  setDragging]  = useState<string | null>(null)
-  const [done,      setDone]      = useState(false)
-  const [score,     setScore]     = useState(0)
+  const [shake, setShake] = useState(false)
+  const [dragging, setDragging] = useState<string | null>(null)
+  const [done, setDone] = useState(false)
+  const [score, setScore] = useState(0)
 
-  const ex = EXERCISES[exIdx]
+  const ex = exercises[exIdx]
 
-  // Tile id → label (e.g., "does_not_0" → "does not")
-  function tileLabel(id: string): string {
-    return id.replace(/_\d+$/, '').replace(/_/g, ' ')
-  }
-
-  // Build unique tile ids (tiles may repeat so we suffix index)
-  const tileIds = pool // pool holds raw labels; we use index suffix to uniquify if needed
+  // Mark vocabulary words from this exercise in the SR queue
+  const markVocabWords = useCallback(
+    (correct: boolean) => {
+      for (const word of ex.vocabWords) {
+        const card = dailyQueue.find(
+          c => c.english.toLowerCase() === word.toLowerCase()
+        )
+        if (card) {
+          markReviewed(card.id, correct)
+        }
+      }
+    },
+    [ex.vocabWords, dailyQueue, markReviewed]
+  )
 
   function handleDragStart(e: DragStartEvent) {
     setDragging(e.active.id as string)
@@ -182,19 +149,17 @@ export default function SentenceBuilder({ onComplete, onXpEarned }: SentenceBuid
     const { active, over } = e
     if (!over) return
 
-    const tileLabel = active.id as string
-    const zoneId    = over.id as string
+    const tile = active.id as string
+    const zoneId = over.id as string
     const validZone = ex.zones.some(z => z.id === zoneId)
     if (!validZone) return
 
     setSlots(prev => {
       const next = { ...prev }
       const displaced = next[zoneId]
-      // Move tile into zone
-      next[zoneId] = tileLabel
-      // Return displaced tile to pool
+      next[zoneId] = tile
       setPool(p => {
-        const filtered = p.filter(t => t !== tileLabel)
+        const filtered = p.filter(t => t !== tile)
         return displaced ? [...filtered, displaced] : filtered
       })
       return next
@@ -220,12 +185,16 @@ export default function SentenceBuilder({ onComplete, onXpEarned }: SentenceBuid
     let correct = true
     for (const zone of ex.zones) {
       if (slots[zone.id]?.toLowerCase() !== ex.correct[zone.id]?.toLowerCase()) {
-        correct = false; break
+        correct = false
+        break
       }
     }
 
     setChecked(true)
     setIsCorrect(correct)
+
+    // Wire to SR store
+    markVocabWords(correct)
 
     if (correct) {
       setScore(s => s + 1)
@@ -238,13 +207,13 @@ export default function SentenceBuilder({ onComplete, onXpEarned }: SentenceBuid
 
   function handleNext() {
     const next = exIdx + 1
-    if (next >= EXERCISES.length) {
+    if (next >= exercises.length) {
       setDone(true)
       return
     }
     setExIdx(next)
     setSlots({})
-    setPool(shuffle(EXERCISES[next].tiles))
+    setPool(shuffle(exercises[next].tiles))
     setChecked(false)
     setIsCorrect(false)
     setShake(false)
@@ -266,7 +235,9 @@ export default function SentenceBuilder({ onComplete, onXpEarned }: SentenceBuid
         <div className="text-center">
           <h2 className="font-display text-2xl font-bold text-text-primary mb-2">Sentences Complete!</h2>
           <p className="text-text-secondary font-body">
-            You got <span className="text-brand-green font-bold">{score}</span> of <span className="font-bold">{EXERCISES.length}</span> sentences correct
+            You got{' '}
+            <span className="text-brand-green font-bold">{score}</span> of{' '}
+            <span className="font-bold">{exercises.length}</span> sentences correct
           </p>
         </div>
         <Button variant="primary" size="lg" className="w-full" onClick={onComplete}>
@@ -314,7 +285,7 @@ export default function SentenceBuilder({ onComplete, onXpEarned }: SentenceBuid
             {ex.mode}
           </span>
           <div className="flex gap-1.5">
-            {EXERCISES.map((_, i) => (
+            {exercises.map((_, i) => (
               <div
                 key={i}
                 className={[
@@ -342,7 +313,6 @@ export default function SentenceBuilder({ onComplete, onXpEarned }: SentenceBuid
             ))}
           </div>
 
-          {/* Correct answer reveal */}
           <AnimatePresence>
             {checked && !isCorrect && (
               <motion.div
@@ -381,10 +351,12 @@ export default function SentenceBuilder({ onComplete, onXpEarned }: SentenceBuid
 
         {/* Word tile pool */}
         <div className="bg-bg-tertiary border border-border-subtle rounded-2xl p-4">
-          <p className="text-xs font-mono text-text-muted mb-3 uppercase tracking-wider">Word Pool — drag tiles above</p>
+          <p className="text-xs font-mono text-text-muted mb-3 uppercase tracking-wider">
+            Word Pool — drag tiles above
+          </p>
           <div className="flex flex-wrap gap-2 min-h-[48px]">
             <AnimatePresence>
-              {pool.map((label) => (
+              {pool.map(label => (
                 <motion.div
                   key={label}
                   layout
@@ -403,10 +375,8 @@ export default function SentenceBuilder({ onComplete, onXpEarned }: SentenceBuid
           </div>
         </div>
 
-        {/* Hint */}
         <p className="text-center text-xs font-mono text-text-muted">{ex.hint}</p>
 
-        {/* Action button */}
         {!checked ? (
           <Button
             variant="primary"
@@ -419,12 +389,11 @@ export default function SentenceBuilder({ onComplete, onXpEarned }: SentenceBuid
           </Button>
         ) : (
           <Button variant={isCorrect ? 'primary' : 'secondary'} size="lg" className="w-full" onClick={handleNext}>
-            {exIdx < EXERCISES.length - 1 ? 'Next Sentence →' : 'See Results →'}
+            {exIdx < exercises.length - 1 ? 'Next Sentence →' : 'See Results →'}
           </Button>
         )}
       </div>
 
-      {/* Drag overlay */}
       <DragOverlay>
         {dragging ? <OverlayTile label={dragging} /> : null}
       </DragOverlay>
