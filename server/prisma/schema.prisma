@@ -52,13 +52,14 @@ model Learner {
   createdAt             DateTime  @default(now())
   updatedAt             DateTime  @updatedAt
 
-  srQueue           SRQueueItem[]
-  missions          MissionSession[]
-  levelProgress     LevelProgress[]
-  badges            Badge[]
-  feynmanResponses  FeynmanResponse[]
-  refreshTokens     RefreshToken[]
+  srQueue            SRQueueItem[]
+  missions           MissionSession[]
+  levelProgress      LevelProgress[]
+  badges             Badge[]
+  feynmanResponses   FeynmanResponse[]
+  refreshTokens      RefreshToken[]
   leaderboardEntries LeaderboardEntry[]
+  upvotes            Upvote[]
 }
 
 model ContentItem {
@@ -176,5 +177,18 @@ model LeaderboardEntry {
   submittedAt   DateTime
   upvoteCount   Int      @default(0)
 
-  learner       Learner @relation(fields: [learnerId], references: [id], onDelete: Cascade)
+  learner       Learner  @relation(fields: [learnerId], references: [id], onDelete: Cascade)
+  upvotes       Upvote[]
+}
+
+model Upvote {
+  id          String           @id @default(cuid())
+  learnerId   String
+  entryId     String
+  createdAt   DateTime         @default(now())
+
+  learner     Learner          @relation(fields: [learnerId], references: [id], onDelete: Cascade)
+  entry       LeaderboardEntry @relation(fields: [entryId], references: [id], onDelete: Cascade)
+
+  @@unique([learnerId, entryId])
 }
