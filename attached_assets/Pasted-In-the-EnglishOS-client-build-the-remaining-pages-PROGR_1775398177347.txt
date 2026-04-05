@@ -1,0 +1,43 @@
+In the EnglishOS client, build the remaining pages.
+
+PROGRESS PAGE (client/src/pages/Progress.tsx):
+  - Header: "Your Growth"
+  - Stats row (4 cards): Total Days Active, Current Streak, Total XP, Brain Compound %
+  - Mastery Map thumbnail with current position (reuse the map component in a smaller container)
+  - Level progress section: for each level show a progress bar with modules completed / total
+  - Feynman Score chart: a simple line chart using recharts showing clarity score over the last 30 days
+  - Badge wall: grid of all earned badges with name and date earned; locked badges shown as gray silhouettes
+
+FEYNMAN ARCHIVE PAGE (client/src/pages/FeynmanArchive.tsx):
+  - Title: "Your Feynman Journey"
+  - Intro text: "Watch your own understanding grow over time."
+  - List of past Feynman responses in reverse chronological order
+  - Each entry shows: date, module name, the prompt, the response (truncated with expand toggle), clarity score badge, knowledge gap words
+  - Score trend indicator: arrow up/down compared to previous entry
+
+LEADERBOARD PAGE (client/src/pages/Leaderboard.tsx):
+  - Title: "Feynman Leaderboard — This Week"
+  - Weekly cycle indicator: "Week of [date]"
+  - Top 3 entries displayed prominently with rank (1st, 2nd, 3rd) and gold/silver/bronze styling
+  - List of all other entries with rank, learner name (anonymized to first name + last initial), module explained, score
+  - Submit button: "Submit My Best Explanation This Week" — opens a modal with the submission form
+
+LEVEL GATE PAGE (client/src/pages/LevelGate.tsx):
+  - Full-screen focus mode (no sidebar or nav)
+  - Title: "Level [X] Gate — Prove Your Mastery"
+  - Progress bar across the top showing questions answered / total
+  - Each question presented one at a time in a card
+  - Question types: vocabulary recall (text input), grammar rule (multiple choice), sentence identification (correct/incorrect toggle)
+  - After all questions: score reveal screen with pass/fail state
+  - Pass (≥70%): celebration animation → "Begin Level Wrap" button
+  - Fail (<70%): breakdown showing which modules need review → "Go Back and Review" button → 24-hour cooldown timer shown
+
+PROFILE PAGE (client/src/pages/Profile.tsx):
+  - Polymath Profile Card preview (visual card component matching the spec in the PRD)
+  - Account settings: name, email (read only), notification times, Roman Urdu default preference
+  - Stakes section: view current stake, update stake button (with confirmation modal)
+  - My Why: displayed with an edit option
+  - Export Profile Card button (placeholder in v1.0)
+  - Danger zone: Delete Account (with confirmation modal)
+
+Use static data for all pages. Wire to APIs in later phases.

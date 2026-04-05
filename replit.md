@@ -105,9 +105,39 @@ pnpm dev:server   # Express on port 3000
 
 Google Fonts are imported in `client/src/index.css`.
 
+## Page Routes
+
+| Route | Component | Description |
+|---|---|---|
+| `/` | `Landing.tsx` | Marketing landing page |
+| `/onboarding` | `Onboarding.tsx` | New user onboarding flow |
+| `/dashboard` | `MasteryMap.tsx` | Main dashboard — Z-pattern level map |
+| `/mission` | `Mission.tsx` | Morning mission (`?type=evening` for evening) |
+| `/progress` | `Progress.tsx` | Growth page — stats, level bars, Feynman chart, badge wall |
+| `/feynman` | `FeynmanArchive.tsx` | Past Feynman explanations with score trend |
+| `/leaderboard` | `Leaderboard.tsx` | Weekly Feynman leaderboard with submission modal |
+| `/level-gate` | `LevelGate.tsx` | Full-screen mastery gate — 10 questions, pass/fail reveal |
+| `/profile` | `Profile.tsx` | Profile card, settings, stakes, My Why, danger zone |
+
+## Mission Architecture
+
+- **Morning Mission** (`/mission`): WarmupFlash → CoreDrop → ApplyIt → FeynmanMoment
+- **Evening Mission** (`/mission?type=evening`): StoryReplay → SentenceBuilder → ConversationSim → DayClose
+- Shared `MissionShell` component handles phase routing and progress bar
+
+## Key Packages
+
+| Package | Purpose |
+|---|---|
+| `@dnd-kit/core` | Drag-and-drop in SentenceBuilder |
+| `canvas-confetti` | Celebration animation in DayClose |
+| `recharts` | Feynman score line chart in Progress page |
+| `framer-motion` | Animations throughout |
+
 ## Notes
 
 - Vite runs on port **5000** (adjusted from 5173 for Replit preview pane compatibility); the dev server proxies `/api/*` to Express on port **3000**
 - Tailwind custom color/font tokens are fully configured — see Design System section above
 - Prisma schema is minimal; models will be added when features are implemented
 - Environment variables: copy `server/.env.example` to `server/.env` and fill in values
+- All pages use static mock data — backend API integration is a future phase
