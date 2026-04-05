@@ -1,0 +1,38 @@
+In the EnglishOS client, build the Onboarding page at client/src/pages/Onboarding.tsx as a multi-step wizard.
+
+The wizard has 5 steps with a step indicator bar at the top showing progress.
+
+STEP 1 — Language Diagnostic:
+  - Title: "Let's find your starting point"
+  - Large textarea prompt: "Tell us anything about yourself in English — any words or sentences you know. Don't worry about mistakes."
+  - Submit button: "Analyse My English"
+  - After submit: show a loading state ("Analysing your English...") for 2 seconds, then show the result card: "Based on your response, we recommend starting at Level [X]" with a brief explanation. Confirm or adjust level buttons.
+
+STEP 2 — My Why:
+  - Title: "Why do you want to learn English?"
+  - 6 selectable cards (single select): Job Interview, Career Growth, Social Confidence, Study Abroad, Talking to Family Abroad, Building a Business
+  - "Other" free text option
+  - Selected card gets brand-red border and checkmark
+
+STEP 3 — Daily Commitment:
+  - Title: "When will you learn?"
+  - Morning session time picker: 3 preset options (7am, 8am, 9am) + custom
+  - Evening session time picker: 3 preset options (7pm, 8pm, 9pm) + custom
+  - Info banner: "We recommend 20 min morning + 40 min evening = 1 hour total"
+
+STEP 4 — Stakes Setup:
+  - Title: "Set your stake. Your brain works harder when something is on the line."
+  - Brief explanation of the DiSS Stakes principle (2 sentences)
+  - Accountability partner email input (optional but highlighted as recommended)
+  - Personal commitment statement textarea (required)
+  - Checkbox: "Notify my partner if I miss 3 days in a row"
+  - Cannot advance without filling the commitment statement
+
+STEP 5 — Map Reveal:
+  - Full-screen dark background
+  - Animated reveal: the 6-level Mastery Map fades in with a cinematic pan effect
+  - Each level node lights up sequentially (0.4s delay between each)
+  - Learner's starting level pulses with a brand-red glow
+  - "Begin Mission 1" button appears after the animation completes
+
+Store all onboarding data in Zustand uiStore for now. Wire to API in Phase 4.
