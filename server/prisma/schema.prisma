@@ -147,9 +147,12 @@ model FeynmanResponse {
   module            Int
   prompt            String
   responseText      String?
-  clarityScore      Float?
   vocabScore        Float?
+  simplicityScore   Float?
   relevanceScore    Float?
+  overallScore      Float?
+  clarityScore      Float?
+  suggestion        String?
   knowledgeGapItems String[]
   createdAt         DateTime @default(now())
 

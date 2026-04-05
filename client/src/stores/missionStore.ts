@@ -30,12 +30,15 @@ export interface ContentItem {
 }
 
 export interface FeynmanResult {
-  clarityScore: number
-  vocabScore: number
-  relevanceScore: number
-  averageScore: number
+  scores: {
+    vocabulary: number
+    simplicity: number
+    relevance: number
+    overall: number
+  }
   feedback: string
-  knowledgeGapItems: string[]
+  suggestion: string
+  knowledgeGaps: string[]
   feynmanResponseId: string
 }
 

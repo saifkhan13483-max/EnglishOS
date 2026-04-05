@@ -94,7 +94,7 @@ export default function FeynmanMoment({ onComplete }: FeynmanMomentProps) {
   async function handleComplete() {
     setCompleting(true)
     try {
-      await completeMission(result?.averageScore)
+      await completeMission(result?.scores.overall)
     } catch {
       // Ignore errors — navigate anyway so learner isn't stuck
     } finally {
@@ -179,10 +179,15 @@ export default function FeynmanMoment({ onComplete }: FeynmanMomentProps) {
             className="flex flex-col gap-5"
           >
             <div className="bg-bg-secondary border border-border-subtle rounded-2xl p-5 flex flex-col gap-4">
-              <p className="text-xs font-mono text-text-muted uppercase tracking-wider">Your Scores</p>
-              <ScoreBar label="Clarity"    value={result.clarityScore}    color="#2ECC71" active={showResult} />
-              <ScoreBar label="Vocabulary" value={result.vocabScore}      color="#4A9EFF" active={showResult} />
-              <ScoreBar label="Relevance"  value={result.relevanceScore}  color="#F5B014" active={showResult} />
+              <div className="flex items-center justify-between">
+                <p className="text-xs font-mono text-text-muted uppercase tracking-wider">Your Scores</p>
+                <span className="text-sm font-mono font-bold text-brand-gold">
+                  Overall: {result.scores.overall}
+                </span>
+              </div>
+              <ScoreBar label="Vocabulary (40%)" value={result.scores.vocabulary} color="#4A9EFF" active={showResult} />
+              <ScoreBar label="Simplicity (35%)"  value={result.scores.simplicity}  color="#2ECC71" active={showResult} />
+              <ScoreBar label="Relevance (25%)"   value={result.scores.relevance}   color="#F5B014" active={showResult} />
             </div>
 
             <div className="bg-bg-tertiary border border-border-subtle rounded-2xl p-5">
@@ -190,13 +195,20 @@ export default function FeynmanMoment({ onComplete }: FeynmanMomentProps) {
               <p className="text-sm text-text-secondary leading-relaxed">{result.feedback}</p>
             </div>
 
-            {result.knowledgeGapItems.length > 0 && (
+            {result.suggestion && (
+              <div className="bg-brand-blue/5 border border-brand-blue/20 rounded-2xl p-5">
+                <p className="text-xs font-mono text-brand-blue mb-2 uppercase tracking-wider">Suggestion</p>
+                <p className="text-sm text-text-secondary leading-relaxed">{result.suggestion}</p>
+              </div>
+            )}
+
+            {result.knowledgeGaps.length > 0 && (
               <div className="bg-brand-red/5 border border-brand-red/20 rounded-2xl p-5">
                 <p className="text-xs font-mono text-brand-red mb-3 uppercase tracking-wider">
                   Knowledge Gaps — Added to Review Queue
                 </p>
                 <div className="flex flex-wrap gap-2">
-                  {result.knowledgeGapItems.map((word) => (
+                  {result.knowledgeGaps.map((word) => (
                     <Badge key={word} variant="red" size="md">{word}</Badge>
                   ))}
                 </div>
