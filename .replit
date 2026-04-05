@@ -52,3 +52,10 @@ externalPort = 3000
 [[ports]]
 localPort = 5000
 externalPort = 80
+
+[userenv]
+
+[userenv.shared]
+NODE_ENV = "development"
+PORT = "3000"
+CLIENT_URL = "https://23046661-cd02-4ff2-a060-771ea47d8e70-00-1ykxzynxl5b0s.spock.replit.dev"
