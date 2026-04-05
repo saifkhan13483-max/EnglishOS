@@ -2,8 +2,36 @@ import { env } from '@/config/env'
 
 const BASE_URL = env.API_BASE_URL
 
-const TOKEN_KEY = 'eos_access_token'
+// ── Token storage ──────────────────────────────────────────────────────────────
+// Access token lives in memory only (module-level variable).
+// Refresh token lives in localStorage so it survives page reloads.
+
 const REFRESH_TOKEN_KEY = 'eos_refresh_token'
+
+let _accessToken: string | null = null
+
+export function setAccessToken(token: string | null): void {
+  _accessToken = token
+}
+
+export function getAccessToken(): string | null {
+  return _accessToken
+}
+
+export function getRefreshToken(): string | null {
+  return localStorage.getItem(REFRESH_TOKEN_KEY)
+}
+
+export function setRefreshToken(token: string): void {
+  localStorage.setItem(REFRESH_TOKEN_KEY, token)
+}
+
+export function clearTokens(): void {
+  _accessToken = null
+  localStorage.removeItem(REFRESH_TOKEN_KEY)
+}
+
+// ── Helpers ────────────────────────────────────────────────────────────────────
 
 export class ApiError extends Error {
   constructor(
@@ -13,24 +41,6 @@ export class ApiError extends Error {
     super(message)
     this.name = 'ApiError'
   }
-}
-
-function getAccessToken(): string | null {
-  return localStorage.getItem(TOKEN_KEY)
-}
-
-function getRefreshToken(): string | null {
-  return localStorage.getItem(REFRESH_TOKEN_KEY)
-}
-
-export function setTokens(accessToken: string, refreshToken: string): void {
-  localStorage.setItem(TOKEN_KEY, accessToken)
-  localStorage.setItem(REFRESH_TOKEN_KEY, refreshToken)
-}
-
-export function clearTokens(): void {
-  localStorage.removeItem(TOKEN_KEY)
-  localStorage.removeItem(REFRESH_TOKEN_KEY)
 }
 
 function buildHeaders(token: string | null): HeadersInit {
@@ -50,7 +60,9 @@ async function parseResponse<T>(response: Response): Promise<T> {
 
   if (!response.ok) {
     const message =
-      typeof body === 'object' && body !== null && 'message' in body
+      typeof body === 'object' && body !== null && 'error' in body
+        ? (body as { error: string }).error
+        : typeof body === 'object' && body !== null && 'message' in body
         ? (body as { message: string }).message
         : String(body) || response.statusText
     throw new ApiError(response.status, message)
@@ -58,6 +70,8 @@ async function parseResponse<T>(response: Response): Promise<T> {
 
   return body as T
 }
+
+// ── Token refresh (single in-flight promise) ────────────────────────────────────
 
 let isRefreshing = false
 let refreshPromise: Promise<string> | null = null
@@ -75,13 +89,14 @@ async function doRefresh(): Promise<string> {
   })
 
   if (!response.ok) {
-    throw new ApiError(response.status, 'Refresh failed')
+    throw new ApiError(response.status, 'Session expired')
   }
 
-  const data = await response.json() as { accessToken: string; refreshToken?: string }
-  const newRefreshToken = data.refreshToken ?? refreshToken
-  setTokens(data.accessToken, newRefreshToken)
-  return data.accessToken
+  const data = await response.json() as { data: { accessToken: string; refreshToken: string } }
+  const { accessToken, refreshToken: newRefresh } = data.data
+  setAccessToken(accessToken)
+  setRefreshToken(newRefresh)
+  return accessToken
 }
 
 async function getValidToken(): Promise<string> {
@@ -94,6 +109,8 @@ async function getValidToken(): Promise<string> {
   }
   return refreshPromise!
 }
+
+// ── Core request function ───────────────────────────────────────────────────────
 
 interface RequestOptions {
   headers?: Record<string, string>
@@ -159,7 +176,7 @@ export const api = {
     return request<T>('PATCH', path, body, options)
   },
 
-  delete<T>(path: string, options?: RequestOptions): Promise<T> {
-    return request<T>('DELETE', path, undefined, options)
+  delete<T>(path: string, body?: unknown, options?: RequestOptions): Promise<T> {
+    return request<T>('DELETE', path, body, options)
   },
 }

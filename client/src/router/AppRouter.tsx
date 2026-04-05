@@ -1,3 +1,4 @@
+import { useEffect } from 'react'
 import { BrowserRouter, Routes, Route, Navigate, Outlet } from 'react-router-dom'
 import { useAuthStore } from '@/stores/authStore'
 import AppShell from '@/components/layout/AppShell'
@@ -33,8 +34,17 @@ function LoadingScreen() {
   )
 }
 
+/* ── Session bootstrap ──────────────────────────────────────────────── */
+// Called once at app mount — restores session from the refresh token
+// stored in localStorage without blocking the initial render.
+function SessionLoader() {
+  const loadFromStorage = useAuthStore((s) => s.loadFromStorage)
+  useEffect(() => { loadFromStorage() }, [loadFromStorage])
+  return null
+}
+
 /* ── Public route ───────────────────────────────────────────────────── */
-// Redirects authenticated users to /map
+// Redirects already-authenticated users to /map
 function PublicRoute() {
   const { isAuthenticated, isLoading } = useAuthStore()
   if (isLoading) return <LoadingScreen />
@@ -43,11 +53,14 @@ function PublicRoute() {
 }
 
 /* ── Protected route ────────────────────────────────────────────────── */
-// Redirects unauthenticated users to /login
+// 1. Shows spinner while the session is being bootstrapped
+// 2. Redirects unauthenticated users to /login
+// 3. Redirects authenticated-but-not-onboarded users to /onboarding
 function ProtectedRoute() {
-  const { isAuthenticated, isLoading } = useAuthStore()
+  const { isAuthenticated, isLoading, user } = useAuthStore()
   if (isLoading) return <LoadingScreen />
   if (!isAuthenticated) return <Navigate to="/login" replace />
+  if (user && !user.onboardingComplete) return <Navigate to="/onboarding" replace />
   return (
     <AppShell>
       <Outlet />
@@ -55,17 +68,33 @@ function ProtectedRoute() {
   )
 }
 
+/* ── Onboarding route ───────────────────────────────────────────────── */
+// Accessible only to authenticated users who haven't completed onboarding.
+// Fully-onboarded users who navigate here are sent to /map.
+function OnboardingRoute() {
+  const { isAuthenticated, isLoading, user } = useAuthStore()
+  if (isLoading) return <LoadingScreen />
+  if (!isAuthenticated) return <Navigate to="/login" replace />
+  if (user?.onboardingComplete) return <Navigate to="/map" replace />
+  return <Outlet />
+}
+
 /* ── Router ─────────────────────────────────────────────────────────── */
 export default function AppRouter() {
   return (
     <BrowserRouter future={{ v7_startTransition: true, v7_relativeSplatPath: true }}>
+      <SessionLoader />
       <Routes>
 
-        {/* Public routes */}
+        {/* Public routes — redirect to /map when already logged in */}
         <Route element={<PublicRoute />}>
-          <Route path="/"           element={<Landing />} />
-          <Route path="/login"      element={<Login />} />
-          <Route path="/register"   element={<Register />} />
+          <Route path="/"         element={<Landing />} />
+          <Route path="/login"    element={<Login />} />
+          <Route path="/register" element={<Register />} />
+        </Route>
+
+        {/* Onboarding — auth required, redirect to /map if already done */}
+        <Route element={<OnboardingRoute />}>
           <Route path="/onboarding" element={<Onboarding />} />
         </Route>
 

@@ -1,17 +1,57 @@
-import { useState } from 'react'
+import { useState, useMemo } from 'react'
 import { useNavigate, Link } from 'react-router-dom'
 import { motion } from 'framer-motion'
 import Button from '@/components/ui/Button'
+import { useAuthStore } from '@/stores/authStore'
+import { ApiError } from '@/services/api'
+
+function getPasswordStrength(password: string): { score: number; label: string; color: string } {
+  if (password.length === 0) return { score: 0, label: '', color: '' }
+  let score = 0
+  if (password.length >= 8)  score++
+  if (password.length >= 12) score++
+  if (/[A-Z]/.test(password)) score++
+  if (/[0-9]/.test(password)) score++
+  if (/[^A-Za-z0-9]/.test(password)) score++
+
+  if (score <= 1) return { score, label: 'Weak',   color: '#E94560' }
+  if (score <= 2) return { score, label: 'Fair',   color: '#F5B014' }
+  if (score <= 3) return { score, label: 'Good',   color: '#4A9EFF' }
+  return             { score, label: 'Strong', color: '#2ECC71' }
+}
 
 export default function Register() {
-  const navigate = useNavigate()
-  const [name, setName] = useState('')
-  const [email, setEmail] = useState('')
-  const [password, setPassword] = useState('')
+  const navigate  = useNavigate()
+  const register  = useAuthStore((s) => s.register)
 
-  function handleSubmit(e: React.FormEvent) {
+  const [name, setName]         = useState('')
+  const [email, setEmail]       = useState('')
+  const [password, setPassword] = useState('')
+  const [loading, setLoading]   = useState(false)
+  const [error, setError]       = useState<string | null>(null)
+
+  const strength = useMemo(() => getPasswordStrength(password), [password])
+
+  async function handleSubmit(e: React.FormEvent) {
     e.preventDefault()
-    navigate('/onboarding')
+    setError(null)
+    if (password.length < 8) {
+      setError('Password must be at least 8 characters.')
+      return
+    }
+    setLoading(true)
+    try {
+      await register(email, password, name)
+      navigate('/onboarding', { replace: true })
+    } catch (err) {
+      if (err instanceof ApiError) {
+        setError(err.message)
+      } else {
+        setError('Something went wrong. Please try again.')
+      }
+    } finally {
+      setLoading(false)
+    }
   }
 
   return (
@@ -41,6 +81,7 @@ export default function Register() {
               onChange={(e) => setName(e.target.value)}
               placeholder="Bilal Ahmed"
               required
+              autoComplete="name"
               className="w-full bg-bg-secondary border border-border-subtle rounded-xl px-3.5 py-3 text-sm font-body text-text-primary placeholder:text-text-muted focus:outline-none focus:border-brand-blue transition-colors"
             />
           </div>
@@ -55,6 +96,7 @@ export default function Register() {
               onChange={(e) => setEmail(e.target.value)}
               placeholder="bilal@example.com"
               required
+              autoComplete="email"
               className="w-full bg-bg-secondary border border-border-subtle rounded-xl px-3.5 py-3 text-sm font-body text-text-primary placeholder:text-text-muted focus:outline-none focus:border-brand-blue transition-colors"
             />
           </div>
@@ -70,12 +112,48 @@ export default function Register() {
               placeholder="Min 8 characters"
               minLength={8}
               required
+              autoComplete="new-password"
               className="w-full bg-bg-secondary border border-border-subtle rounded-xl px-3.5 py-3 text-sm font-body text-text-primary placeholder:text-text-muted focus:outline-none focus:border-brand-blue transition-colors"
             />
+
+            {/* Password strength indicator */}
+            {password.length > 0 && (
+              <motion.div
+                initial={{ opacity: 0, height: 0 }}
+                animate={{ opacity: 1, height: 'auto' }}
+                className="flex flex-col gap-1.5"
+              >
+                <div className="flex gap-1">
+                  {[1, 2, 3, 4, 5].map((segment) => (
+                    <motion.div
+                      key={segment}
+                      className="h-1 flex-1 rounded-full"
+                      animate={{
+                        backgroundColor: segment <= strength.score ? strength.color : '#2A2A3E',
+                      }}
+                      transition={{ duration: 0.25 }}
+                    />
+                  ))}
+                </div>
+                <p className="text-xs font-mono" style={{ color: strength.color }}>
+                  {strength.label}
+                </p>
+              </motion.div>
+            )}
           </div>
 
-          <Button type="submit" variant="primary" size="lg" className="w-full mt-1">
-            Create Account
+          {error && (
+            <motion.p
+              initial={{ opacity: 0, y: -6 }}
+              animate={{ opacity: 1, y: 0 }}
+              className="text-sm text-brand-red font-body text-center bg-brand-red/10 border border-brand-red/30 rounded-xl px-4 py-2.5"
+            >
+              {error}
+            </motion.p>
+          )}
+
+          <Button type="submit" variant="primary" size="lg" loading={loading} className="w-full mt-1">
+            {loading ? 'Creating account…' : 'Create Account'}
           </Button>
         </form>
 

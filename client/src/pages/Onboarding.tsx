@@ -5,6 +5,8 @@ import Button from '@/components/ui/Button'
 import Card from '@/components/ui/Card'
 import Badge from '@/components/ui/Badge'
 import { useUIStore, type WhyOption } from '@/stores/uiStore'
+import { useAuthStore } from '@/stores/authStore'
+import { api, ApiError } from '@/services/api'
 
 const TOTAL_STEPS = 5
 
@@ -39,9 +41,9 @@ function fmt12(t: string) {
 function diagnoseLevel(text: string): number {
   const words = text.trim().split(/\s+/).filter(Boolean).length
   if (words === 0) return 1
-  if (words < 10) return 1
-  if (words < 25) return 2
-  if (words < 50) return 3
+  if (words < 10)  return 1
+  if (words < 25)  return 2
+  if (words < 50)  return 3
   return 4
 }
 
@@ -53,17 +55,17 @@ const LEVEL_REASONS: Record<number, string> = {
 }
 
 const slideVariants = {
-  enter: (dir: number) => ({ x: dir > 0 ? 60 : -60, opacity: 0 }),
+  enter:  (dir: number) => ({ x: dir > 0 ? 60 : -60, opacity: 0 }),
   center: { x: 0, opacity: 1, transition: { duration: 0.38, ease: [0.22, 1, 0.36, 1] } },
-  exit: (dir: number) => ({ x: dir > 0 ? -60 : 60, opacity: 0, transition: { duration: 0.25 } }),
+  exit:   (dir: number) => ({ x: dir > 0 ? -60 : 60, opacity: 0, transition: { duration: 0.25 } }),
 }
 
 export default function Onboarding() {
   const navigate = useNavigate()
-  const [step, setStep]     = useState(1)
-  const [dir,  setDir]      = useState(1)
+  const [step, setStep] = useState(1)
+  const [dir,  setDir]  = useState(1)
 
-  function advance() { setDir(1); setStep((s) => s + 1) }
+  function advance() { setDir(1);  setStep((s) => s + 1) }
   function back()    { setDir(-1); setStep((s) => s - 1) }
 
   return (
@@ -108,7 +110,7 @@ export default function Onboarding() {
             {step === 2 && <Step2 onNext={advance} onBack={back} />}
             {step === 3 && <Step3 onNext={advance} onBack={back} />}
             {step === 4 && <Step4 onNext={advance} onBack={back} />}
-            {step === 5 && <Step5 onDone={() => navigate('/dashboard')} onBack={back} />}
+            {step === 5 && <Step5 onDone={() => navigate('/map')} onBack={back} />}
           </motion.div>
         </AnimatePresence>
       </div>
@@ -120,16 +122,16 @@ export default function Onboarding() {
    STEP 1 — Language Diagnostic
 ══════════════════════════════════════ */
 function Step1({ onNext }: { onNext: () => void }) {
-  const { onboarding, setOnboarding } = useUIStore()
+  const { onboardingData, setOnboardingData } = useUIStore()
   const [loading,  setLoading]  = useState(false)
   const [analysed, setAnalysed] = useState(false)
 
   async function handleAnalyse() {
-    if (!onboarding.diagnosticText.trim()) return
+    if (!onboardingData.diagnosticText.trim()) return
     setLoading(true)
     await new Promise((r) => setTimeout(r, 2000))
-    const level = diagnoseLevel(onboarding.diagnosticText)
-    setOnboarding({ recommendedLevel: level, chosenLevel: level })
+    const level = diagnoseLevel(onboardingData.diagnosticText)
+    setOnboardingData({ recommendedLevel: level, chosenLevel: level })
     setLoading(false)
     setAnalysed(true)
   }
@@ -149,8 +151,8 @@ function Step1({ onNext }: { onNext: () => void }) {
       <textarea
         className="w-full h-36 bg-bg-secondary border border-border-subtle rounded-xl px-4 py-3 text-text-secondary text-sm resize-none outline-none focus:border-brand-red transition-colors placeholder:text-text-muted font-body"
         placeholder="Write anything... my name is Ahmed, I live in Lahore, I like cricket..."
-        value={onboarding.diagnosticText}
-        onChange={(e) => setOnboarding({ diagnosticText: e.target.value })}
+        value={onboardingData.diagnosticText}
+        onChange={(e) => setOnboardingData({ diagnosticText: e.target.value })}
         disabled={loading || analysed}
       />
 
@@ -161,7 +163,7 @@ function Step1({ onNext }: { onNext: () => void }) {
               variant="primary"
               size="lg"
               loading={loading}
-              disabled={!onboarding.diagnosticText.trim()}
+              disabled={!onboardingData.diagnosticText.trim()}
               onClick={handleAnalyse}
               className="w-full"
             >
@@ -181,11 +183,11 @@ function Step1({ onNext }: { onNext: () => void }) {
                 <p className="text-xs font-mono text-text-muted mb-1">Recommendation</p>
                 <p className="font-display text-xl font-bold text-text-primary mb-2">
                   Start at{' '}
-                  <span className="text-brand-red">Level {onboarding.recommendedLevel}</span>
+                  <span className="text-brand-red">Level {onboardingData.recommendedLevel}</span>
                   {' '}—{' '}
-                  {JOURNEY[onboarding.recommendedLevel - 1]?.name}
+                  {JOURNEY[onboardingData.recommendedLevel - 1]?.name}
                 </p>
-                <p className="text-sm text-text-secondary">{LEVEL_REASONS[onboarding.recommendedLevel]}</p>
+                <p className="text-sm text-text-secondary">{LEVEL_REASONS[onboardingData.recommendedLevel]}</p>
               </div>
             </Card>
 
@@ -195,10 +197,10 @@ function Step1({ onNext }: { onNext: () => void }) {
                 size="md"
                 className="flex-1"
                 onClick={() => {
-                  const next = Math.max(1, onboarding.chosenLevel - 1)
-                  setOnboarding({ chosenLevel: next })
+                  const next = Math.max(1, onboardingData.chosenLevel - 1)
+                  setOnboardingData({ chosenLevel: next })
                 }}
-                disabled={onboarding.chosenLevel <= 1}
+                disabled={onboardingData.chosenLevel <= 1}
               >
                 ← Lower Level
               </Button>
@@ -207,23 +209,23 @@ function Step1({ onNext }: { onNext: () => void }) {
                 size="md"
                 className="flex-1"
                 onClick={() => {
-                  const next = Math.min(4, onboarding.chosenLevel + 1)
-                  setOnboarding({ chosenLevel: next })
+                  const next = Math.min(4, onboardingData.chosenLevel + 1)
+                  setOnboardingData({ chosenLevel: next })
                 }}
-                disabled={onboarding.chosenLevel >= 4}
+                disabled={onboardingData.chosenLevel >= 4}
               >
                 Higher Level →
               </Button>
             </div>
 
-            {onboarding.chosenLevel !== onboarding.recommendedLevel && (
+            {onboardingData.chosenLevel !== onboardingData.recommendedLevel && (
               <p className="text-xs text-brand-gold text-center font-mono">
-                ⚠ You adjusted to Level {onboarding.chosenLevel} — that's fine, we trust your judgment.
+                ⚠ You adjusted to Level {onboardingData.chosenLevel} — that's fine, we trust your judgment.
               </p>
             )}
 
             <Button variant="primary" size="lg" className="w-full" onClick={onNext}>
-              Confirm Level {onboarding.chosenLevel} — Continue
+              Confirm Level {onboardingData.chosenLevel} — Continue
             </Button>
           </motion.div>
         )}
@@ -236,7 +238,7 @@ function Step1({ onNext }: { onNext: () => void }) {
    STEP 2 — My Why
 ══════════════════════════════════════ */
 function Step2({ onNext, onBack }: { onNext: () => void; onBack: () => void }) {
-  const { onboarding, setOnboarding } = useUIStore()
+  const { onboardingData, setOnboardingData } = useUIStore()
 
   return (
     <div className="py-8 flex flex-col gap-6">
@@ -250,13 +252,13 @@ function Step2({ onNext, onBack }: { onNext: () => void; onBack: () => void }) {
 
       <div className="grid grid-cols-2 sm:grid-cols-3 gap-3">
         {WHY_OPTIONS.map((opt) => {
-          const selected = onboarding.why === opt.id
+          const selected = onboardingData.why === opt.id
           return (
             <motion.button
               key={opt.id}
               whileHover={{ scale: 1.03 }}
               whileTap={{ scale: 0.97 }}
-              onClick={() => setOnboarding({ why: opt.id })}
+              onClick={() => setOnboardingData({ why: opt.id })}
               className={[
                 'relative flex flex-col items-center gap-2 p-4 rounded-2xl border text-center transition-colors duration-150 cursor-pointer',
                 selected
@@ -283,10 +285,10 @@ function Step2({ onNext, onBack }: { onNext: () => void; onBack: () => void }) {
       {/* Other option */}
       <div>
         <button
-          onClick={() => setOnboarding({ why: 'other' })}
+          onClick={() => setOnboardingData({ why: 'other' })}
           className={[
             'w-full flex items-center gap-3 px-4 py-3 rounded-xl border text-left text-sm transition-colors',
-            onboarding.why === 'other'
+            onboardingData.why === 'other'
               ? 'border-brand-red bg-brand-red/10 text-brand-red'
               : 'border-border-subtle bg-bg-secondary text-text-muted hover:border-border-strong',
           ].join(' ')}
@@ -294,15 +296,15 @@ function Step2({ onNext, onBack }: { onNext: () => void; onBack: () => void }) {
           ✏️ Other reason…
         </button>
         <AnimatePresence>
-          {onboarding.why === 'other' && (
+          {onboardingData.why === 'other' && (
             <motion.input
               initial={{ opacity: 0, height: 0 }}
               animate={{ opacity: 1, height: 42 }}
               exit={{ opacity: 0, height: 0 }}
               className="mt-2 w-full bg-bg-secondary border border-border-subtle rounded-xl px-4 text-text-secondary text-sm outline-none focus:border-brand-red transition-colors placeholder:text-text-muted"
               placeholder="Tell us your reason…"
-              value={onboarding.whyOther}
-              onChange={(e) => setOnboarding({ whyOther: e.target.value })}
+              value={onboardingData.whyOther}
+              onChange={(e) => setOnboardingData({ whyOther: e.target.value })}
             />
           )}
         </AnimatePresence>
@@ -314,7 +316,7 @@ function Step2({ onNext, onBack }: { onNext: () => void; onBack: () => void }) {
           variant="primary"
           size="md"
           className="flex-1"
-          disabled={!onboarding.why || (onboarding.why === 'other' && !onboarding.whyOther.trim())}
+          disabled={!onboardingData.why || (onboardingData.why === 'other' && !onboardingData.whyOther.trim())}
           onClick={onNext}
         >
           Continue →
@@ -386,7 +388,7 @@ function TimeSelector({ label, presets, value, onChange }: TimeSelectorProps) {
 }
 
 function Step3({ onNext, onBack }: { onNext: () => void; onBack: () => void }) {
-  const { onboarding, setOnboarding } = useUIStore()
+  const { onboardingData, setOnboardingData } = useUIStore()
 
   return (
     <div className="py-8 flex flex-col gap-7">
@@ -408,21 +410,21 @@ function Step3({ onNext, onBack }: { onNext: () => void; onBack: () => void }) {
       <TimeSelector
         label="Morning session"
         presets={MORNING_PRESETS}
-        value={onboarding.morningTime}
-        onChange={(v) => setOnboarding({ morningTime: v })}
+        value={onboardingData.morningTime}
+        onChange={(v) => setOnboardingData({ morningTime: v })}
       />
 
       <TimeSelector
         label="Evening session"
         presets={EVENING_PRESETS}
-        value={onboarding.eveningTime}
-        onChange={(v) => setOnboarding({ eveningTime: v })}
+        value={onboardingData.eveningTime}
+        onChange={(v) => setOnboardingData({ eveningTime: v })}
       />
 
       <div className="bg-bg-secondary border border-border-subtle rounded-xl px-4 py-3 flex items-center justify-between">
         <span className="text-sm text-text-muted">Your daily schedule</span>
         <span className="font-mono text-sm text-brand-blue">
-          {fmt12(onboarding.morningTime)} &amp; {fmt12(onboarding.eveningTime)}
+          {fmt12(onboardingData.morningTime)} &amp; {fmt12(onboardingData.eveningTime)}
         </span>
       </div>
 
@@ -438,8 +440,8 @@ function Step3({ onNext, onBack }: { onNext: () => void; onBack: () => void }) {
    STEP 4 — Stakes Setup
 ══════════════════════════════════════ */
 function Step4({ onNext, onBack }: { onNext: () => void; onBack: () => void }) {
-  const { onboarding, setOnboarding } = useUIStore()
-  const canAdvance = onboarding.commitmentStatement.trim().length > 0
+  const { onboardingData, setOnboardingData } = useUIStore()
+  const canAdvance = onboardingData.commitmentStatement.trim().length > 0
 
   return (
     <div className="py-8 flex flex-col gap-6">
@@ -469,10 +471,10 @@ function Step4({ onNext, onBack }: { onNext: () => void; onBack: () => void }) {
         <textarea
           className="w-full h-24 bg-bg-secondary border border-border-subtle rounded-xl px-4 py-3 text-text-secondary text-sm resize-none outline-none focus:border-brand-red transition-colors placeholder:text-text-muted font-body"
           placeholder="I commit to learning English because… and I will study every day at [time] because my goal is to…"
-          value={onboarding.commitmentStatement}
-          onChange={(e) => setOnboarding({ commitmentStatement: e.target.value })}
+          value={onboardingData.commitmentStatement}
+          onChange={(e) => setOnboardingData({ commitmentStatement: e.target.value })}
         />
-        {onboarding.commitmentStatement.trim().length === 0 && (
+        {onboardingData.commitmentStatement.trim().length === 0 && (
           <p className="text-xs text-brand-red font-mono">You must write a commitment statement to continue.</p>
         )}
       </div>
@@ -487,8 +489,8 @@ function Step4({ onNext, onBack }: { onNext: () => void; onBack: () => void }) {
           type="email"
           className="w-full bg-bg-secondary border border-border-subtle rounded-xl px-4 py-3 text-text-secondary text-sm outline-none focus:border-brand-blue transition-colors placeholder:text-text-muted"
           placeholder="partner@example.com (optional)"
-          value={onboarding.partnerEmail}
-          onChange={(e) => setOnboarding({ partnerEmail: e.target.value })}
+          value={onboardingData.partnerEmail}
+          onChange={(e) => setOnboardingData({ partnerEmail: e.target.value })}
         />
       </div>
 
@@ -497,8 +499,8 @@ function Step4({ onNext, onBack }: { onNext: () => void; onBack: () => void }) {
         <input
           type="checkbox"
           className="mt-0.5 accent-brand-red w-4 h-4"
-          checked={onboarding.notifyPartner}
-          onChange={(e) => setOnboarding({ notifyPartner: e.target.checked })}
+          checked={onboardingData.notifyPartner}
+          onChange={(e) => setOnboardingData({ notifyPartner: e.target.checked })}
         />
         <span className="text-sm text-text-secondary">
           Notify my partner if I miss 3 days in a row
@@ -522,14 +524,18 @@ function Step4({ onNext, onBack }: { onNext: () => void; onBack: () => void }) {
 }
 
 /* ══════════════════════════════════════
-   STEP 5 — Map Reveal
+   STEP 5 — Map Reveal + API Submit
 ══════════════════════════════════════ */
 function Step5({ onDone, onBack }: { onDone: () => void; onBack: () => void }) {
-  const { onboarding } = useUIStore()
-  const startLevel = onboarding.chosenLevel
-  const [revealed, setRevealed]     = useState(false)
-  const [nodesLit, setNodesLit]     = useState(0)
-  const [showBtn,  setShowBtn]      = useState(false)
+  const { onboardingData, resetOnboardingData } = useUIStore()
+  const setUser = useAuthStore((s) => s.setUser)
+  const startLevel = onboardingData.chosenLevel
+
+  const [revealed,  setRevealed]  = useState(false)
+  const [nodesLit,  setNodesLit]  = useState(0)
+  const [showBtn,   setShowBtn]   = useState(false)
+  const [submitting, setSubmitting] = useState(false)
+  const [submitError, setSubmitError] = useState<string | null>(null)
 
   useEffect(() => {
     const t1 = setTimeout(() => setRevealed(true), 400)
@@ -549,6 +555,39 @@ function Step5({ onDone, onBack }: { onDone: () => void; onBack: () => void }) {
     }, 400)
     return () => clearInterval(iv)
   }, [revealed])
+
+  async function handleBegin() {
+    setSubmitting(true)
+    setSubmitError(null)
+    try {
+      const whyText =
+        onboardingData.why === 'other'
+          ? onboardingData.whyOther
+          : onboardingData.why ?? 'Not specified'
+
+      const result = await api.post<{ success: boolean; data: import('@/stores/authStore').SafeLearner }>(
+        '/learner/onboarding',
+        {
+          placementLevel:    onboardingData.chosenLevel,
+          whyMotivation:     whyText,
+          stakesStatement:   onboardingData.commitmentStatement,
+          accountabilityEmail: onboardingData.partnerEmail || undefined,
+          morningSessionTime: onboardingData.morningTime,
+          eveningSessionTime: onboardingData.eveningTime,
+        }
+      )
+      setUser(result.data)
+      resetOnboardingData()
+      onDone()
+    } catch (err) {
+      if (err instanceof ApiError) {
+        setSubmitError(err.message)
+      } else {
+        setSubmitError('Something went wrong. Please try again.')
+      }
+      setSubmitting(false)
+    }
+  }
 
   return (
     <div className="py-8 flex flex-col gap-8 items-center">
@@ -576,9 +615,9 @@ function Step5({ onDone, onBack }: { onDone: () => void; onBack: () => void }) {
       {/* Vertical node map */}
       <div className="w-full max-w-sm flex flex-col gap-0 items-center">
         {JOURNEY.map((lvl, i) => {
-          const isLit      = nodesLit > i
-          const isStart    = lvl.level === startLevel
-          const isPast     = lvl.level < startLevel
+          const isLit   = nodesLit > i
+          const isStart = lvl.level === startLevel
+          const isPast  = lvl.level < startLevel
           return (
             <div key={lvl.level} className="flex flex-col items-center w-full">
               <motion.div
@@ -654,8 +693,19 @@ function Step5({ onDone, onBack }: { onDone: () => void; onBack: () => void }) {
             transition={{ type: 'spring', stiffness: 380, damping: 24 }}
             className="flex flex-col items-center gap-3 w-full max-w-sm"
           >
-            <Button variant="primary" size="lg" className="w-full" onClick={onDone}>
-              🚀 Begin Mission 1
+            {submitError && (
+              <p className="text-sm text-brand-red font-body text-center bg-brand-red/10 border border-brand-red/30 rounded-xl px-4 py-2.5 w-full">
+                {submitError}
+              </p>
+            )}
+            <Button
+              variant="primary"
+              size="lg"
+              loading={submitting}
+              className="w-full"
+              onClick={handleBegin}
+            >
+              {submitting ? 'Setting up your map…' : '🚀 Begin Mission 1'}
             </Button>
             <p className="text-xs text-text-muted font-mono">
               Level {startLevel} · {JOURNEY[startLevel - 1]?.name} · Your journey begins now

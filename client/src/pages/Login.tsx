@@ -2,15 +2,34 @@ import { useState } from 'react'
 import { useNavigate, Link } from 'react-router-dom'
 import { motion } from 'framer-motion'
 import Button from '@/components/ui/Button'
+import { useAuthStore } from '@/stores/authStore'
+import { ApiError } from '@/services/api'
 
 export default function Login() {
   const navigate = useNavigate()
-  const [email, setEmail] = useState('')
-  const [password, setPassword] = useState('')
+  const login = useAuthStore((s) => s.login)
 
-  function handleSubmit(e: React.FormEvent) {
+  const [email, setEmail]       = useState('')
+  const [password, setPassword] = useState('')
+  const [loading, setLoading]   = useState(false)
+  const [error, setError]       = useState<string | null>(null)
+
+  async function handleSubmit(e: React.FormEvent) {
     e.preventDefault()
-    navigate('/map')
+    setError(null)
+    setLoading(true)
+    try {
+      await login(email, password)
+      navigate('/map', { replace: true })
+    } catch (err) {
+      if (err instanceof ApiError) {
+        setError(err.message)
+      } else {
+        setError('Something went wrong. Please try again.')
+      }
+    } finally {
+      setLoading(false)
+    }
   }
 
   return (
@@ -40,6 +59,7 @@ export default function Login() {
               onChange={(e) => setEmail(e.target.value)}
               placeholder="bilal@example.com"
               required
+              autoComplete="email"
               className="w-full bg-bg-secondary border border-border-subtle rounded-xl px-3.5 py-3 text-sm font-body text-text-primary placeholder:text-text-muted focus:outline-none focus:border-brand-blue transition-colors"
             />
           </div>
@@ -54,12 +74,23 @@ export default function Login() {
               onChange={(e) => setPassword(e.target.value)}
               placeholder="••••••••"
               required
+              autoComplete="current-password"
               className="w-full bg-bg-secondary border border-border-subtle rounded-xl px-3.5 py-3 text-sm font-body text-text-primary placeholder:text-text-muted focus:outline-none focus:border-brand-blue transition-colors"
             />
           </div>
 
-          <Button type="submit" variant="primary" size="lg" className="w-full mt-1">
-            Sign In
+          {error && (
+            <motion.p
+              initial={{ opacity: 0, y: -6 }}
+              animate={{ opacity: 1, y: 0 }}
+              className="text-sm text-brand-red font-body text-center bg-brand-red/10 border border-brand-red/30 rounded-xl px-4 py-2.5"
+            >
+              {error}
+            </motion.p>
+          )}
+
+          <Button type="submit" variant="primary" size="lg" loading={loading} className="w-full mt-1">
+            {loading ? 'Signing in…' : 'Sign In'}
           </Button>
         </form>
 
