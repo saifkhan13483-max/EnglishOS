@@ -1,0 +1,39 @@
+In the EnglishOS client, build the Mission page at client/src/pages/Mission.tsx and the Morning Mission components in client/src/components/mission/.
+
+MISSION SHELL (MissionShell.tsx):
+  - Full-screen layout with a fixed top bar showing: back button, mission type ("Morning Mission" or "Evening Mission"), phase progress bar (4 segments for Morning, 4 segments for Evening), and phase name (current phase highlighted)
+  - Phase transitions use a horizontal slide-left animation (250ms, ease-in-out)
+  - Cannot navigate backwards between phases
+
+PHASE 1 — WARM-UP FLASH (WarmupFlash.tsx):
+  - Title: "Warm-Up — Quick Review"
+  - Shows 5 flashcard-style cards one at a time
+  - Each card: English word/phrase on front, flip to reveal Roman Urdu meaning + example sentence
+  - Card flip animation: 3D Y-axis flip (300ms)
+  - After flip: two buttons — "Got it ✓" (green) and "Review Again ✗" (red)
+  - Progress indicator: "Card 2 of 5"
+  - After all 5 cards: auto-advance to Phase 2 with a small XP reward toast (+20 XP)
+
+PHASE 2 — CORE DROP (CoreDrop.tsx):
+  - Title: "Today's Lesson"
+  - Power Pack items shown first with the PowerPackBadge component
+  - Each content card shows: English word/phrase, pronunciation guide, Roman Urdu toggle (Toggle component), example sentence, AudioPlayer button
+  - Navigation: previous/next arrows; dot indicators at bottom
+  - Roman Urdu toggle state persists across all cards in the session
+
+PHASE 3 — APPLY IT (ApplyIt.tsx):
+  - Title: "Apply It — Real Situation"
+  - Shows a scenario description in a card (e.g., "You are at a restaurant. Order food in English.")
+  - A text input for the learner to write their response
+  - Submit button
+  - After submit: show a model response for comparison with a "How did you do?" self-assessment (thumbs up / thumbs down)
+
+PHASE 4 — FEYNMAN MOMENT (FeynmanMoment.tsx):
+  - Title: "Feynman Moment — Explain It Simply"
+  - Prompt text displayed in a highlighted card: "Explain [today's concept] as if you're telling a 10-year-old. Use simple words."
+  - Two input options with tab selector: Text (textarea) and Voice (microphone button — placeholder for now, just shows "Coming soon" in v1.0)
+  - Submit button: "Evaluate My Explanation"
+  - After submit: loading state ("Checking your explanation...") then a result card showing: Clarity Score (animated number count-up), Vocabulary Score, Relevance Score, Feedback message, Knowledge Gap words list (in red badges)
+  - Complete Mission button after seeing results
+
+Use static/mock data for all content. Wire to the SR engine and API in Phase 5 and 7.
