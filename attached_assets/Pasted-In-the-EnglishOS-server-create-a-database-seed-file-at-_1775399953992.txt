@@ -1,0 +1,21 @@
+In the EnglishOS server, create a database seed file at server/prisma/seed.ts.
+
+Seed ContentItem records for Level 1, Module 1 (Alphabets) and Level 1, Module 2 (Core 100 Words) using the following data from the course:
+
+MODULE 1 — ALPHABETS (level: 1, module: 1):
+  Mark these as Power Pack (isPowerPack: true): A, E, I, O, U (vowels)
+  Mark these as standard (isPowerPack: false): all 21 consonants B through Z
+  Each record: english = the letter, urduRoman = the Urdu sound name (e.g., "Ae ki awaaz"), exampleSentence = the example word (e.g., "Apple"), type = ALPHABET
+  Sort vowels first (sortOrder 1-5), consonants after (sortOrder 6-26)
+
+MODULE 2 — CORE 100 WORDS (level: 1, module: 2):
+  Group A — Pronouns (12 words): I, You, He, She, It, We, They, Me, Him, Her, Us, Them — isPowerPack: true
+  Group B — Be Verbs (5 words): am, is, are, was, were — isPowerPack: true
+  Group C — Action Verbs (50 words): go, come, eat, drink, sleep, wake, sit, stand, run, walk, see, look, hear, listen, speak, say, tell, ask, know, think, want, need, get, give, take, make, do, have, use, find, try, feel, love, like, help, work, play, read, write, learn, understand, remember, forget, start, stop, open, close, buy, pay, live, travel — isPowerPack: true
+  Group D — Nouns (28 words): man, woman, boy, girl, child, baby, family, friend, mother, father, brother, sister, teacher, student, doctor, school, home, room, city, country, time, day, year, week, morning, evening, night, water — isPowerPack: false
+  Group E — Adjectives (22 words): good, bad, big, small, new, old, happy, sad, hot, cold, fast, slow, easy, hard, right, wrong, clean, dirty, beautiful, ugly, important, interesting — isPowerPack: false
+  Group F — Connectors (18 words): and, but, or, because, so, if, when, before, after, with, without, for, in, on, at, to, from, about — isPowerPack: true
+
+Include the Roman Urdu meaning for every word (use the meanings from the PRD course content).
+
+Run the seed with prisma db seed.
