@@ -9,7 +9,7 @@ An English learning platform for South Asian learners built around the Polymath 
 | Package | Location | Port | Description |
 |---------|----------|------|-------------|
 | `client` | `/client` | 5000 | React 18 + Vite frontend |
-| `server` | `/server` | 5001 | Express + Node.js API |
+| `server` | `/server` | 3000 | Express + Node.js API |
 
 ## Tech Stack
 
@@ -73,7 +73,7 @@ pnpm dev
 
 # Run individually
 pnpm dev:client   # Vite on port 5000
-pnpm dev:server   # Express on port 5001
+pnpm dev:server   # Express on port 3000
 ```
 
 ## Design System
@@ -107,7 +107,7 @@ Google Fonts are imported in `client/src/index.css`.
 
 ## Notes
 
-- Vite runs on port **5000** (adjusted from 5173 for Replit preview pane compatibility); the dev server proxies `/api/*` to Express on port **5001**
+- Vite runs on port **5000** (adjusted from 5173 for Replit preview pane compatibility); the dev server proxies `/api/*` to Express on port **3000**
 - Tailwind custom color/font tokens are fully configured — see Design System section above
 - Prisma schema is minimal; models will be added when features are implemented
 - Environment variables: copy `server/.env.example` to `server/.env` and fill in values
