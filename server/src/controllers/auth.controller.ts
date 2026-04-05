@@ -63,6 +63,7 @@ const SAFE_SELECT = {
   xp: true,
   rank: true,
   brainCompoundPct: true,
+  onboardingComplete: true,
   lastActiveDt: true,
   createdAt: true,
   updatedAt: true,
