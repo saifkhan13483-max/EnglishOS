@@ -105,24 +105,51 @@ pnpm dev:server   # Express on port 3000
 
 Google Fonts are imported in `client/src/index.css`.
 
-## Page Routes
+## Routing Architecture
 
+The router (`client/src/router/AppRouter.tsx`) uses React Router v6 with two route groups:
+
+**Public routes** (redirect to `/map` if authenticated):
 | Route | Component | Description |
 |---|---|---|
 | `/` | `Landing.tsx` | Marketing landing page |
+| `/login` | `Login.tsx` | Sign-in page |
+| `/register` | `Register.tsx` | Registration page |
 | `/onboarding` | `Onboarding.tsx` | New user onboarding flow |
-| `/dashboard` | `MasteryMap.tsx` | Main dashboard — Z-pattern level map |
-| `/mission` | `Mission.tsx` | Morning mission (`?type=evening` for evening) |
+
+**Protected routes** (redirect to `/login` if unauthenticated, wrapped in `AppShell`):
+| Route | Component | Description |
+|---|---|---|
+| `/map` | `MasteryMap.tsx` | Main map — Z-pattern level map, full-screen, hides AppShell top bar |
+| `/mission/:type` | `Mission.tsx` | Morning or evening mission (`type` = `morning` or `evening`) |
 | `/progress` | `Progress.tsx` | Growth page — stats, level bars, Feynman chart, badge wall |
-| `/feynman` | `FeynmanArchive.tsx` | Past Feynman explanations with score trend |
+| `/feynman-archive` | `FeynmanArchive.tsx` | Past Feynman explanations with score trend |
 | `/leaderboard` | `Leaderboard.tsx` | Weekly Feynman leaderboard with submission modal |
-| `/level-gate` | `LevelGate.tsx` | Full-screen mastery gate — 10 questions, pass/fail reveal |
+| `/level-gate/:level` | `LevelGate.tsx` | Full-screen mastery gate — 10 questions, pass/fail reveal |
 | `/profile` | `Profile.tsx` | Profile card, settings, stakes, My Why, danger zone |
+| `*` | `NotFound.tsx` | 404 page |
+
+## AppShell Layout
+
+`client/src/components/layout/AppShell.tsx` wraps all protected routes:
+- **Top bar** (hidden on `/map`): EnglishOS logo, streak badge, Brain Compound mini bar, notifications bell
+- **Desktop left sidebar** (always visible): collapsed to 64px (icons only), expands to 208px on hover — 4 nav items: Map, Mission, Progress, Profile
+- **Mobile bottom nav** (hidden on `/map`): same 4 nav items with icons and labels
+
+## Zustand Stores
+
+| Store | File | State Shape |
+|---|---|---|
+| `authStore` | `stores/authStore.ts` | `user`, `accessToken`, `isAuthenticated`, `isLoading` |
+| `missionStore` | `stores/missionStore.ts` | `currentMission`, `currentPhase`, `phaseData`, `xpEarned`, `isComplete` |
+| `progressStore` | `stores/progressStore.ts` | `learnerProfile`, `levelProgress`, `totalXP`, `streak`, `brainCompoundPct`, `badges` |
+| `srStore` | `stores/srStore.ts` | `dailyQueue`, `reviewedToday`, `pendingCount` |
+| `uiStore` | `stores/uiStore.ts` | `romanUrduEnabled`, `sidebarOpen`, `activeModal`, `onboardingData` (persisted) |
 
 ## Mission Architecture
 
-- **Morning Mission** (`/mission`): WarmupFlash → CoreDrop → ApplyIt → FeynmanMoment
-- **Evening Mission** (`/mission?type=evening`): StoryReplay → SentenceBuilder → ConversationSim → DayClose
+- **Morning Mission** (`/mission/morning`): WarmupFlash → CoreDrop → ApplyIt → FeynmanMoment
+- **Evening Mission** (`/mission/evening`): StoryReplay → SentenceBuilder → ConversationSim → DayClose
 - Shared `MissionShell` component handles phase routing and progress bar
 
 ## Key Packages

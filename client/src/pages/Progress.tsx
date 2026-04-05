@@ -98,7 +98,7 @@ export default function Progress() {
       {/* Nav */}
       <header className="sticky top-0 z-20 bg-bg-primary/80 backdrop-blur-sm border-b border-border-subtle flex items-center justify-between px-4 py-3.5">
         <button
-          onClick={() => navigate('/dashboard')}
+          onClick={() => navigate('/map')}
           className="flex items-center gap-2 text-text-muted hover:text-text-primary transition-colors"
         >
           <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
@@ -132,7 +132,7 @@ export default function Progress() {
           <div className="flex items-center justify-between mb-4">
             <p className="text-xs font-mono text-text-muted uppercase tracking-widest">Mastery Map</p>
             <button
-              onClick={() => navigate('/dashboard')}
+              onClick={() => navigate('/map')}
               className="text-xs text-brand-blue hover:underline font-body"
             >
               View Full Map →

@@ -10,7 +10,7 @@ export type WhyOption =
   | 'business'
   | 'other'
 
-export interface OnboardingState {
+export interface OnboardingData {
   diagnosticText: string
   recommendedLevel: number
   chosenLevel: number
@@ -23,13 +23,26 @@ export interface OnboardingState {
   commitmentStatement: string
 }
 
+export type ModalId =
+  | 'stake-update'
+  | 'level-gate'
+  | 'badge-earned'
+  | 'streak-broken'
+  | null
+
 interface UIStore {
-  onboarding: OnboardingState
-  setOnboarding: (patch: Partial<OnboardingState>) => void
-  resetOnboarding: () => void
+  romanUrduEnabled: boolean
+  sidebarOpen: boolean
+  activeModal: ModalId
+  onboardingData: OnboardingData
+  setRomanUrduEnabled: (val: boolean) => void
+  setSidebarOpen: (val: boolean) => void
+  setActiveModal: (modal: ModalId) => void
+  setOnboardingData: (patch: Partial<OnboardingData>) => void
+  resetOnboardingData: () => void
 }
 
-const DEFAULT_ONBOARDING: OnboardingState = {
+const DEFAULT_ONBOARDING: OnboardingData = {
   diagnosticText: '',
   recommendedLevel: 1,
   chosenLevel: 1,
@@ -45,10 +58,17 @@ const DEFAULT_ONBOARDING: OnboardingState = {
 export const useUIStore = create<UIStore>()(
   persist(
     (set) => ({
-      onboarding: { ...DEFAULT_ONBOARDING },
-      setOnboarding: (patch) =>
-        set((s) => ({ onboarding: { ...s.onboarding, ...patch } })),
-      resetOnboarding: () => set({ onboarding: { ...DEFAULT_ONBOARDING } }),
+      romanUrduEnabled: true,
+      sidebarOpen: false,
+      activeModal: null,
+      onboardingData: { ...DEFAULT_ONBOARDING },
+      setRomanUrduEnabled: (val) => set({ romanUrduEnabled: val }),
+      setSidebarOpen: (val) => set({ sidebarOpen: val }),
+      setActiveModal: (modal) => set({ activeModal: modal }),
+      setOnboardingData: (patch) =>
+        set((s) => ({ onboardingData: { ...s.onboardingData, ...patch } })),
+      resetOnboardingData: () =>
+        set({ onboardingData: { ...DEFAULT_ONBOARDING } }),
     }),
     { name: 'eos-ui' }
   )

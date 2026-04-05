@@ -1,8 +1,12 @@
-import { useSearchParams } from 'react-router-dom'
+import { useParams, Navigate } from 'react-router-dom'
 import MissionShell from '@/components/mission/MissionShell'
 
 export default function Mission() {
-  const [params] = useSearchParams()
-  const type = params.get('type') === 'evening' ? 'evening' : 'morning'
+  const { type } = useParams<{ type: string }>()
+
+  if (type !== 'morning' && type !== 'evening') {
+    return <Navigate to="/map" replace />
+  }
+
   return <MissionShell type={type} />
 }
