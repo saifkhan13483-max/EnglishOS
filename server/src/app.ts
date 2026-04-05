@@ -11,6 +11,7 @@ import learnerRoutes from './routes/learner.routes'
 import contentRoutes from './routes/content.routes'
 import missionRoutes from './routes/mission.routes'
 import feynmanRoutes from './routes/feynman.routes'
+import conversationRoutes from './routes/conversation.routes'
 import progressRoutes from './routes/progress.routes'
 import leaderboardRoutes from './routes/leaderboard.routes'
 
@@ -81,6 +82,7 @@ app.use(`${API}/learner`, learnerRoutes)
 app.use(`${API}/content`, contentRoutes)
 app.use(`${API}/mission`, missionRoutes)
 app.use(`${API}/feynman`, feynmanRoutes)
+app.use(`${API}/conversation`, conversationRoutes)
 app.use(`${API}/progress`, progressRoutes)
 app.use(`${API}/leaderboard`, leaderboardRoutes)
 

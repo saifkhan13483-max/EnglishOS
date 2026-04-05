@@ -199,6 +199,8 @@ All FK relations use `CASCADE` delete. Prisma migration file: `server/prisma/mig
 | `PATCH` | `/api/v1/content/sr-queue/:id` | Mark item reviewed (`{ correct: boolean }`, SM-2 update) |
 | `GET` | `/api/v1/content/module/:level/:module` | Module content (sorted: power pack first) |
 | `POST` | `/api/v1/feynman/evaluate` | AI-evaluate a Feynman response; saves to DB, queues gaps |
+| `GET` | `/api/v1/feynman/archive` | All FeynmanResponse records for the learner (desc), joined with MissionSession |
+| `POST` | `/api/v1/conversation/message` | Stateless conversation turn — send full `messageHistory`; empty array = opening message |
 
 ## Constants
 
