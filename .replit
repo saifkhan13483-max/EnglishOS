@@ -58,6 +58,6 @@ externalPort = 80
 [userenv.shared]
 NODE_ENV = "development"
 PORT = "3000"
-CLIENT_URL = "https://23046661-cd02-4ff2-a060-771ea47d8e70-00-1ykxzynxl5b0s.spock.replit.dev"
+CLIENT_URL = "https://97335385-df1b-43c0-abad-2a5e52a1ec9f-00-1r1yeihrc3gpe.riker.replit.dev"
 JWT_SECRET = "d0049d97e129dea976f26c6b48c61b8b6992826f84f35f076c95c37f9899f7b3907ec259376f9e0f06a2f8e6332e5fb7"
 JWT_REFRESH_SECRET = "7fd52da9d891209a81a124be98d279b66b2f5740f4abbae65cf18351866d223677d2e6f944b93612e7f1f7dd9bf0db98"

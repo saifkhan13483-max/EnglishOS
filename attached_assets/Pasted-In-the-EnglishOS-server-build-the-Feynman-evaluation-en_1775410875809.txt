@@ -1,0 +1,39 @@
+In the EnglishOS server, build the Feynman evaluation endpoint.
+
+File: server/src/controllers/feynman.controller.ts
+
+POST /api/v1/feynman/evaluate
+  - Auth required
+  - Body: { missionId: string, module: number, prompt: string, responseText: string }
+  
+  Step 1: Get the list of vocabulary words the learner has covered (all ContentItem records for levels and modules up to and including the learner's current module)
+  
+  Step 2: Call the OpenAI API (GPT-4o) with the following system prompt:
+    "You are evaluating an English learner's explanation for clarity and vocabulary usage.
+    The learner has covered these vocabulary words: [word list joined by comma].
+    The learner was asked to explain: [prompt].
+    Their response: [responseText].
+    
+    Evaluate on three dimensions (score each 0-100):
+    1. Vocabulary Usage (40%): How many of their learned vocabulary words appear in the response?
+    2. Simplicity (35%): Is the explanation simple enough for a 10-year-old? Target Flesch-Kincaid grade level 3-5.
+    3. Relevance (25%): Does the response address the concept asked about?
+    
+    Return ONLY valid JSON with no markdown:
+    { vocabulary_score: number, simplicity_score: number, relevance_score: number, overall_score: number, knowledge_gaps: string[], feedback: string, suggestion: string }"
+  
+  Step 3: Parse the JSON response. Calculate overall_score = (vocab*0.4) + (simplicity*0.35) + (relevance*0.25).
+  
+  Step 4: Save a FeynmanResponse record with all scores and knowledge_gaps.
+  
+  Step 5: For each word in knowledge_gaps, find the matching ContentItem and update the learner's SRQueueItem for that item — set isKnowledgeGap to true and nextReviewDate to tomorrow.
+  
+  Step 6: Update the Brain Compound Meter: increment by (overall_score / 100) * 2 (capped at 100).
+  
+  Response: { success: true, data: { scores, feedback, suggestion, knowledgeGaps } }
+
+GET /api/v1/feynman/archive
+  - Returns all FeynmanResponse records for the authenticated learner
+  - Sorted by createdAt DESC
+  - Joined with MissionSession for date context
+  - Response: { success: true, data: FeynmanResponse[] }
