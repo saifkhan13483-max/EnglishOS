@@ -76,9 +76,38 @@ pnpm dev:client   # Vite on port 5000
 pnpm dev:server   # Express on port 5001
 ```
 
+## Design System
+
+### Colors (all available as Tailwind utilities, e.g. `bg-bg-primary`, `text-brand-red`)
+
+| Token | Hex | Usage |
+|---|---|---|
+| `bg-primary` | `#0A0A0F` | Page background (default) |
+| `bg-secondary` | `#111118` | Card / panel backgrounds |
+| `bg-tertiary` | `#1A1A28` | Elevated surfaces |
+| `border-subtle` | `#2A2A3E` | Dividers, low-contrast borders |
+| `border-strong` | `#3A3A5A` | Active / focused borders |
+| `brand-red` | `#E94560` | Primary accent — CTAs, XP, alerts |
+| `brand-blue` | `#4A9EFF` | Links, highlights, info |
+| `brand-gold` | `#F5B014` | Achievements, streaks, rewards |
+| `brand-green` | `#2ECC71` | Success, completion, correct |
+| `text-primary` | `#FFFFFF` | Headings |
+| `text-secondary` | `#C8C8E0` | Body text (default) |
+| `text-muted` | `#6A6A8A` | Captions, placeholders |
+
+### Fonts
+
+| Token | Family | Usage |
+|---|---|---|
+| `font-display` | Space Grotesk | Headings and display text |
+| `font-body` | Inter | Body copy (default) |
+| `font-mono` | JetBrains Mono | Code, keys, data |
+
+Google Fonts are imported in `client/src/index.css`.
+
 ## Notes
 
 - Vite runs on port **5000** (adjusted from 5173 for Replit preview pane compatibility); the dev server proxies `/api/*` to Express on port **5001**
-- Tailwind is configured with an empty `extend.colors` object — custom palette to be added next step
+- Tailwind custom color/font tokens are fully configured — see Design System section above
 - Prisma schema is minimal; models will be added when features are implemented
 - Environment variables: copy `server/.env.example` to `server/.env` and fill in values
