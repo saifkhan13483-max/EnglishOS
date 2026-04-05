@@ -1,20 +1,8 @@
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 import { motion, AnimatePresence } from 'framer-motion'
 import Button from '@/components/ui/Button'
-
-interface Flashcard {
-  english: string
-  romanUrdu: string
-  example: string
-}
-
-const CARDS: Flashcard[] = [
-  { english: 'want',       romanUrdu: 'chahna',         example: 'I want water.' },
-  { english: 'understand', romanUrdu: 'samajhna',       example: 'Do you understand?' },
-  { english: 'remember',   romanUrdu: 'yaad karna',     example: 'Remember this rule.' },
-  { english: 'try',        romanUrdu: 'koshish karna',  example: 'Try again!' },
-  { english: 'feel',       romanUrdu: 'mehsoos karna',  example: 'I feel tired.' },
-]
+import { useSRStore, SRCard } from '@/stores/srStore'
+import { useMissionStore } from '@/stores/missionStore'
 
 interface WarmupFlashProps {
   onComplete: () => void
@@ -22,18 +10,46 @@ interface WarmupFlashProps {
 }
 
 export default function WarmupFlash({ onComplete, onXpEarned }: WarmupFlashProps) {
+  const dailyQueue = useSRStore((s) => s.dailyQueue)
+  const markReviewed = useSRStore((s) => s.markReviewed)
+  const loadDailyQueue = useMissionStore((s) => s.loadDailyQueue)
+  const isLoading = useMissionStore((s) => s.isLoading)
+
+  const [cards, setCards] = useState<SRCard[]>([])
   const [cardIndex, setCardIndex] = useState(0)
-  const [flipped,   setFlipped]   = useState(false)
+  const [flipped, setFlipped] = useState(false)
   const [direction, setDirection] = useState(1)
+  const [initialised, setInitialised] = useState(false)
 
-  const card = CARDS[cardIndex]
-  const isLast = cardIndex === CARDS.length - 1
+  // Load the SR queue when mounting, then snapshot first 5 cards
+  useEffect(() => {
+    async function init() {
+      if (dailyQueue.length === 0) {
+        await loadDailyQueue()
+      }
+      setInitialised(true)
+    }
+    init()
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [])
 
-  function handleAnswer() {
+  // Once queue is ready, snapshot the cards to keep them stable during review
+  useEffect(() => {
+    if (initialised && cards.length === 0) {
+      const snapshot = useSRStore.getState().dailyQueue.slice(0, 5)
+      setCards(snapshot)
+    }
+  }, [initialised, dailyQueue, cards.length])
+
+  const card = cards[cardIndex]
+  const isLast = cardIndex === cards.length - 1
+
+  async function handleGotIt() {
     if (!flipped) { setFlipped(true); return }
+    if (card) await markReviewed(card.id, true)
     setDirection(1)
     setFlipped(false)
-    if (isLast) {
+    if (isLast || cardIndex >= cards.length - 1) {
       onXpEarned(20)
       setTimeout(onComplete, 400)
     } else {
@@ -41,14 +57,51 @@ export default function WarmupFlash({ onComplete, onXpEarned }: WarmupFlashProps
     }
   }
 
-  function handleReview() {
-    setFlipped(false)
+  async function handleReviewAgain() {
+    if (card) await markReviewed(card.id, false)
     setDirection(-1)
+    setFlipped(false)
     setTimeout(() => {
-      setCardIndex((i) => (i + 1 < CARDS.length ? i + 1 : i))
-      setFlipped(false)
+      setCardIndex((i) => (i + 1 < cards.length ? i + 1 : i))
     }, 100)
   }
+
+  // Loading state
+  if (isLoading && !initialised) {
+    return (
+      <div className="flex flex-col items-center gap-8 py-16 px-4 max-w-lg mx-auto w-full">
+        <div className="text-center">
+          <p className="text-xs font-mono text-text-muted uppercase tracking-widest mb-1">Phase 1</p>
+          <h2 className="font-display text-2xl font-bold text-text-primary">Warm-Up — Quick Review</h2>
+        </div>
+        <div className="w-full bg-bg-secondary border border-border-subtle rounded-2xl p-12 flex items-center justify-center">
+          <p className="text-text-muted text-sm font-mono animate-pulse">Loading your review queue…</p>
+        </div>
+      </div>
+    )
+  }
+
+  // Empty queue — no items due today
+  if (initialised && cards.length === 0) {
+    return (
+      <div className="flex flex-col items-center gap-8 py-16 px-4 max-w-lg mx-auto w-full">
+        <div className="text-center">
+          <p className="text-xs font-mono text-text-muted uppercase tracking-widest mb-1">Phase 1</p>
+          <h2 className="font-display text-2xl font-bold text-text-primary">Warm-Up — Quick Review</h2>
+        </div>
+        <div className="w-full bg-bg-secondary border border-border-subtle rounded-2xl p-10 flex flex-col items-center gap-4">
+          <span className="text-4xl">✅</span>
+          <p className="text-text-primary font-body font-medium text-center">No items due for review today!</p>
+          <p className="text-text-muted text-sm text-center">Your spaced repetition queue is all caught up. Keep learning!</p>
+        </div>
+        <Button variant="primary" size="lg" className="w-full" onClick={() => { onXpEarned(10); onComplete() }}>
+          Continue to Today's Lesson →
+        </Button>
+      </div>
+    )
+  }
+
+  if (!card) return null
 
   return (
     <div className="flex flex-col items-center gap-8 py-8 px-4 max-w-lg mx-auto w-full">
@@ -56,21 +109,21 @@ export default function WarmupFlash({ onComplete, onXpEarned }: WarmupFlashProps
         <p className="text-xs font-mono text-text-muted uppercase tracking-widest mb-1">Phase 1</p>
         <h2 className="font-display text-2xl font-bold text-text-primary">Warm-Up — Quick Review</h2>
         <p className="text-sm text-text-muted mt-1">
-          Card {cardIndex + 1} of {CARDS.length}
+          Card {cardIndex + 1} of {cards.length}
         </p>
       </div>
 
-      {/* Dot indicators */}
       <div className="flex gap-2">
-        {CARDS.map((_, i) => (
+        {cards.map((_, i) => (
           <div
             key={i}
-            className={`w-2 h-2 rounded-full transition-colors duration-200 ${i <= cardIndex ? 'bg-brand-red' : 'bg-border-strong'}`}
+            className={`w-2 h-2 rounded-full transition-colors duration-200 ${
+              i <= cardIndex ? 'bg-brand-red' : 'bg-border-strong'
+            }`}
           />
         ))}
       </div>
 
-      {/* Flashcard */}
       <AnimatePresence mode="wait">
         <motion.div
           key={cardIndex}
@@ -87,7 +140,6 @@ export default function WarmupFlash({ onComplete, onXpEarned }: WarmupFlashProps
             animate={{ rotateY: flipped ? 180 : 0 }}
             transition={{ duration: 0.3, ease: 'easeInOut' }}
           >
-            {/* FRONT */}
             <div
               className="absolute inset-0 flex flex-col items-center justify-center bg-bg-secondary border border-border-subtle rounded-2xl cursor-pointer select-none p-8"
               style={{ backfaceVisibility: 'hidden' }}
@@ -98,7 +150,6 @@ export default function WarmupFlash({ onComplete, onXpEarned }: WarmupFlashProps
               <p className="text-sm text-text-muted">Tap to reveal meaning</p>
             </div>
 
-            {/* BACK */}
             <div
               className="absolute inset-0 flex flex-col items-center justify-center bg-bg-tertiary border border-brand-blue/40 rounded-2xl p-8"
               style={{ backfaceVisibility: 'hidden', transform: 'rotateY(180deg)' }}
@@ -113,7 +164,6 @@ export default function WarmupFlash({ onComplete, onXpEarned }: WarmupFlashProps
         </motion.div>
       </AnimatePresence>
 
-      {/* Answer buttons (visible after flip) */}
       <AnimatePresence>
         {flipped && (
           <motion.div
@@ -123,31 +173,21 @@ export default function WarmupFlash({ onComplete, onXpEarned }: WarmupFlashProps
             transition={{ duration: 0.2 }}
             className="flex gap-3 w-full"
           >
-            <Button
-              variant="danger"
-              size="md"
-              className="flex-1"
-              onClick={handleReview}
-            >
+            <Button variant="danger" size="md" className="flex-1" onClick={handleReviewAgain}>
               Review Again ✗
             </Button>
             <Button
               variant="primary"
               size="md"
               className="flex-1 !bg-brand-green !border-brand-green"
-              onClick={handleAnswer}
+              onClick={handleGotIt}
             >
               Got it ✓
             </Button>
           </motion.div>
         )}
         {!flipped && (
-          <motion.div
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            exit={{ opacity: 0 }}
-            className="w-full"
-          >
+          <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} className="w-full">
             <Button variant="secondary" size="md" className="w-full" onClick={() => setFlipped(true)}>
               Flip Card
             </Button>

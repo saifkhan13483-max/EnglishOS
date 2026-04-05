@@ -1,79 +1,51 @@
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 import { motion, AnimatePresence } from 'framer-motion'
 import Button from '@/components/ui/Button'
 import Toggle from '@/components/ui/Toggle'
 import AudioPlayer from '@/components/ui/AudioPlayer'
 import PowerPackBadge from '@/components/ui/PowerPackBadge'
-
-interface ContentCard {
-  english: string
-  pronunciation: string
-  romanUrdu: string
-  example: string
-  exampleRomanUrdu: string
-  isPowerPack: boolean
-  audioSrc: string
-}
-
-const CARDS: ContentCard[] = [
-  {
-    english: 'I / You / He / She / We / They',
-    pronunciation: 'ai · yoo · hee · shee · wee · dhey',
-    romanUrdu: 'Mein / Tum / Woh (mard) / Woh (aurat) / Hum / Woh sab',
-    example: 'I am here. You are good. He is tall.',
-    exampleRomanUrdu: 'Mein yahan hoon. Tum acha ho. Woh lamba hai.',
-    isPowerPack: true,
-    audioSrc: '',
-  },
-  {
-    english: 'am / is / are',
-    pronunciation: 'am · iz · aar',
-    romanUrdu: 'hoon / hai / hain-ho',
-    example: 'I am happy. She is kind. We are ready.',
-    exampleRomanUrdu: 'Mein khush hoon. Woh mehrbaan hai. Hum tayyar hain.',
-    isPowerPack: true,
-    audioSrc: '',
-  },
-  {
-    english: 'want',
-    pronunciation: 'wont',
-    romanUrdu: 'chahna',
-    example: 'I want water. She wants tea.',
-    exampleRomanUrdu: 'Mein paani chahta hoon. Woh chai chahti hai.',
-    isPowerPack: false,
-    audioSrc: '',
-  },
-  {
-    english: 'need',
-    pronunciation: 'need',
-    romanUrdu: 'zaroorat hona',
-    example: 'I need help. He needs more time.',
-    exampleRomanUrdu: 'Mujhe madad chahiye. Use aur waqt chahiye.',
-    isPowerPack: false,
-    audioSrc: '',
-  },
-  {
-    english: 'have',
-    pronunciation: 'hav',
-    romanUrdu: 'rakhna / hona',
-    example: 'I have a pen. She has a book.',
-    exampleRomanUrdu: 'Mere paas qalam hai. Uske paas kitaab hai.',
-    isPowerPack: false,
-    audioSrc: '',
-  },
-]
+import { useMissionStore, ContentItem } from '@/stores/missionStore'
+import { useProgressStore } from '@/stores/progressStore'
+import { useUIStore } from '@/stores/uiStore'
 
 interface CoreDropProps {
   onComplete: () => void
 }
 
 export default function CoreDrop({ onComplete }: CoreDropProps) {
-  const [idx,        setIdx]        = useState(0)
-  const [romanUrdu,  setRomanUrdu]  = useState(false)
-  const [direction,  setDirection]  = useState(1)
+  const moduleContent = useMissionStore((s) => s.moduleContent)
+  const loadModuleContent = useMissionStore((s) => s.loadModuleContent)
+  const isLoading = useMissionStore((s) => s.isLoading)
+  const romanUrduEnabled = useUIStore((s) => s.romanUrduEnabled)
+  const setRomanUrduEnabled = useUIStore((s) => s.setRomanUrduEnabled)
+  const learnerProfile = useProgressStore((s) => s.learnerProfile)
 
-  const card   = CARDS[idx]
-  const isLast = idx === CARDS.length - 1
+  const [cards, setCards] = useState<ContentItem[]>([])
+  const [idx, setIdx] = useState(0)
+  const [direction, setDirection] = useState(1)
+
+  // Load module content on mount
+  useEffect(() => {
+    const level = learnerProfile?.currentLevel ?? 1
+    const module = learnerProfile?.currentModule ?? 1
+
+    if (moduleContent.length === 0) {
+      loadModuleContent(level, module)
+    } else {
+      setCards(moduleContent)
+    }
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [])
+
+  // Sync cards when moduleContent arrives (already sorted: Power Pack first, then sortOrder)
+  useEffect(() => {
+    if (moduleContent.length > 0 && cards.length === 0) {
+      setCards(moduleContent)
+    }
+  }, [moduleContent, cards.length])
+
+  const card = cards[idx]
+  const isLast = idx === cards.length - 1
 
   function goNext() {
     setDirection(1)
@@ -86,23 +58,56 @@ export default function CoreDrop({ onComplete }: CoreDropProps) {
     setIdx((i) => Math.max(0, i - 1))
   }
 
+  if (isLoading && cards.length === 0) {
+    return (
+      <div className="flex flex-col gap-6 py-8 px-4 max-w-lg mx-auto w-full">
+        <div className="text-center">
+          <p className="text-xs font-mono text-text-muted uppercase tracking-widest mb-1">Phase 2</p>
+          <h2 className="font-display text-2xl font-bold text-text-primary">Today's Lesson</h2>
+        </div>
+        <div className="bg-bg-secondary border border-border-subtle rounded-2xl p-12 flex items-center justify-center">
+          <p className="text-text-muted text-sm font-mono animate-pulse">Loading today's content…</p>
+        </div>
+      </div>
+    )
+  }
+
+  if (!isLoading && cards.length === 0) {
+    return (
+      <div className="flex flex-col gap-6 py-8 px-4 max-w-lg mx-auto w-full">
+        <div className="text-center">
+          <p className="text-xs font-mono text-text-muted uppercase tracking-widest mb-1">Phase 2</p>
+          <h2 className="font-display text-2xl font-bold text-text-primary">Today's Lesson</h2>
+        </div>
+        <div className="bg-bg-secondary border border-border-subtle rounded-2xl p-10 flex flex-col items-center gap-4">
+          <span className="text-4xl">📚</span>
+          <p className="text-text-muted text-sm text-center">No content found for this module.</p>
+        </div>
+        <Button variant="primary" size="lg" className="w-full" onClick={onComplete}>Continue →</Button>
+      </div>
+    )
+  }
+
+  if (!card) return null
+
   return (
     <div className="flex flex-col gap-6 py-8 px-4 max-w-lg mx-auto w-full">
       <div className="text-center">
         <p className="text-xs font-mono text-text-muted uppercase tracking-widest mb-1">Phase 2</p>
         <h2 className="font-display text-2xl font-bold text-text-primary">Today's Lesson</h2>
+        <p className="text-xs text-text-muted mt-1 font-mono">
+          {card.groupName} · {idx + 1} / {cards.length}
+        </p>
       </div>
 
-      {/* Roman Urdu toggle — persists across cards */}
       <div className="flex justify-end">
         <Toggle
-          checked={romanUrdu}
-          onChange={setRomanUrdu}
+          checked={romanUrduEnabled}
+          onChange={setRomanUrduEnabled}
           label="Roman Urdu"
         />
       </div>
 
-      {/* Card */}
       <AnimatePresence mode="wait">
         <motion.div
           key={idx}
@@ -112,29 +117,26 @@ export default function CoreDrop({ onComplete }: CoreDropProps) {
           transition={{ duration: 0.25, ease: 'easeInOut' }}
           className="bg-bg-secondary border border-border-subtle rounded-2xl p-6 flex flex-col gap-4"
         >
-          {/* Power Pack badge */}
           {card.isPowerPack && (
             <div className="flex justify-end">
               <PowerPackBadge />
             </div>
           )}
 
-          {/* English word */}
           <div>
             <p className="text-xs font-mono text-text-muted mb-1">English</p>
             <p className="font-display text-3xl font-bold text-text-primary">{card.english}</p>
           </div>
 
-          {/* Pronunciation */}
-          <div className="bg-bg-tertiary border border-border-subtle rounded-xl px-4 py-2 flex items-center justify-between">
-            <span className="text-xs font-mono text-text-muted">Pronunciation</span>
-            <span className="text-sm font-mono text-brand-blue">{card.pronunciation}</span>
-            <AudioPlayer src={card.audioSrc} />
-          </div>
+          {card.audioUrl && (
+            <div className="bg-bg-tertiary border border-border-subtle rounded-xl px-4 py-2 flex items-center justify-between">
+              <span className="text-xs font-mono text-text-muted">Audio</span>
+              <AudioPlayer src={card.audioUrl} />
+            </div>
+          )}
 
-          {/* Roman Urdu meaning */}
           <AnimatePresence mode="wait">
-            {romanUrdu && (
+            {romanUrduEnabled && (
               <motion.div
                 key="ru"
                 initial={{ opacity: 0, height: 0 }}
@@ -144,33 +146,19 @@ export default function CoreDrop({ onComplete }: CoreDropProps) {
               >
                 <div className="bg-brand-blue/10 border border-brand-blue/30 rounded-xl px-4 py-3">
                   <p className="text-xs font-mono text-brand-blue mb-1">Roman Urdu</p>
-                  <p className="text-text-secondary text-sm font-medium">{card.romanUrdu}</p>
+                  <p className="text-text-secondary text-sm font-medium">{card.urduRoman}</p>
                 </div>
               </motion.div>
             )}
           </AnimatePresence>
 
-          {/* Example sentence */}
           <div>
             <p className="text-xs font-mono text-text-muted mb-2">Example</p>
-            <p className="text-text-secondary text-sm italic leading-relaxed">"{card.example}"</p>
-            <AnimatePresence>
-              {romanUrdu && (
-                <motion.p
-                  initial={{ opacity: 0 }}
-                  animate={{ opacity: 1 }}
-                  exit={{ opacity: 0 }}
-                  className="text-text-muted text-xs mt-1 italic"
-                >
-                  "{card.exampleRomanUrdu}"
-                </motion.p>
-              )}
-            </AnimatePresence>
+            <p className="text-text-secondary text-sm italic leading-relaxed">"{card.exampleSentence}"</p>
           </div>
         </motion.div>
       </AnimatePresence>
 
-      {/* Navigation */}
       <div className="flex items-center gap-3">
         <Button
           variant="secondary"
@@ -182,14 +170,18 @@ export default function CoreDrop({ onComplete }: CoreDropProps) {
           ← Previous
         </Button>
 
-        {/* Dot indicators */}
         <div className="flex gap-1.5">
-          {CARDS.map((_, i) => (
+          {cards.slice(0, Math.min(cards.length, 10)).map((_, i) => (
             <div
               key={i}
-              className={`w-2 h-2 rounded-full transition-colors ${i === idx ? 'bg-brand-red' : i < idx ? 'bg-brand-green' : 'bg-border-strong'}`}
+              className={`w-2 h-2 rounded-full transition-colors ${
+                i === idx ? 'bg-brand-red' : i < idx ? 'bg-brand-green' : 'bg-border-strong'
+              }`}
             />
           ))}
+          {cards.length > 10 && (
+            <span className="text-xs text-text-muted font-mono">+{cards.length - 10}</span>
+          )}
         </div>
 
         <Button

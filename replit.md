@@ -138,13 +138,13 @@ The router (`client/src/router/AppRouter.tsx`) uses React Router v6 with two rou
 
 ## Zustand Stores
 
-| Store | File | State Shape |
-|---|---|---|
-| `authStore` | `stores/authStore.ts` | `user`, `accessToken`, `isAuthenticated`, `isLoading` |
-| `missionStore` | `stores/missionStore.ts` | `currentMission`, `currentPhase`, `phaseData`, `xpEarned`, `isComplete` |
-| `progressStore` | `stores/progressStore.ts` | `learnerProfile`, `levelProgress`, `totalXP`, `streak`, `brainCompoundPct`, `badges` |
-| `srStore` | `stores/srStore.ts` | `dailyQueue`, `reviewedToday`, `pendingCount` |
-| `uiStore` | `stores/uiStore.ts` | `romanUrduEnabled`, `sidebarOpen`, `activeModal`, `onboardingData` (persisted) |
+| Store | File | State Shape | Key Actions |
+|---|---|---|---|
+| `authStore` | `stores/authStore.ts` | `user`, `accessToken`, `isAuthenticated`, `isLoading` | `login`, `register`, `logout`, `refreshSession` |
+| `missionStore` | `stores/missionStore.ts` | `missionId`, `currentMission`, `currentPhase`, `moduleContent`, `feynmanResult`, `xpEarned`, `isComplete`, `isLoading` | `startMission`, `loadDailyQueue`, `loadModuleContent`, `completeMission`, `submitFeynmanResponse` |
+| `progressStore` | `stores/progressStore.ts` | `learnerProfile`, `levelProgress`, `totalXP`, `streak`, `brainCompoundPct`, `badges` | `setLearnerProfile`, `setStats` |
+| `srStore` | `stores/srStore.ts` | `dailyQueue` (SRCard[]), `reviewedToday`, `pendingCount` | `setDailyQueue`, `markReviewed` |
+| `uiStore` | `stores/uiStore.ts` | `romanUrduEnabled`, `sidebarOpen`, `activeModal`, `onboardingData` (persisted) | `setRomanUrduEnabled`, `setSidebarOpen` |
 
 ## Mission Architecture
 
@@ -188,9 +188,33 @@ Migration `20260405143747_init` applied. All tables live in the `heliumdb` Postg
 
 All FK relations use `CASCADE` delete. Prisma migration file: `server/prisma/migrations/20260405143747_init/migration.sql`
 
+## API Endpoints (all require `Authorization: Bearer <token>`)
+
+| Method | Path | Description |
+|---|---|---|
+| `POST` | `/api/v1/mission/start` | Start a mission (`{ type: "MORNING" \| "EVENING" }`) |
+| `PUT` | `/api/v1/mission/:id/complete` | Complete a mission (`{ xpEarned, feynmanScore? }`) |
+| `GET` | `/api/v1/mission/today` | Today's morning + evening sessions |
+| `GET` | `/api/v1/content/sr-queue/today` | Due SR items (sorted: gaps → power pack → date) |
+| `PATCH` | `/api/v1/content/sr-queue/:id` | Mark item reviewed (`{ correct: boolean }`, SM-2 update) |
+| `GET` | `/api/v1/content/module/:level/:module` | Module content (sorted: power pack first) |
+| `POST` | `/api/v1/feynman/evaluate` | AI-evaluate a Feynman response; saves to DB, queues gaps |
+
+## Constants
+
+`client/src/constants/scenarios.ts` — scenario map and Feynman prompt map keyed by module number (modules 1–6).
+
+## Mission Flow API Wiring
+
+- **WarmupFlash**: calls `missionStore.loadDailyQueue()` → reads `srStore.dailyQueue`; calls `srStore.markReviewed(id, correct)` on each card
+- **CoreDrop**: calls `missionStore.loadModuleContent(level, module)` → reads `missionStore.moduleContent`; Roman Urdu toggle persisted in `uiStore.romanUrduEnabled`
+- **ApplyIt**: reads scenario from `getScenario(currentModule)` (static map)
+- **FeynmanMoment**: calls `missionStore.submitFeynmanResponse(text)` → `POST /api/v1/feynman/evaluate`; displays real scores/feedback/gaps; calls `completeMission()` → `PUT /api/v1/mission/:id/complete`
+
 ## Notes
 
 - Vite runs on port **5000** (adjusted from 5173 for Replit preview pane compatibility); the dev server proxies `/api/*` to Express on port **3000**
 - Tailwind custom color/font tokens are fully configured — see Design System section above
-- Environment variables live in `server/.env` — JWT_SECRET, JWT_REFRESH_SECRET, DATABASE_URL, PORT, CLIENT_URL are all set
-- All pages use static mock data — backend API integration is a future phase
+- Environment variables: JWT_SECRET, JWT_REFRESH_SECRET, DATABASE_URL, PORT, CLIENT_URL are set; OPENAI_API_KEY and RESEND_API_KEY are optional (Feynman returns a fallback score when OpenAI is absent)
+- The OpenAI client is lazily instantiated — the server starts without OPENAI_API_KEY; add it to enable AI evaluation
+- Auth bug fixed: all controllers now correctly read `req.learnerId` (set by auth middleware) instead of the non-existent `req.userId`

@@ -33,7 +33,7 @@ function calcRank(xp: number): string {
 // ── POST /api/v1/mission/start ────────────────────────────────────────────────
 
 export async function startMission(req: AuthRequest, res: Response): Promise<void> {
-  const learnerId = req.userId as string
+  const learnerId = req.learnerId as string
   const { type } = req.body as { type: string }
 
   if (type !== 'MORNING' && type !== 'EVENING') {
@@ -76,7 +76,7 @@ export async function startMission(req: AuthRequest, res: Response): Promise<voi
 // ── PUT /api/v1/mission/:id/complete ─────────────────────────────────────────
 
 export async function completeMission(req: AuthRequest, res: Response): Promise<void> {
-  const learnerId = req.userId as string
+  const learnerId = req.learnerId as string
   const { id } = req.params
   const { xpEarned, feynmanScore } = req.body as {
     xpEarned: number
@@ -102,7 +102,6 @@ export async function completeMission(req: AuthRequest, res: Response): Promise<
 
   const now = new Date()
 
-  // Update the mission session
   const updatedMission = await prisma.missionSession.update({
     where: { id },
     data: {
@@ -113,18 +112,15 @@ export async function completeMission(req: AuthRequest, res: Response): Promise<
     },
   })
 
-  // Fetch current learner state
   const learner = await prisma.learner.findUnique({ where: { id: learnerId } })
   if (!learner) {
     res.status(404).json({ success: false, error: 'Learner not found' })
     return
   }
 
-  // XP + rank
   const newXp = learner.xp + xpEarned
   const newRank = calcRank(newXp)
 
-  // Streak calculation
   const yesterdayRange_ = yesterdayRange()
   const completedYesterday = await prisma.missionSession.findFirst({
     where: {
@@ -137,7 +133,6 @@ export async function completeMission(req: AuthRequest, res: Response): Promise<
   const newStreak = completedYesterday ? learner.streak + 1 : 1
   const newBatmanMode = newStreak >= 7
 
-  // Update learner
   const updatedLearner = await prisma.learner.update({
     where: { id: learnerId },
     data: {
@@ -170,7 +165,7 @@ export async function completeMission(req: AuthRequest, res: Response): Promise<
 // ── GET /api/v1/mission/today ─────────────────────────────────────────────────
 
 export async function getTodayMissions(req: AuthRequest, res: Response): Promise<void> {
-  const learnerId = req.userId as string
+  const learnerId = req.learnerId as string
   const range = todayRange()
 
   const sessions = await prisma.missionSession.findMany({

@@ -1,23 +1,20 @@
 import { useState } from 'react'
 import { motion, AnimatePresence } from 'framer-motion'
 import Button from '@/components/ui/Button'
-
-const SCENARIO = {
-  title: 'Real Situation',
-  description: 'You are at a restaurant in Lahore. The waiter comes to your table. Order a meal and a drink in English.',
-  hint: 'Use words like: I want, please, thank you',
-  modelResponse: 'I want chicken biryani and one cold water, please. How much is that?',
-  modelNotes: 'Notice: "I want" (chahna), "please" for politeness, clear item names, and a follow-up question.',
-}
+import { useProgressStore } from '@/stores/progressStore'
+import { getScenario } from '@/constants/scenarios'
 
 interface ApplyItProps {
   onComplete: () => void
 }
 
 export default function ApplyIt({ onComplete }: ApplyItProps) {
-  const [response,    setResponse]    = useState('')
-  const [submitted,   setSubmitted]   = useState(false)
-  const [assessment,  setAssessment]  = useState<'up' | 'down' | null>(null)
+  const currentModule = useProgressStore((s) => s.learnerProfile?.currentModule ?? 2)
+  const scenario = getScenario(currentModule)
+
+  const [response, setResponse] = useState('')
+  const [submitted, setSubmitted] = useState(false)
+  const [assessment, setAssessment] = useState<'up' | 'down' | null>(null)
 
   function handleSubmit() {
     if (!response.trim()) return
@@ -31,17 +28,15 @@ export default function ApplyIt({ onComplete }: ApplyItProps) {
         <h2 className="font-display text-2xl font-bold text-text-primary">Apply It — Real Situation</h2>
       </div>
 
-      {/* Scenario card */}
       <div className="bg-bg-secondary border border-brand-gold/30 rounded-2xl p-5">
         <div className="flex items-center gap-2 mb-3">
-          <span className="text-lg">🍽️</span>
+          <span className="text-lg">{scenario.icon}</span>
           <span className="text-xs font-mono text-brand-gold uppercase tracking-wider">Scenario</span>
         </div>
-        <p className="text-text-primary text-base font-body leading-relaxed">{SCENARIO.description}</p>
-        <p className="text-xs text-text-muted mt-3 font-mono">{SCENARIO.hint}</p>
+        <p className="text-text-primary text-base font-body leading-relaxed">{scenario.description}</p>
+        <p className="text-xs text-text-muted mt-3 font-mono">{scenario.hint}</p>
       </div>
 
-      {/* Response input */}
       <div className="flex flex-col gap-2">
         <label className="text-sm font-body font-medium text-text-secondary">
           Your response in English
@@ -67,7 +62,6 @@ export default function ApplyIt({ onComplete }: ApplyItProps) {
         </Button>
       )}
 
-      {/* Model response + self-assessment */}
       <AnimatePresence>
         {submitted && (
           <motion.div
@@ -76,14 +70,12 @@ export default function ApplyIt({ onComplete }: ApplyItProps) {
             transition={{ duration: 0.4, ease: [0.22, 1, 0.36, 1] }}
             className="flex flex-col gap-4"
           >
-            {/* Model response */}
             <div className="bg-brand-green/5 border border-brand-green/30 rounded-2xl p-5">
               <p className="text-xs font-mono text-brand-green mb-2 uppercase tracking-wider">Model Response</p>
-              <p className="text-text-primary text-sm leading-relaxed italic">"{SCENARIO.modelResponse}"</p>
-              <p className="text-xs text-text-muted mt-3 leading-relaxed">{SCENARIO.modelNotes}</p>
+              <p className="text-text-primary text-sm leading-relaxed italic">"{scenario.modelResponse}"</p>
+              <p className="text-xs text-text-muted mt-3 leading-relaxed">{scenario.modelNotes}</p>
             </div>
 
-            {/* Self-assessment */}
             <div className="bg-bg-secondary border border-border-subtle rounded-2xl p-5">
               <p className="text-sm font-body font-medium text-text-secondary mb-4 text-center">
                 How did you do?
@@ -133,8 +125,8 @@ export default function ApplyIt({ onComplete }: ApplyItProps) {
                   >
                     <p className="text-xs text-text-muted text-center font-mono mb-4">
                       {assessment === 'up'
-                        ? '✓ Great — this word goes to your 7-day review queue.'
-                        : '✗ Noted — this scenario moves to tomorrow\'s warm-up.'}
+                        ? '✓ Great — this scenario goes to your 7-day review queue.'
+                        : "✗ Noted — this scenario moves to tomorrow's warm-up."}
                     </p>
                     <Button variant="primary" size="lg" className="w-full" onClick={onComplete}>
                       Continue to Feynman Moment →

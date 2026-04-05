@@ -45,7 +45,6 @@ export async function getLevels(req: AuthRequest, res: Response): Promise<void> 
     orderBy: [{ level: 'asc' }, { module: 'asc' }],
   })
 
-  // Shape into level → modules hierarchy
   const levelMap = new Map<number, { module: number; itemCount: number }[]>()
 
   for (const row of rows) {
@@ -64,7 +63,7 @@ export async function getLevels(req: AuthRequest, res: Response): Promise<void> 
 
 // GET /api/v1/content/sr-queue/today
 export async function getTodayQueue(req: AuthRequest, res: Response): Promise<void> {
-  const learnerId = req.userId as string
+  const learnerId = req.learnerId as string
   const now = new Date()
 
   const queueItems = await prisma.sRQueueItem.findMany({
@@ -80,15 +79,64 @@ export async function getTodayQueue(req: AuthRequest, res: Response): Promise<vo
     ],
   })
 
-  // Secondary sort: within each priority group, Power Pack items come first
   const sorted = queueItems.sort((a, b) => {
-    // Primary: knowledge gap descending
     if (a.isKnowledgeGap !== b.isKnowledgeGap) return a.isKnowledgeGap ? -1 : 1
-    // Secondary: power pack descending
     if (a.item.isPowerPack !== b.item.isPowerPack) return a.item.isPowerPack ? -1 : 1
-    // Tertiary: earliest due first
     return a.nextReviewDate.getTime() - b.nextReviewDate.getTime()
   })
 
   res.json({ success: true, data: sorted })
+}
+
+// PATCH /api/v1/content/sr-queue/:id — mark a queue item as reviewed
+// SM-2 simplified: correct → extend interval; incorrect → reset to 1 day + flag gap
+export async function reviewQueueItem(req: AuthRequest, res: Response): Promise<void> {
+  const learnerId = req.learnerId as string
+  const { id } = req.params
+  const { correct } = req.body as { correct: boolean }
+
+  if (typeof correct !== 'boolean') {
+    res.status(400).json({ success: false, error: 'correct must be a boolean' })
+    return
+  }
+
+  const queueItem = await prisma.sRQueueItem.findUnique({ where: { id } })
+
+  if (!queueItem || queueItem.learnerId !== learnerId) {
+    res.status(404).json({ success: false, error: 'Queue item not found' })
+    return
+  }
+
+  const now = new Date()
+
+  let newIntervalDays: number
+  let newEaseFactor: number
+  let newIsKnowledgeGap: boolean
+
+  if (correct) {
+    newEaseFactor = Math.min(2.5, queueItem.easeFactor + 0.1)
+    newIntervalDays = Math.round(queueItem.intervalDays * newEaseFactor)
+    newIsKnowledgeGap = false
+  } else {
+    newEaseFactor = Math.max(1.3, queueItem.easeFactor - 0.2)
+    newIntervalDays = 1
+    newIsKnowledgeGap = true
+  }
+
+  const nextReviewDate = new Date(now.getTime() + newIntervalDays * 24 * 60 * 60 * 1000)
+
+  const updated = await prisma.sRQueueItem.update({
+    where: { id },
+    data: {
+      intervalDays: newIntervalDays,
+      easeFactor: newEaseFactor,
+      nextReviewDate,
+      isKnowledgeGap: newIsKnowledgeGap,
+      lastReviewedAt: now,
+      correctCount: correct ? { increment: 1 } : undefined,
+      incorrectCount: correct ? undefined : { increment: 1 },
+    },
+  })
+
+  res.json({ success: true, data: updated })
 }

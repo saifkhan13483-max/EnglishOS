@@ -34,13 +34,20 @@ interface ProgressStore {
   streak: number
   brainCompoundPct: number
   badges: Badge[]
+  setLearnerProfile: (profile: LearnerProfile) => void
+  setStats: (stats: { xp: number; streak: number; brainCompoundPct: number }) => void
 }
 
-export const useProgressStore = create<ProgressStore>(() => ({
+export const useProgressStore = create<ProgressStore>((set) => ({
   learnerProfile: null,
   levelProgress: [],
   totalXP: 0,
   streak: 0,
   brainCompoundPct: 0,
   badges: [],
+
+  setLearnerProfile: (profile) => set({ learnerProfile: profile }),
+
+  setStats: ({ xp, streak, brainCompoundPct }) =>
+    set({ totalXP: xp, streak, brainCompoundPct }),
 }))
