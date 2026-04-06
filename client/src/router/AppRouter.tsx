@@ -123,6 +123,7 @@ export default function AppRouter() {
           {/* Protected routes — wrapped in AppShell */}
           <Route element={<ProtectedRoute />}>
             <Route path="/map"                    element={<MasteryMap />} />
+            <Route path="/dashboard"              element={<Navigate to="/map" replace />} />
             <Route path="/mission/:type"          element={<Mission />} />
             <Route path="/progress"               element={<Progress />} />
             <Route path="/feynman-archive"        element={<FeynmanArchive />} />
