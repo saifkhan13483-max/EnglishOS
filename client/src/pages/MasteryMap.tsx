@@ -250,7 +250,7 @@ export default function MasteryMap() {
         fixed bottom-0 left-0 right-0 md:relative
         z-30
       ">
-        <DashboardPanel onStartMission={() => navigate('/mission')} />
+        <DashboardPanel onStartMission={(type) => navigate(`/mission/${type}`)} />
       </div>
 
       {/* ── Level Detail Drawer ── */}
@@ -426,7 +426,7 @@ function MobileMap({ levels, onSelect }: { levels: DisplayLevel[]; onSelect: (l:
 /* ─────────────────────────────────────────
    Dashboard Panel
 ───────────────────────────────────────── */
-function DashboardPanel({ onStartMission }: { onStartMission: () => void }) {
+function DashboardPanel({ onStartMission }: { onStartMission: (type: 'morning' | 'evening') => void }) {
   const {
     streak, brainCompoundPct, todayMissions, myWhy, batmanModeActive, batmanSkipUsedThisWeek, setBatmanState,
   } = useProgressStore(
@@ -445,6 +445,16 @@ function DashboardPanel({ onStartMission }: { onStartMission: () => void }) {
 
   const morningDone = todayMissions?.morning?.status === 'COMPLETE'
   const eveningDone = todayMissions?.evening?.status === 'COMPLETE'
+
+  function handleMissionStart() {
+    if (!morningDone) {
+      onStartMission('morning')
+    } else if (!eveningDone) {
+      onStartMission('evening')
+    } else {
+      onStartMission('morning')
+    }
+  }
 
   async function handleBatmanSkip() {
     setSkipLoading(true)
@@ -555,8 +565,8 @@ function DashboardPanel({ onStartMission }: { onStartMission: () => void }) {
         </div>
       )}
 
-      <Button variant="primary" size="md" className="w-full" onClick={onStartMission}>
-        Continue Mission →
+      <Button variant="primary" size="md" className="w-full" onClick={handleMissionStart}>
+        {morningDone && eveningDone ? 'Review Day →' : morningDone ? '🌙 Evening Mission →' : '☀️ Morning Mission →'}
       </Button>
     </div>
   )

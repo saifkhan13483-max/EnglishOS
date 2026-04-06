@@ -2,6 +2,7 @@ import { useState, useEffect, useRef } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { motion, AnimatePresence, useReducedMotion } from 'framer-motion'
 import { trackEvent } from '@/utils/analytics'
+import { useMissionStore } from '@/stores/missionStore'
 
 import WarmupFlash      from './WarmupFlash'
 import CoreDrop         from './CoreDrop'
@@ -59,6 +60,19 @@ export default function MissionShell({ type = 'morning' }: MissionShellProps) {
   const isEvening = type === 'evening'
   const PHASES    = isEvening ? EVENING_PHASES : MORNING_PHASES
   const TOTAL     = PHASES.length
+
+  const startMission = useMissionStore((s) => s.startMission)
+  const resetMission = useMissionStore((s) => s.reset)
+
+  // Start the mission on the backend when this shell mounts
+  useEffect(() => {
+    resetMission()
+    const missionType = type === 'evening' ? 'EVENING' : 'MORNING'
+    startMission(missionType).catch(() => {
+      // Non-fatal — user can still proceed through the mission
+    })
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [type])
 
   // Track phase transitions
   useEffect(() => {
