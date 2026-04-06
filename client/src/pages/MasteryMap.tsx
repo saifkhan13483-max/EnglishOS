@@ -1,4 +1,4 @@
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { motion, AnimatePresence } from 'framer-motion'
 import LevelNode, { type NodeStatus } from '@/components/map/LevelNode'
@@ -6,58 +6,92 @@ import PathLine,  { type PathStatus }  from '@/components/map/PathLine'
 import Button from '@/components/ui/Button'
 import Badge  from '@/components/ui/Badge'
 import ProgressBar from '@/components/ui/ProgressBar'
-import { useProgressStore } from '@/stores/progressStore'
+import { useProgressStore, type MapLevel, type MapModule } from '@/stores/progressStore'
 import { api } from '@/services/api'
 
 /* ─────────────────────────────────────────
-   Static placeholder data
+   Client-side display config (names/colors/metadata)
 ───────────────────────────────────────── */
-interface Module {
+
+const LEVEL_DISPLAY: Record<number, { name: string; color: string; totalDays: number }> = {
+  1: { name: 'Base Camp',   color: '#E94560', totalDays: 30 },
+  2: { name: 'Village',     color: '#F5B014', totalDays: 45 },
+  3: { name: 'Town',        color: '#4A9EFF', totalDays: 45 },
+  4: { name: 'City',        color: '#2ECC71', totalDays: 60 },
+  5: { name: 'Capital',     color: '#A855F7', totalDays: 60 },
+  6: { name: 'World Stage', color: '#F97316', totalDays: 60 },
+}
+
+const MODULE_META: Record<number, Record<number, { name: string; days: string; description: string }>> = {
+  1: {
+    1: { name: 'Alphabets & Sounds',  days: 'Days 1–5',   description: '26 letters, vowels first, pronunciation guide with Roman Urdu' },
+    2: { name: 'Core 100 Words',      days: 'Days 6–12',  description: 'The 100 words powering 50% of all everyday conversations' },
+    3: { name: 'Basic Sentences',     days: 'Days 13–20', description: 'SVO formula — one formula, every sentence in English' },
+    4: { name: 'Speaking Practice',   days: 'Days 21–30', description: 'Daily speaking drills and pronunciation with Feynman Check' },
+  },
+  2: {
+    1: { name: 'Present Tense',       days: 'Days 1–9',   description: 'Simple and continuous present — the foundation of conversation' },
+    2: { name: 'Past Tense',          days: 'Days 10–18', description: 'Simple and continuous past — telling stories' },
+    3: { name: 'Future Tense',        days: 'Days 19–27', description: 'Will, going to, and planning your future in English' },
+    4: { name: 'Daily Conversations', days: 'Days 28–36', description: 'Greetings, small talk, shopping, and everyday exchanges' },
+    5: { name: 'Level 2 Gate',        days: 'Days 37–45', description: 'Pass the gate test to unlock Level 3 — Town' },
+  },
+  3: {
+    1: { name: 'All 12 Tenses',       days: 'Days 1–9',   description: 'Complete tense system — from simple to perfect continuous' },
+    2: { name: '500 Core Words',      days: 'Days 10–18', description: 'Expand from 100 to 500 — the vocabulary of fluency' },
+    3: { name: 'Short Stories',       days: 'Days 19–27', description: 'Read and retell South Asian daily life stories in English' },
+    4: { name: 'Listening Practice',  days: 'Days 28–36', description: 'Train your ear — accents, speed, and real conversation audio' },
+    5: { name: 'Level 3 Gate',        days: 'Days 37–45', description: 'Pass the gate test to unlock Level 4 — City' },
+  },
+  4: {
+    1: { name: 'Reading Skills',      days: 'Days 1–10',  description: 'News articles, emails, and real-world English documents' },
+    2: { name: 'Writing Skills',      days: 'Days 11–20', description: 'Emails, messages, and structured written communication' },
+    3: { name: 'Complex Sentences',   days: 'Days 21–30', description: 'Clauses, connectors, and advanced sentence structures' },
+    4: { name: 'Speaking Confidence', days: 'Days 31–40', description: 'Opinion sharing, debate basics, and clear articulation' },
+    5: { name: 'Idioms & Phrases',    days: 'Days 41–50', description: 'Top 50 idioms used in everyday South Asian English' },
+    6: { name: 'Level 4 Gate',        days: 'Days 51–60', description: 'Pass the gate test to unlock Level 5 — Capital' },
+  },
+  5: {
+    1: { name: 'Advanced Grammar',    days: 'Days 1–10',  description: 'Conditionals, passive voice, reported speech mastery' },
+    2: { name: 'Phrasal Verbs',       days: 'Days 11–20', description: 'Top 100 phrasal verbs in context — the secret to fluency' },
+    3: { name: 'Fluency Drills',      days: 'Days 21–30', description: 'Speed, rhythm, and spontaneous speaking exercises' },
+    4: { name: 'Job Interview Prep',  days: 'Days 31–40', description: 'HR questions, answers, and professional vocabulary' },
+    5: { name: 'Business English',    days: 'Days 41–50', description: 'Emails, meetings, presentations, and workplace language' },
+    6: { name: 'Level 5 Gate',        days: 'Days 51–60', description: 'Pass the gate test to unlock Level 6 — World Stage' },
+  },
+  6: {
+    1: { name: 'Professional Writing', days: 'Days 1–10', description: 'CVs, cover letters, formal reports, and business proposals' },
+    2: { name: 'Public Speaking',      days: 'Days 11–20', description: 'Presentations, storytelling, and commanding a room' },
+    3: { name: 'Advanced Vocabulary',  days: 'Days 21–30', description: 'Academic and professional vocabulary for any domain' },
+    4: { name: 'IELTS/Exam Prep',      days: 'Days 31–40', description: 'Exam strategies and band score optimization' },
+    5: { name: 'Accent & Delivery',    days: 'Days 41–50', description: 'Pronunciation polish, pace, and confident delivery' },
+    6: { name: 'Final Gate',           days: 'Days 51–60', description: 'The final gate — professional English fluency certification' },
+  },
+}
+
+/* ─────────────────────────────────────────
+   Types
+───────────────────────────────────────── */
+
+interface DisplayModule {
   name: string
   status: 'complete' | 'active' | 'locked'
   days: string
   description: string
 }
 
-interface Level {
+interface DisplayLevel {
   level: number
   name: string
   totalDays: number
   status: NodeStatus
   currentDay: number
   color: string
-  modules: Module[]
+  modules: DisplayModule[]
 }
 
-const LEVELS: Level[] = [
-  {
-    level: 1, name: 'Base Camp', totalDays: 30, status: 'active', currentDay: 7, color: '#E94560',
-    modules: [
-      { name: 'Alphabets & Sounds',  status: 'complete', days: 'Days 1–5',   description: '26 letters, vowels first, pronunciation guide with Roman Urdu' },
-      { name: 'Core 100 Words',      status: 'active',   days: 'Days 6–12',  description: 'The 100 words powering 50% of all everyday conversations' },
-      { name: 'Basic Sentences',     status: 'locked',   days: 'Days 13–20', description: 'SVO formula — one formula, every sentence in English' },
-      { name: 'Speaking Practice',   status: 'locked',   days: 'Days 21–28', description: 'Daily speaking drills and pronunciation with Feynman Check' },
-      { name: 'Level 1 Gate',        status: 'locked',   days: 'Days 29–30', description: 'Pass the gate test to unlock Level 2 — Village' },
-    ],
-  },
-  { level: 2, name: 'Village',     totalDays: 45, status: 'locked', currentDay: 0, color: '#F5B014', modules: [] },
-  { level: 3, name: 'Town',        totalDays: 45, status: 'locked', currentDay: 0, color: '#4A9EFF', modules: [] },
-  { level: 4, name: 'City',        totalDays: 60, status: 'locked', currentDay: 0, color: '#2ECC71', modules: [] },
-  { level: 5, name: 'Capital',     totalDays: 60, status: 'locked', currentDay: 0, color: '#A855F7', modules: [] },
-  { level: 6, name: 'World Stage', totalDays: 60, status: 'locked', currentDay: 0, color: '#F97316', modules: [] },
-]
-
-// Path between each pair of sequential levels
 type PathDef = { from: number; to: number; status: PathStatus }
-const PATHS: PathDef[] = [
-  { from: 1, to: 2, status: 'upcoming' },
-  { from: 2, to: 3, status: 'locked' },
-  { from: 3, to: 4, status: 'locked' },
-  { from: 4, to: 5, status: 'locked' },
-  { from: 5, to: 6, status: 'locked' },
-]
 
-// Desktop Z-pattern: node centers as percentage coords (SVG viewBox 0 0 100 100)
 const DESKTOP_POS: Record<number, { x: number; y: number }> = {
   1: { x: 22, y: 18 },
   2: { x: 78, y: 18 },
@@ -67,13 +101,71 @@ const DESKTOP_POS: Record<number, { x: number; y: number }> = {
   6: { x: 78, y: 82 },
 }
 
-const DASHBOARD = {
-  streak: 7,
-  brainCompound: 42,
-  morningDone: false,
-  eveningDone: false,
-  why: 'Job Interview 💼',
-  dayNumber: 7,
+function buildDisplayLevels(mapLevels: MapLevel[]): DisplayLevel[] {
+  if (mapLevels.length === 0) {
+    return Object.keys(LEVEL_DISPLAY).map((k) => {
+      const lvl = parseInt(k)
+      const cfg = LEVEL_DISPLAY[lvl]
+      return {
+        level: lvl,
+        name: cfg.name,
+        totalDays: cfg.totalDays,
+        status: lvl === 1 ? 'active' : 'locked',
+        currentDay: 0,
+        color: cfg.color,
+        modules: [],
+      }
+    })
+  }
+
+  return mapLevels.map((apiLevel) => {
+    const cfg = LEVEL_DISPLAY[apiLevel.level]
+    const modulesMeta = MODULE_META[apiLevel.level] ?? {}
+
+    const completedCount = apiLevel.modules.filter((m) => m.status === 'complete').length
+    const activeCount = apiLevel.modules.filter((m) => m.status === 'active').length
+    const currentDay = completedCount * Math.floor(cfg.totalDays / (apiLevel.modules.length || 1))
+      + (activeCount > 0 ? Math.floor(cfg.totalDays / (apiLevel.modules.length || 1) / 2) : 0)
+
+    const modules: DisplayModule[] = apiLevel.modules.map((m: MapModule) => {
+      const meta = modulesMeta[m.module] ?? {
+        name: `Module ${m.module}`,
+        days: '',
+        description: '',
+      }
+      return {
+        name: meta.name,
+        status: m.status as 'complete' | 'active' | 'locked',
+        days: meta.days,
+        description: meta.description,
+      }
+    })
+
+    return {
+      level: apiLevel.level,
+      name: cfg.name,
+      totalDays: cfg.totalDays,
+      status: apiLevel.status as NodeStatus,
+      currentDay,
+      color: cfg.color,
+      modules,
+    }
+  })
+}
+
+function buildPaths(mapLevels: MapLevel[]): PathDef[] {
+  const pairs = [
+    [1, 2], [2, 3], [3, 4], [4, 5], [5, 6],
+  ]
+  return pairs.map(([from, to]) => {
+    const fromLevel = mapLevels.find((l) => l.level === from)
+    let status: PathStatus = 'locked'
+    if (fromLevel) {
+      if (fromLevel.status === 'complete') status = 'complete'
+      else if (fromLevel.status === 'active') status = 'upcoming'
+    }
+    return { from, to, status }
+  })
 }
 
 /* ─────────────────────────────────────────
@@ -81,7 +173,16 @@ const DASHBOARD = {
 ───────────────────────────────────────── */
 export default function MasteryMap() {
   const navigate = useNavigate()
-  const [selectedLevel, setSelectedLevel] = useState<Level | null>(null)
+  const [selectedLevel, setSelectedLevel] = useState<DisplayLevel | null>(null)
+
+  const { mapLevels, loadMasteryMap } = useProgressStore()
+
+  useEffect(() => {
+    loadMasteryMap()
+  }, [loadMasteryMap])
+
+  const displayLevels = buildDisplayLevels(mapLevels)
+  const paths = buildPaths(mapLevels)
 
   return (
     <div className="flex flex-col md:flex-row h-screen bg-bg-primary overflow-hidden font-body">
@@ -95,20 +196,17 @@ export default function MasteryMap() {
           <span className="font-display font-bold text-lg text-text-primary">
             English<span className="text-brand-red">OS</span>
           </span>
-          <div className="flex items-center gap-3">
-            <Badge variant="red" size="sm">🔥 {DASHBOARD.streak}-day streak</Badge>
-            <Badge variant="muted" size="sm">Day {DASHBOARD.dayNumber}</Badge>
-          </div>
+          <TopBarStats />
         </div>
 
         {/* Desktop Z-pattern map — hidden on mobile */}
         <div className="hidden md:block absolute inset-0 pt-16 pb-4">
-          <DesktopMap levels={LEVELS} paths={PATHS} onSelect={setSelectedLevel} />
+          <DesktopMap levels={displayLevels} paths={paths} onSelect={setSelectedLevel} />
         </div>
 
         {/* Mobile vertical map */}
         <div className="md:hidden absolute inset-0 pt-16 pb-[200px] overflow-y-auto">
-          <MobileMap levels={LEVELS} onSelect={setSelectedLevel} />
+          <MobileMap levels={displayLevels} onSelect={setSelectedLevel} />
         </div>
       </div>
 
@@ -136,21 +234,30 @@ export default function MasteryMap() {
 }
 
 /* ─────────────────────────────────────────
-   Map background — CSS gradients + shapes
+   Top bar streak / day badge
+───────────────────────────────────────── */
+function TopBarStats() {
+  const { streak, learnerProfile } = useProgressStore()
+  const dayNumber = learnerProfile?.dayNumber ?? 0
+  return (
+    <div className="flex items-center gap-3">
+      <Badge variant="red" size="sm">🔥 {streak}-day streak</Badge>
+      {dayNumber > 0 && <Badge variant="muted" size="sm">Day {dayNumber}</Badge>}
+    </div>
+  )
+}
+
+/* ─────────────────────────────────────────
+   Map background
 ───────────────────────────────────────── */
 function MapBackground() {
   return (
     <div className="absolute inset-0 overflow-hidden pointer-events-none" aria-hidden>
-      {/* Deep background */}
       <div className="absolute inset-0 bg-bg-primary" />
-
-      {/* Subtle radial glow in center */}
       <div
         className="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 w-[700px] h-[500px] opacity-10 rounded-full"
         style={{ background: 'radial-gradient(ellipse, #4A9EFF 0%, transparent 65%)', filter: 'blur(80px)' }}
       />
-
-      {/* Grid lines — simulated map grid */}
       <svg className="absolute inset-0 w-full h-full opacity-[0.04]" xmlns="http://www.w3.org/2000/svg">
         <defs>
           <pattern id="grid" width="60" height="60" patternUnits="userSpaceOnUse">
@@ -159,8 +266,6 @@ function MapBackground() {
         </defs>
         <rect width="100%" height="100%" fill="url(#grid)" />
       </svg>
-
-      {/* Decorative geometric shapes */}
       <div className="absolute top-[8%] left-[10%] w-48 h-32 rounded-2xl border border-border-subtle/30 opacity-20 rotate-12" />
       <div className="absolute top-[40%] right-[8%] w-32 h-20 rounded-xl border border-border-subtle/20 opacity-15 -rotate-6" />
       <div className="absolute bottom-[15%] left-[20%] w-24 h-24 rounded-full border border-border-subtle/20 opacity-20" />
@@ -173,13 +278,12 @@ function MapBackground() {
    Desktop Z-pattern map
 ───────────────────────────────────────── */
 function DesktopMap({ levels, paths, onSelect }: {
-  levels: Level[]
+  levels: DisplayLevel[]
   paths: PathDef[]
-  onSelect: (l: Level) => void
+  onSelect: (l: DisplayLevel) => void
 }) {
   return (
     <div className="relative w-full h-full max-w-2xl mx-auto px-8">
-      {/* SVG path overlay */}
       <svg
         className="absolute inset-0 w-full h-full pointer-events-none"
         viewBox="0 0 100 100"
@@ -199,7 +303,6 @@ function DesktopMap({ levels, paths, onSelect }: {
         })}
       </svg>
 
-      {/* Nodes */}
       {levels.map((lvl) => {
         const pos = DESKTOP_POS[lvl.level]
         return (
@@ -230,7 +333,7 @@ function DesktopMap({ levels, paths, onSelect }: {
 /* ─────────────────────────────────────────
    Mobile vertical map
 ───────────────────────────────────────── */
-function MobileMap({ levels, onSelect }: { levels: Level[]; onSelect: (l: Level) => void }) {
+function MobileMap({ levels, onSelect }: { levels: DisplayLevel[]; onSelect: (l: DisplayLevel) => void }) {
   return (
     <div className="flex flex-col items-center gap-0 px-6 py-6">
       {levels.map((lvl, i) => (
@@ -250,8 +353,6 @@ function MobileMap({ levels, onSelect }: { levels: Level[]; onSelect: (l: Level)
               onClick={() => (lvl.status !== 'locked') && onSelect(lvl)}
             />
           </motion.div>
-
-          {/* Vertical connector */}
           {i < levels.length - 1 && (
             <div className="w-0.5 h-10 my-1">
               <motion.div
@@ -271,10 +372,12 @@ function MobileMap({ levels, onSelect }: { levels: Level[]; onSelect: (l: Level)
    Dashboard Panel
 ───────────────────────────────────────── */
 function DashboardPanel({ onStartMission }: { onStartMission: () => void }) {
-  const { streak, brainCompound, morningDone, eveningDone, why } = DASHBOARD
-  const { batmanModeActive, batmanSkipUsedThisWeek, setBatmanState } = useProgressStore()
+  const { streak, brainCompoundPct, todayMissions, myWhy, batmanModeActive, batmanSkipUsedThisWeek, setBatmanState } = useProgressStore()
   const [skipLoading, setSkipLoading] = useState(false)
   const [skipError, setSkipError] = useState<string | null>(null)
+
+  const morningDone = todayMissions?.morning?.status === 'COMPLETE'
+  const eveningDone = todayMissions?.evening?.status === 'COMPLETE'
 
   async function handleBatmanSkip() {
     setSkipLoading(true)
@@ -295,7 +398,6 @@ function DashboardPanel({ onStartMission }: { onStartMission: () => void }) {
       md:border-t-0 md:border-l-0 md:h-full
       p-4 flex flex-col gap-4
     ">
-      {/* Desktop header */}
       <div className="hidden md:block pt-2">
         <p className="text-xs font-mono text-text-muted uppercase tracking-widest">Today's Panel</p>
       </div>
@@ -312,7 +414,7 @@ function DashboardPanel({ onStartMission }: { onStartMission: () => void }) {
         <Badge variant="red" size="sm">Active</Badge>
       </div>
 
-      {/* Batman Mode badge + skip controls */}
+      {/* Batman Mode */}
       {batmanModeActive && (
         <motion.div
           initial={{ opacity: 0, y: -8 }}
@@ -320,31 +422,21 @@ function DashboardPanel({ onStartMission }: { onStartMission: () => void }) {
           transition={{ duration: 0.4, ease: [0.22, 1, 0.36, 1] }}
           className="flex flex-col gap-2"
         >
-          {/* Badge */}
           <div
             className="flex items-center gap-2 px-3 py-2 rounded-xl border"
-            style={{
-              background: 'rgba(168,85,247,0.08)',
-              borderColor: 'rgba(168,85,247,0.35)',
-            }}
+            style={{ background: 'rgba(168,85,247,0.08)', borderColor: 'rgba(168,85,247,0.35)' }}
           >
             <motion.span
               className="text-base shrink-0"
               animate={{ filter: ['drop-shadow(0 0 0px #A855F7)', 'drop-shadow(0 0 8px #A855F7)', 'drop-shadow(0 0 0px #A855F7)'] }}
               transition={{ duration: 2.5, repeat: Infinity }}
-            >
-              🦇
-            </motion.span>
-            {/* Shield icon */}
+            >🦇</motion.span>
             <svg width="12" height="12" viewBox="0 0 24 24" fill="none" className="shrink-0" style={{ color: '#A855F7' }}>
               <path d="M12 2L3 7v5c0 5.25 3.75 10.15 9 11.35C17.25 22.15 21 17.25 21 12V7L12 2z" fill="currentColor" opacity="0.7" />
             </svg>
-            <span className="text-xs font-mono font-semibold" style={{ color: '#A855F7' }}>
-              Batman Mode Active
-            </span>
+            <span className="text-xs font-mono font-semibold" style={{ color: '#A855F7' }}>Batman Mode Active</span>
           </div>
 
-          {/* Skip day control */}
           {batmanSkipUsedThisWeek ? (
             <div className="flex items-center gap-2 px-3 py-2 rounded-xl border border-border-subtle bg-bg-tertiary">
               <svg width="12" height="12" viewBox="0 0 24 24" fill="none" className="shrink-0 text-text-muted">
@@ -357,21 +449,15 @@ function DashboardPanel({ onStartMission }: { onStartMission: () => void }) {
               onClick={handleBatmanSkip}
               disabled={skipLoading}
               className="flex items-center justify-center gap-2 px-3 py-2 rounded-xl border text-xs font-body font-medium transition-all duration-150 hover:brightness-110 active:scale-95 disabled:opacity-50"
-              style={{
-                background: 'rgba(168,85,247,0.12)',
-                borderColor: 'rgba(168,85,247,0.4)',
-                color: '#A855F7',
-              }}
+              style={{ background: 'rgba(168,85,247,0.12)', borderColor: 'rgba(168,85,247,0.4)', color: '#A855F7' }}
             >
               <svg width="11" height="11" viewBox="0 0 24 24" fill="none" className="shrink-0">
                 <path d="M12 2L3 7v5c0 5.25 3.75 10.15 9 11.35C17.25 22.15 21 17.25 21 12V7L12 2z" fill="currentColor" />
               </svg>
-              {skipLoading ? 'Using...' : 'Use Your Skip Day'}
+              {skipLoading ? 'Using…' : 'Use Your Skip Day'}
             </button>
           )}
-          {skipError && (
-            <p className="text-xs text-brand-red font-mono">{skipError}</p>
-          )}
+          {skipError && <p className="text-xs text-brand-red font-mono">{skipError}</p>}
         </motion.div>
       )}
 
@@ -381,8 +467,8 @@ function DashboardPanel({ onStartMission }: { onStartMission: () => void }) {
           <span className="text-sm">🧠</span>
           <p className="text-xs font-body font-medium text-text-secondary">Brain Compound Meter</p>
         </div>
-        <ProgressBar value={brainCompound} color="#4A9EFF" />
-        <p className="text-xs text-text-muted font-mono mt-1">{brainCompound}% knowledge compounded</p>
+        <ProgressBar value={brainCompoundPct} color="#4A9EFF" />
+        <p className="text-xs text-text-muted font-mono mt-1">{Math.round(brainCompoundPct)}% knowledge compounded</p>
       </div>
 
       {/* Today's missions */}
@@ -393,12 +479,13 @@ function DashboardPanel({ onStartMission }: { onStartMission: () => void }) {
       </div>
 
       {/* My Why */}
-      <div className="bg-bg-tertiary border border-border-subtle rounded-xl px-3 py-2.5">
-        <p className="text-xs font-mono text-text-muted mb-0.5">Your Why</p>
-        <p className="text-sm font-body text-text-secondary">{why}</p>
-      </div>
+      {myWhy && (
+        <div className="bg-bg-tertiary border border-border-subtle rounded-xl px-3 py-2.5">
+          <p className="text-xs font-mono text-text-muted mb-0.5">Your Why</p>
+          <p className="text-sm font-body text-text-secondary">{myWhy}</p>
+        </div>
+      )}
 
-      {/* CTA */}
       <Button variant="primary" size="md" className="w-full" onClick={onStartMission}>
         Continue Mission →
       </Button>
@@ -432,13 +519,11 @@ function MissionRow({ label, done, time }: { label: string; done: boolean; time:
 /* ─────────────────────────────────────────
    Level Detail Drawer
 ───────────────────────────────────────── */
-function LevelDrawer({ level, onClose }: { level: Level; onClose: () => void }) {
+function LevelDrawer({ level, onClose }: { level: DisplayLevel; onClose: () => void }) {
   const isActive = level.status === 'active'
-  const isComplete = level.status === 'complete'
 
   return (
     <>
-      {/* Backdrop */}
       <motion.div
         key="drawer-backdrop"
         initial={{ opacity: 0 }}
@@ -447,8 +532,6 @@ function LevelDrawer({ level, onClose }: { level: Level; onClose: () => void }) 
         className="fixed inset-0 z-40 bg-black/50 backdrop-blur-sm"
         onClick={onClose}
       />
-
-      {/* Drawer panel */}
       <motion.div
         key="drawer-panel"
         initial={{ x: '100%' }}
@@ -457,14 +540,10 @@ function LevelDrawer({ level, onClose }: { level: Level; onClose: () => void }) 
         transition={{ type: 'spring', stiffness: 340, damping: 32 }}
         className="fixed top-0 right-0 bottom-0 z-50 w-full max-w-sm bg-bg-secondary border-l border-border-subtle flex flex-col shadow-2xl"
       >
-        {/* Header */}
         <div className="flex items-center justify-between px-5 pt-5 pb-4 border-b border-border-subtle shrink-0">
           <div>
             <div className="flex items-center gap-2 mb-1">
-              <span
-                className="w-3 h-3 rounded-full shrink-0"
-                style={{ backgroundColor: level.color }}
-              />
+              <span className="w-3 h-3 rounded-full shrink-0" style={{ backgroundColor: level.color }} />
               <span className="text-xs font-mono text-text-muted">Level {level.level}</span>
             </div>
             <h2 className="font-display text-xl font-bold text-text-primary">{level.name}</h2>
@@ -480,18 +559,16 @@ function LevelDrawer({ level, onClose }: { level: Level; onClose: () => void }) 
           </button>
         </div>
 
-        {/* Progress (active level) */}
         {isActive && (
           <div className="px-5 py-4 border-b border-border-subtle shrink-0">
             <ProgressBar
-              value={Math.round((level.currentDay / level.totalDays) * 100)}
+              value={level.currentDay > 0 ? Math.round((level.currentDay / level.totalDays) * 100) : 0}
               color={level.color}
               label={`Day ${level.currentDay} of ${level.totalDays}`}
             />
           </div>
         )}
 
-        {/* Modules list */}
         <div className="flex-1 overflow-y-auto px-5 py-4 flex flex-col gap-3">
           <p className="text-xs font-mono text-text-muted uppercase tracking-wider mb-1">Modules</p>
 
@@ -526,11 +603,7 @@ function LevelDrawer({ level, onClose }: { level: Level; onClose: () => void }) 
                     </svg>
                   )}
                   {mod.status === 'active' && (
-                    <motion.div
-                      className="w-2 h-2 rounded-full bg-brand-red"
-                      animate={{ scale: [1, 1.4, 1] }}
-                      transition={{ duration: 1.2, repeat: Infinity }}
-                    />
+                    <motion.div className="w-2 h-2 rounded-full bg-brand-red" animate={{ scale: [1, 1.4, 1] }} transition={{ duration: 1.2, repeat: Infinity }} />
                   )}
                   {mod.status === 'locked' && (
                     <svg width="9" height="9" viewBox="0 0 24 24" fill="none" stroke="#6A6A8A" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
@@ -539,28 +612,18 @@ function LevelDrawer({ level, onClose }: { level: Level; onClose: () => void }) 
                   )}
                 </div>
                 <div className="flex-1 min-w-0">
-                  <p className={`text-sm font-body font-medium leading-snug ${mod.status === 'locked' ? 'text-text-muted' : 'text-text-primary'}`}>
-                    {mod.name}
-                  </p>
-                  <p className="text-xs text-text-muted mt-0.5">{mod.days}</p>
-                  <p className="text-xs text-text-muted mt-1 leading-snug">{mod.description}</p>
+                  <div className="flex items-center justify-between gap-2 mb-0.5">
+                    <p className={`text-sm font-body font-medium truncate ${mod.status === 'complete' ? 'text-brand-green' : mod.status === 'active' ? 'text-text-primary' : 'text-text-muted'}`}>
+                      {mod.name}
+                    </p>
+                    {mod.days && <span className="text-[10px] font-mono text-text-muted shrink-0">{mod.days}</span>}
+                  </div>
+                  {mod.description && (
+                    <p className="text-xs font-body text-text-muted leading-relaxed">{mod.description}</p>
+                  )}
                 </div>
               </motion.div>
             ))
-          )}
-        </div>
-
-        {/* Footer CTA */}
-        <div className="px-5 pb-6 pt-4 border-t border-border-subtle shrink-0">
-          {isActive && (
-            <Button variant="primary" size="lg" className="w-full">
-              🚀 Continue Mission
-            </Button>
-          )}
-          {isComplete && (
-            <Button variant="secondary" size="lg" className="w-full">
-              📊 View Summary
-            </Button>
           )}
         </div>
       </motion.div>

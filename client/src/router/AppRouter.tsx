@@ -1,6 +1,7 @@
 import { useEffect } from 'react'
 import { BrowserRouter, Routes, Route, Navigate, Outlet } from 'react-router-dom'
 import { useAuthStore } from '@/stores/authStore'
+import { useProgressStore } from '@/stores/progressStore'
 import AppShell from '@/components/layout/AppShell'
 import BadgeToast from '@/components/ui/BadgeToast'
 
@@ -36,8 +37,6 @@ function LoadingScreen() {
 }
 
 /* ── Session bootstrap ──────────────────────────────────────────────── */
-// Called once at app mount — restores session from the refresh token
-// stored in localStorage without blocking the initial render.
 function SessionLoader() {
   const loadFromStorage = useAuthStore((s) => s.loadFromStorage)
   useEffect(() => { loadFromStorage() }, [loadFromStorage])
@@ -45,7 +44,6 @@ function SessionLoader() {
 }
 
 /* ── Public route ───────────────────────────────────────────────────── */
-// Redirects already-authenticated users to /map
 function PublicRoute() {
   const { isAuthenticated, isLoading } = useAuthStore()
   if (isLoading) return <LoadingScreen />
@@ -54,11 +52,16 @@ function PublicRoute() {
 }
 
 /* ── Protected route ────────────────────────────────────────────────── */
-// 1. Shows spinner while the session is being bootstrapped
-// 2. Redirects unauthenticated users to /login
-// 3. Redirects authenticated-but-not-onboarded users to /onboarding
 function ProtectedRoute() {
   const { isAuthenticated, isLoading, user } = useAuthStore()
+  const loadDashboard = useProgressStore((s) => s.loadDashboard)
+
+  useEffect(() => {
+    if (isAuthenticated) {
+      loadDashboard()
+    }
+  }, [isAuthenticated, loadDashboard])
+
   if (isLoading) return <LoadingScreen />
   if (!isAuthenticated) return <Navigate to="/login" replace />
   if (user && !user.onboardingComplete) return <Navigate to="/onboarding" replace />
@@ -70,8 +73,6 @@ function ProtectedRoute() {
 }
 
 /* ── Onboarding route ───────────────────────────────────────────────── */
-// Accessible only to authenticated users who haven't completed onboarding.
-// Fully-onboarded users who navigate here are sent to /map.
 function OnboardingRoute() {
   const { isAuthenticated, isLoading, user } = useAuthStore()
   if (isLoading) return <LoadingScreen />

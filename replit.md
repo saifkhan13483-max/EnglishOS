@@ -142,7 +142,7 @@ The router (`client/src/router/AppRouter.tsx`) uses React Router v6 with two rou
 |---|---|---|---|
 | `authStore` | `stores/authStore.ts` | `user`, `accessToken`, `isAuthenticated`, `isLoading` | `login`, `register`, `logout`, `refreshSession` |
 | `missionStore` | `stores/missionStore.ts` | `missionId`, `currentMission`, `currentPhase`, `moduleContent`, `feynmanResult`, `xpEarned`, `isComplete`, `isLoading` | `startMission`, `loadDailyQueue`, `loadModuleContent`, `completeMission`, `submitFeynmanResponse` |
-| `progressStore` | `stores/progressStore.ts` | `learnerProfile`, `levelProgress`, `totalXP`, `streak`, `brainCompoundPct`, `badges` | `setLearnerProfile`, `setStats` |
+| `progressStore` | `stores/progressStore.ts` | `learnerProfile`, `levelProgress`, `totalXP`, `streak`, `brainCompoundPct`, `badges`, `mapLevels`, `todayMissions`, `myWhy`, `feynmanScoreTrend`, `levelProgressList`, `totalDaysActive`, `serverBadges` | `setLearnerProfile`, `setStats`, `loadDashboard`, `loadMasteryMap`, `loadStats` |
 | `srStore` | `stores/srStore.ts` | `dailyQueue` (SRCard[]), `reviewedToday`, `pendingCount` | `setDailyQueue`, `markReviewed` |
 | `uiStore` | `stores/uiStore.ts` | `romanUrduEnabled`, `sidebarOpen`, `activeModal`, `onboardingData` (persisted) | `setRomanUrduEnabled`, `setSidebarOpen` |
 

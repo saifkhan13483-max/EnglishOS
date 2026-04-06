@@ -1,4 +1,4 @@
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { motion } from 'framer-motion'
 import {
@@ -9,46 +9,54 @@ import Badge from '@/components/ui/Badge'
 import BrainCompoundMeter from '@/components/gamification/BrainCompoundMeter'
 import { useProgressStore } from '@/stores/progressStore'
 
-const LEVELS = [
-  {
-    level: 1, name: 'Base Camp',   color: '#E94560', totalModules: 5, completedModules: 2,
-    modules: [
-      { name: 'Alphabets & Sounds', done: true  },
-      { name: 'Core 100 Words',     done: true  },
-      { name: 'Basic Sentences',    done: false },
-      { name: 'Speaking Practice',  done: false },
-      { name: 'Level 1 Gate',       done: false },
-    ],
-  },
-  { level: 2, name: 'Village',    color: '#F5B014', totalModules: 5, completedModules: 0, modules: [] },
-  { level: 3, name: 'Town',       color: '#4A9EFF', totalModules: 5, completedModules: 0, modules: [] },
-  { level: 4, name: 'City',       color: '#2ECC71', totalModules: 6, completedModules: 0, modules: [] },
-  { level: 5, name: 'Capital',    color: '#A855F7', totalModules: 6, completedModules: 0, modules: [] },
-  { level: 6, name: 'World Stage',color: '#F97316', totalModules: 6, completedModules: 0, modules: [] },
-]
+/* ─────────────────────────────────────────
+   Static config
+───────────────────────────────────────── */
 
-// 30-day Feynman clarity score trend
-const FEYNMAN_DATA = Array.from({ length: 30 }, (_, i) => ({
-  day: `D${i + 13}`,
-  score: Math.min(100, Math.round(40 + i * 1.2 + Math.sin(i * 0.7) * 8 + (i > 20 ? i * 0.5 : 0))),
-}))
+const LEVEL_DISPLAY: Record<number, { name: string; color: string; totalModules: number }> = {
+  1: { name: 'Base Camp',   color: '#E94560', totalModules: 4 },
+  2: { name: 'Village',     color: '#F5B014', totalModules: 5 },
+  3: { name: 'Town',        color: '#4A9EFF', totalModules: 5 },
+  4: { name: 'City',        color: '#2ECC71', totalModules: 6 },
+  5: { name: 'Capital',     color: '#A855F7', totalModules: 6 },
+  6: { name: 'World Stage', color: '#F97316', totalModules: 6 },
+}
 
-const BADGES = [
-  { id: 1,  icon: '🌅', name: 'First Mission',    date: 'Mar 24',  earned: true  },
-  { id: 2,  icon: '🔥', name: '7-Day Streak',     date: 'Mar 31',  earned: true  },
-  { id: 3,  icon: '📖', name: 'Word Wizard',      date: 'Apr 01',  earned: true  },
-  { id: 4,  icon: '🧠', name: 'Feynman Initiate', date: 'Apr 02',  earned: true  },
-  { id: 5,  icon: '⚡', name: 'Speed Run',        date: 'Apr 04',  earned: true  },
-  { id: 6,  icon: '🏆', name: '30-Day Warrior',   date: null,      earned: false },
-  { id: 7,  icon: '💬', name: 'Conversation King', date: null,     earned: false },
-  { id: 8,  icon: '🎯', name: 'Level Gate Hero',  date: null,      earned: false },
-  { id: 9,  icon: '🌍', name: 'World Stage',      date: null,      earned: false },
-  { id: 10, icon: '🦅', name: 'Eagle Eye',        date: null,      earned: false },
-  { id: 11, icon: '📚', name: 'Scholar',          date: null,      earned: false },
-  { id: 12, icon: '🚀', name: 'Polymath',         date: null,      earned: false },
-]
+const MODULE_NAMES: Record<number, Record<number, string>> = {
+  1: { 1: 'Alphabets & Sounds', 2: 'Core 100 Words', 3: 'Basic Sentences', 4: 'Speaking Practice' },
+  2: { 1: 'Present Tense', 2: 'Past Tense', 3: 'Future Tense', 4: 'Daily Conversations', 5: 'Level 2 Gate' },
+  3: { 1: 'All 12 Tenses', 2: '500 Core Words', 3: 'Short Stories', 4: 'Listening Practice', 5: 'Level 3 Gate' },
+  4: { 1: 'Reading Skills', 2: 'Writing Skills', 3: 'Complex Sentences', 4: 'Speaking Confidence', 5: 'Idioms & Phrases', 6: 'Level 4 Gate' },
+  5: { 1: 'Advanced Grammar', 2: 'Phrasal Verbs', 3: 'Fluency Drills', 4: 'Job Interview Prep', 5: 'Business English', 6: 'Level 5 Gate' },
+  6: { 1: 'Professional Writing', 2: 'Public Speaking', 3: 'Advanced Vocabulary', 4: 'IELTS/Exam Prep', 5: 'Accent & Delivery', 6: 'Final Gate' },
+}
 
-// ── Custom tooltip for recharts ───────────────────────────────────────────────
+const BADGE_META: Record<string, { icon: string; name: string }> = {
+  MODULE_COMPLETE_L1_M1: { icon: '🔤', name: 'Alphabet Master' },
+  MODULE_COMPLETE_L1_M2: { icon: '📚', name: 'Word Collector' },
+  MODULE_COMPLETE_L1_M3: { icon: '🔧', name: 'Sentence Builder' },
+  MODULE_COMPLETE_L1_M4: { icon: '💬', name: 'Phrase Master' },
+  LEVEL_COMPLETE_L1:     { icon: '🏔️', name: 'Base Camp Conquered' },
+  STREAK_7:              { icon: '🔥', name: 'Week Warrior' },
+  STREAK_30:             { icon: '⚡', name: 'Month Master' },
+  BATMAN_MODE:           { icon: '🦇', name: 'Batman Mode' },
+  FEYNMAN_FIRST:         { icon: '🧠', name: 'First Explainer' },
+  FEYNMAN_SCORE_90:      { icon: '💡', name: 'Clarity Champion' },
+  PERFECT_GATE:          { icon: '✨', name: 'First Try' },
+  LEADERBOARD_TOP3:      { icon: '🎤', name: 'Community Voice' },
+}
+
+const ALL_BADGE_TYPES = Object.keys(BADGE_META)
+
+/* ─────────────────────────────────────────
+   Helpers
+───────────────────────────────────────── */
+
+function formatChartDate(dateStr: string): string {
+  const d = new Date(dateStr)
+  return `${d.getMonth() + 1}/${d.getDate()}`
+}
+
 function FeynmanTooltip({ active, payload, label }: {
   active?: boolean; payload?: { value: number }[]; label?: string
 }) {
@@ -61,7 +69,6 @@ function FeynmanTooltip({ active, payload, label }: {
   )
 }
 
-// ── Stat card ─────────────────────────────────────────────────────────────────
 function StatCard({ icon, label, value, suffix, color, delay }: {
   icon: string; label: string; value: number; suffix: string; color: string; delay: number
 }) {
@@ -81,20 +88,88 @@ function StatCard({ icon, label, value, suffix, color, delay }: {
   )
 }
 
-// ── Page ──────────────────────────────────────────────────────────────────────
+/* ─────────────────────────────────────────
+   Page
+───────────────────────────────────────── */
 export default function Progress() {
   const navigate = useNavigate()
   const [expandedLevel, setExpandedLevel] = useState<number | null>(1)
-  const { streak, totalXP, brainCompoundPct, learnerProfile } = useProgressStore()
 
-  const daysActive = learnerProfile?.dayNumber ?? 0
+  const {
+    streak, totalXP, brainCompoundPct, totalDaysActive,
+    feynmanScoreTrend, serverBadges, levelProgressList,
+    loadStats, mapLevels, loadMasteryMap,
+  } = useProgressStore()
+
+  useEffect(() => {
+    loadStats()
+    if (mapLevels.length === 0) loadMasteryMap()
+  }, [loadStats, loadMasteryMap, mapLevels.length])
 
   const STATS = [
-    { icon: '📅', label: 'Days Active',    value: daysActive,                         suffix: ' days', color: '#4A9EFF' },
-    { icon: '🔥', label: 'Current Streak', value: streak,                             suffix: 'd',     color: '#E94560' },
-    { icon: '⭐', label: 'Total XP',       value: totalXP,                            suffix: ' XP',   color: '#F5B014' },
-    { icon: '🧠', label: 'Brain Compound', value: Math.round(brainCompoundPct),       suffix: '%',     color: '#2ECC71' },
+    { icon: '📅', label: 'Days Active',    value: totalDaysActive,              suffix: 'd',   color: '#4A9EFF' },
+    { icon: '🔥', label: 'Current Streak', value: streak,                       suffix: 'd',   color: '#E94560' },
+    { icon: '⭐', label: 'Total XP',       value: totalXP,                      suffix: ' XP', color: '#F5B014' },
+    { icon: '🧠', label: 'Brain Compound', value: Math.round(brainCompoundPct), suffix: '%',   color: '#2ECC71' },
   ]
+
+  // Build chart data
+  const chartData = feynmanScoreTrend.map((p) => ({
+    day: formatChartDate(p.date),
+    score: Math.round(p.score),
+  }))
+
+  // Feynman trend badge label
+  const feynmanTrendLabel = (() => {
+    if (chartData.length < 2) return null
+    const diff = chartData[chartData.length - 1].score - chartData[0].score
+    return diff >= 0 ? `📈 +${diff} pts` : `📉 ${diff} pts`
+  })()
+
+  // Build level progress from levelProgressList
+  const levelRows = Object.entries(LEVEL_DISPLAY).map(([k, cfg]) => {
+    const lvl = parseInt(k)
+    const records = levelProgressList.filter((r) => r.level === lvl && r.module > 0)
+    const completedModules = records.filter((r) => r.status === 'COMPLETE').length
+    const hasActive = records.some((r) => r.status === 'ACTIVE')
+
+    // Determine level status from mapLevels if available, else derive
+    const mapEntry = mapLevels.find((ml) => ml.level === lvl)
+    const levelStatus = mapEntry?.status
+      ?? (completedModules >= cfg.totalModules ? 'complete'
+        : hasActive || records.length > 0 ? 'active'
+        : 'locked')
+
+    const isLocked = levelStatus === 'locked'
+
+    const moduleItems = Array.from({ length: cfg.totalModules }, (_, i) => {
+      const modNum = i + 1
+      const rec = records.find((r) => r.module === modNum)
+      return {
+        num: modNum,
+        name: MODULE_NAMES[lvl]?.[modNum] ?? `Module ${modNum}`,
+        done: rec?.status === 'COMPLETE',
+      }
+    })
+
+    const pct = cfg.totalModules > 0 ? Math.round((completedModules / cfg.totalModules) * 100) : 0
+
+    return { level: lvl, name: cfg.name, color: cfg.color, totalModules: cfg.totalModules, completedModules, isLocked, pct, moduleItems }
+  })
+
+  // Badge wall — merge earned badges with all possible badge types
+  const earnedSet = new Map(serverBadges.map((b) => [b.badgeType, b]))
+  const badgeWall = ALL_BADGE_TYPES.map((type) => {
+    const meta = BADGE_META[type]
+    const earned = earnedSet.get(type)
+    return {
+      id: type,
+      icon: meta.icon,
+      name: meta.name,
+      date: earned ? new Date(earned.earnedAt).toLocaleDateString('en-US', { month: 'short', day: 'numeric' }) : null,
+      earned: !!earned,
+    }
+  })
 
   return (
     <div className="min-h-screen bg-bg-primary font-body">
@@ -125,7 +200,7 @@ export default function Progress() {
           </div>
         </section>
 
-        {/* ── Brain Compound Meter (full) ── */}
+        {/* ── Brain Compound Meter ── */}
         <motion.section
           initial={{ opacity: 0, y: 16 }}
           animate={{ opacity: 1, y: 0 }}
@@ -144,19 +219,14 @@ export default function Progress() {
         >
           <div className="flex items-center justify-between mb-4">
             <p className="text-xs font-mono text-text-muted uppercase tracking-widest">Mastery Map</p>
-            <button
-              onClick={() => navigate('/map')}
-              className="text-xs text-brand-blue hover:underline font-body"
-            >
+            <button onClick={() => navigate('/map')} className="text-xs text-brand-blue hover:underline font-body">
               View Full Map →
             </button>
           </div>
           <div className="relative bg-bg-primary border border-border-subtle rounded-xl p-4 overflow-hidden">
-            {/* Mini map grid */}
             <div className="grid grid-cols-3 gap-3">
-              {LEVELS.map((lvl) => {
-                const pct = lvl.totalModules > 0 ? Math.round((lvl.completedModules / lvl.totalModules) * 100) : 0
-                const isActive = lvl.level === 1
+              {levelRows.map((lvl) => {
+                const isActive = !lvl.isLocked && lvl.completedModules < lvl.totalModules
                 return (
                   <div
                     key={lvl.level}
@@ -166,7 +236,7 @@ export default function Progress() {
                     ].join(' ')}
                   >
                     <div className="flex items-center gap-1.5">
-                      <span className="w-2 h-2 rounded-full shrink-0" style={{ backgroundColor: lvl.color }} />
+                      <span className="w-2 h-2 rounded-full shrink-0" style={{ backgroundColor: lvl.isLocked ? '#2A2A3E' : lvl.color }} />
                       <span className="text-xs font-mono text-text-muted">L{lvl.level}</span>
                       {isActive && (
                         <motion.span
@@ -178,10 +248,7 @@ export default function Progress() {
                     </div>
                     <p className="text-xs font-body font-medium text-text-secondary leading-tight">{lvl.name}</p>
                     <div className="h-1 bg-bg-secondary rounded-full overflow-hidden">
-                      <div
-                        className="h-full rounded-full transition-all duration-700"
-                        style={{ width: `${pct}%`, backgroundColor: lvl.color }}
-                      />
+                      <div className="h-full rounded-full transition-all duration-700" style={{ width: `${lvl.pct}%`, backgroundColor: lvl.isLocked ? '#2A2A3E' : lvl.color }} />
                     </div>
                   </div>
                 )
@@ -198,28 +265,22 @@ export default function Progress() {
         >
           <p className="text-xs font-mono text-text-muted uppercase tracking-widest mb-3">Level Progress</p>
           <div className="flex flex-col gap-3">
-            {LEVELS.map((lvl) => {
-              const pct = lvl.totalModules > 0 ? Math.round((lvl.completedModules / lvl.totalModules) * 100) : 0
+            {levelRows.map((lvl) => {
               const isExpanded = expandedLevel === lvl.level
-              const isLocked = lvl.level > 1
-
               return (
-                <div
-                  key={lvl.level}
-                  className="bg-bg-secondary border border-border-subtle rounded-2xl overflow-hidden"
-                >
+                <div key={lvl.level} className="bg-bg-secondary border border-border-subtle rounded-2xl overflow-hidden">
                   <button
                     className="w-full flex items-center gap-3 px-4 py-3.5 hover:bg-bg-tertiary transition-colors text-left"
                     onClick={() => setExpandedLevel(isExpanded ? null : lvl.level)}
                   >
-                    <span className="w-3 h-3 rounded-full shrink-0" style={{ backgroundColor: isLocked ? '#2A2A3E' : lvl.color }} />
+                    <span className="w-3 h-3 rounded-full shrink-0" style={{ backgroundColor: lvl.isLocked ? '#2A2A3E' : lvl.color }} />
                     <div className="flex-1 min-w-0">
                       <div className="flex items-center justify-between mb-1.5">
                         <div className="flex items-center gap-2">
                           <span className="text-sm font-body font-medium text-text-primary">
                             Level {lvl.level} — {lvl.name}
                           </span>
-                          {isLocked && (
+                          {lvl.isLocked && (
                             <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="#6A6A8A" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
                               <rect x="3" y="11" width="18" height="11" rx="2" /><path d="M7 11V7a5 5 0 0 1 10 0v4" />
                             </svg>
@@ -229,7 +290,7 @@ export default function Progress() {
                           {lvl.completedModules}/{lvl.totalModules}
                         </span>
                       </div>
-                      <ProgressBar value={pct} color={isLocked ? '#2A2A3E' : lvl.color} animated={false} />
+                      <ProgressBar value={lvl.pct} color={lvl.isLocked ? '#2A2A3E' : lvl.color} animated={false} />
                     </div>
                     <svg
                       className={`shrink-0 transition-transform duration-200 text-text-muted ${isExpanded ? 'rotate-180' : ''}`}
@@ -240,7 +301,7 @@ export default function Progress() {
                     </svg>
                   </button>
 
-                  {isExpanded && lvl.modules.length > 0 && (
+                  {isExpanded && !lvl.isLocked && lvl.moduleItems.length > 0 && (
                     <motion.div
                       initial={{ height: 0, opacity: 0 }}
                       animate={{ height: 'auto', opacity: 1 }}
@@ -248,8 +309,8 @@ export default function Progress() {
                       transition={{ duration: 0.2 }}
                       className="border-t border-border-subtle px-4 pb-3 pt-2 flex flex-col gap-1.5"
                     >
-                      {lvl.modules.map((mod) => (
-                        <div key={mod.name} className="flex items-center gap-2.5">
+                      {lvl.moduleItems.map((mod) => (
+                        <div key={mod.num} className="flex items-center gap-2.5">
                           <span className={`w-4 h-4 rounded-full border flex items-center justify-center shrink-0 ${mod.done ? 'bg-brand-green border-brand-green' : 'border-border-strong'}`}>
                             {mod.done && (
                               <svg width="8" height="8" viewBox="0 0 24 24" fill="none" stroke="white" strokeWidth="3.5" strokeLinecap="round" strokeLinejoin="round">
@@ -265,7 +326,7 @@ export default function Progress() {
                     </motion.div>
                   )}
 
-                  {isExpanded && isLocked && (
+                  {isExpanded && lvl.isLocked && (
                     <div className="border-t border-border-subtle px-4 py-3 text-center">
                       <p className="text-xs text-text-muted font-body">Complete Level {lvl.level - 1} to unlock</p>
                     </div>
@@ -288,37 +349,43 @@ export default function Progress() {
               <p className="text-xs font-mono text-text-muted uppercase tracking-widest mb-1">Feynman Score</p>
               <p className="text-sm text-text-secondary font-body">Clarity score over last 30 days</p>
             </div>
-            <Badge variant="blue" size="sm">📈 +18 pts</Badge>
+            {feynmanTrendLabel && <Badge variant="blue" size="sm">{feynmanTrendLabel}</Badge>}
           </div>
-          <div className="h-48 w-full min-w-0">
-            <ResponsiveContainer width="100%" height="100%" minHeight={192}>
-              <LineChart data={FEYNMAN_DATA} margin={{ top: 4, right: 4, bottom: 0, left: -20 }}>
-                <CartesianGrid strokeDasharray="3 3" stroke="#2A2A3E" vertical={false} />
-                <XAxis
-                  dataKey="day"
-                  tick={{ fill: '#6A6A8A', fontSize: 10, fontFamily: 'JetBrains Mono' }}
-                  tickLine={false}
-                  axisLine={false}
-                  interval={4}
-                />
-                <YAxis
-                  domain={[30, 100]}
-                  tick={{ fill: '#6A6A8A', fontSize: 10, fontFamily: 'JetBrains Mono' }}
-                  tickLine={false}
-                  axisLine={false}
-                />
-                <Tooltip content={<FeynmanTooltip />} cursor={{ stroke: '#2A2A3E' }} />
-                <Line
-                  type="monotone"
-                  dataKey="score"
-                  stroke="#4A9EFF"
-                  strokeWidth={2}
-                  dot={false}
-                  activeDot={{ r: 4, fill: '#4A9EFF', stroke: '#0A0A0F', strokeWidth: 2 }}
-                />
-              </LineChart>
-            </ResponsiveContainer>
-          </div>
+          {chartData.length === 0 ? (
+            <div className="h-48 flex items-center justify-center">
+              <p className="text-sm text-text-muted font-body">Complete your first Feynman Moment to see your score trend.</p>
+            </div>
+          ) : (
+            <div className="h-48 w-full min-w-0">
+              <ResponsiveContainer width="100%" height="100%" minHeight={192}>
+                <LineChart data={chartData} margin={{ top: 4, right: 4, bottom: 0, left: -20 }}>
+                  <CartesianGrid strokeDasharray="3 3" stroke="#2A2A3E" vertical={false} />
+                  <XAxis
+                    dataKey="day"
+                    tick={{ fill: '#6A6A8A', fontSize: 10, fontFamily: 'JetBrains Mono' }}
+                    tickLine={false}
+                    axisLine={false}
+                    interval={Math.max(0, Math.floor(chartData.length / 6) - 1)}
+                  />
+                  <YAxis
+                    domain={[30, 100]}
+                    tick={{ fill: '#6A6A8A', fontSize: 10, fontFamily: 'JetBrains Mono' }}
+                    tickLine={false}
+                    axisLine={false}
+                  />
+                  <Tooltip content={<FeynmanTooltip />} cursor={{ stroke: '#2A2A3E' }} />
+                  <Line
+                    type="monotone"
+                    dataKey="score"
+                    stroke="#4A9EFF"
+                    strokeWidth={2}
+                    dot={false}
+                    activeDot={{ r: 4, fill: '#4A9EFF', stroke: '#0A0A0F', strokeWidth: 2 }}
+                  />
+                </LineChart>
+              </ResponsiveContainer>
+            </div>
+          )}
         </motion.section>
 
         {/* ── Badge wall ── */}
@@ -330,11 +397,11 @@ export default function Progress() {
           <div className="flex items-center justify-between mb-3">
             <p className="text-xs font-mono text-text-muted uppercase tracking-widest">Badge Wall</p>
             <span className="text-xs font-mono text-brand-gold">
-              {BADGES.filter(b => b.earned).length}/{BADGES.length} earned
+              {badgeWall.filter(b => b.earned).length}/{badgeWall.length} earned
             </span>
           </div>
           <div className="grid grid-cols-4 sm:grid-cols-6 gap-3">
-            {BADGES.map((badge, i) => (
+            {badgeWall.map((badge, i) => (
               <motion.div
                 key={badge.id}
                 initial={{ opacity: 0, scale: 0.8 }}

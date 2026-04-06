@@ -203,6 +203,9 @@ export const useMissionStore = create<MissionStore>((set, get) => ({
         ...(profile ? { learnerProfile: { ...profile } } : {}),
       })
 
+      // Refresh dashboard state after mission completion
+      useProgressStore.getState().loadDashboard()
+
       set({
         isComplete: true,
         isLoading: false,

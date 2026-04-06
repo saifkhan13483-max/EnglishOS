@@ -1,37 +1,43 @@
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { motion, AnimatePresence } from 'framer-motion'
 import Modal from '@/components/ui/Modal'
 import Button from '@/components/ui/Button'
 import Badge from '@/components/ui/Badge'
+import { api } from '@/services/api'
 
-// ── Static mock data ──────────────────────────────────────────────────────────
+/* ─────────────────────────────────────────
+   Types
+───────────────────────────────────────── */
 
 interface LeaderEntry {
+  id: string
   rank: number
   name: string
-  module: string
+  module: number
+  prompt: string
+  responseText: string
   score: number
-  isMe?: boolean
+  upvoteCount: number
+  submittedAt: string
+  hasUpvoted: boolean
 }
 
-const WEEK_OF = 'April 05, 2026'
+interface ApiEntry {
+  id: string
+  week: string
+  module: number
+  prompt: string
+  responseText: string
+  clarityScore: number
+  upvoteCount: number
+  submittedAt: string
+  learnerName: string
+}
 
-const ENTRIES: LeaderEntry[] = [
-  { rank: 1, name: 'Fatima K.',   module: 'Basic Sentences — SVO Formula',    score: 97 },
-  { rank: 2, name: 'Ahmed R.',    module: 'Core 100 Words — Action Verbs',    score: 93 },
-  { rank: 3, name: 'Sara M.',     module: 'Alphabets & Sounds — Vowels',      score: 91 },
-  { rank: 4, name: 'Bilal A.',    module: 'Core 100 Words — Group D Nouns',   score: 84, isMe: true },
-  { rank: 5, name: 'Hassan T.',   module: 'Basic Sentences — Negatives',      score: 80 },
-  { rank: 6, name: 'Zara N.',     module: 'Core 100 Words — Be Verbs',        score: 76 },
-  { rank: 7, name: 'Omar F.',     module: 'Core 100 Words — Connectors',      score: 74 },
-  { rank: 8, name: 'Mehwish S.',  module: 'Alphabets & Sounds — Consonants',  score: 70 },
-  { rank: 9, name: 'Imran B.',    module: 'Basic Sentences — Questions',      score: 68 },
-  { rank: 10, name: 'Hina Q.',    module: 'Core 100 Words — Group C Verbs',   score: 65 },
-]
-
-const TOP3 = ENTRIES.slice(0, 3)
-const REST  = ENTRIES.slice(3)
+/* ─────────────────────────────────────────
+   Rank config
+───────────────────────────────────────── */
 
 const RANK_CONFIG = [
   { emoji: '🥇', label: '1st', color: '#F5B014', bg: 'bg-brand-gold/10', border: 'border-brand-gold/40' },
@@ -39,11 +45,15 @@ const RANK_CONFIG = [
   { emoji: '🥉', label: '3rd', color: '#F97316', bg: 'bg-orange-500/10', border: 'border-orange-500/30'  },
 ]
 
-// ── Podium card ───────────────────────────────────────────────────────────────
-function PodiumCard({ entry, config, delay }: {
+/* ─────────────────────────────────────────
+   Podium card
+───────────────────────────────────────── */
+function PodiumCard({ entry, config, delay, onUpvote, upvoting }: {
   entry: LeaderEntry
   config: typeof RANK_CONFIG[number]
   delay: number
+  onUpvote: (id: string) => void
+  upvoting: boolean
 }) {
   return (
     <motion.div
@@ -57,25 +67,69 @@ function PodiumCard({ entry, config, delay }: {
         {config.label}
       </span>
       <span className="font-display font-bold text-text-primary text-sm">{entry.name}</span>
-      <span className="text-[11px] font-body text-text-muted leading-tight">{entry.module}</span>
+      <span className="text-[11px] font-body text-text-muted leading-tight">Module {entry.module}</span>
       <span className="font-display font-bold text-xl mt-1" style={{ color: config.color }}>
-        {entry.score}%
+        {Math.round(entry.score)}%
       </span>
+      <button
+        onClick={() => onUpvote(entry.id)}
+        disabled={entry.hasUpvoted || upvoting}
+        className={[
+          'flex items-center gap-1 px-2.5 py-1 rounded-full text-xs font-mono transition-all',
+          entry.hasUpvoted
+            ? 'bg-brand-blue/20 text-brand-blue border border-brand-blue/30'
+            : 'bg-bg-tertiary text-text-muted border border-border-subtle hover:border-brand-blue/30 hover:text-brand-blue',
+          'disabled:opacity-50 disabled:cursor-not-allowed',
+        ].join(' ')}
+      >
+        👍 {entry.upvoteCount}
+      </button>
     </motion.div>
   )
 }
 
-// ── Submission modal ──────────────────────────────────────────────────────────
-function SubmitModal({ isOpen, onClose }: { isOpen: boolean; onClose: () => void }) {
+/* ─────────────────────────────────────────
+   Submit modal
+───────────────────────────────────────── */
+function SubmitModal({ isOpen, onClose, onSubmitted }: {
+  isOpen: boolean
+  onClose: () => void
+  onSubmitted: () => void
+}) {
   const [text, setText] = useState('')
-  const [module, setModule] = useState('')
+  const [moduleNum, setModuleNum] = useState('')
+  const [prompt, setPrompt] = useState('')
+  const [submitting, setSubmitting] = useState(false)
+  const [error, setError] = useState<string | null>(null)
   const [submitted, setSubmitted] = useState(false)
 
-  function handleSubmit(e: React.FormEvent) {
+  async function handleSubmit(e: React.FormEvent) {
     e.preventDefault()
-    if (!text.trim() || !module.trim()) return
-    setSubmitted(true)
-    setTimeout(() => { onClose(); setSubmitted(false); setText(''); setModule('') }, 2000)
+    const mod = parseInt(moduleNum)
+    if (!text.trim() || isNaN(mod) || mod < 1) return
+    setSubmitting(true)
+    setError(null)
+    try {
+      await api.post('/api/v1/leaderboard/feynman/submit', {
+        module: mod,
+        prompt: prompt.trim() || `Module ${mod} explanation`,
+        responseText: text.trim(),
+        clarityScore: 75,
+      })
+      setSubmitted(true)
+      setTimeout(() => {
+        onClose()
+        onSubmitted()
+        setSubmitted(false)
+        setText('')
+        setModuleNum('')
+        setPrompt('')
+      }, 2000)
+    } catch (err: unknown) {
+      setError(err instanceof Error ? err.message : 'Failed to submit')
+    } finally {
+      setSubmitting(false)
+    }
   }
 
   return (
@@ -92,11 +146,20 @@ function SubmitModal({ isOpen, onClose }: { isOpen: boolean; onClose: () => void
             Submitted! Results will appear after judging.
           </div>
         ) : (
-          <div className="flex gap-3">
-            <Button variant="secondary" size="md" className="flex-1" onClick={onClose}>Cancel</Button>
-            <Button variant="primary" size="md" className="flex-1" onClick={handleSubmit as () => void}>
-              Submit →
-            </Button>
+          <div className="flex flex-col gap-2">
+            {error && <p className="text-xs text-brand-red font-mono">{error}</p>}
+            <div className="flex gap-3">
+              <Button variant="secondary" size="md" className="flex-1" onClick={onClose}>Cancel</Button>
+              <Button
+                variant="primary"
+                size="md"
+                className="flex-1"
+                onClick={handleSubmit as () => void}
+                disabled={submitting}
+              >
+                {submitting ? 'Submitting…' : 'Submit →'}
+              </Button>
+            </div>
           </div>
         )
       }
@@ -104,12 +167,26 @@ function SubmitModal({ isOpen, onClose }: { isOpen: boolean; onClose: () => void
       <form onSubmit={handleSubmit} className="flex flex-col gap-4">
         <div>
           <label className="block text-xs font-mono text-text-muted uppercase tracking-wider mb-2">
-            Module Explained
+            Module Number
           </label>
           <input
-            value={module}
-            onChange={e => setModule(e.target.value)}
-            placeholder="e.g. Core 100 Words — Action Verbs"
+            type="number"
+            min="1"
+            max="6"
+            value={moduleNum}
+            onChange={e => setModuleNum(e.target.value)}
+            placeholder="e.g. 2"
+            className="w-full bg-bg-tertiary border border-border-subtle rounded-xl px-3 py-2.5 text-sm font-body text-text-primary placeholder:text-text-muted focus:outline-none focus:border-brand-blue transition-colors"
+          />
+        </div>
+        <div>
+          <label className="block text-xs font-mono text-text-muted uppercase tracking-wider mb-2">
+            Prompt / Concept Explained (optional)
+          </label>
+          <input
+            value={prompt}
+            onChange={e => setPrompt(e.target.value)}
+            placeholder="e.g. What are vowels and why are they important?"
             className="w-full bg-bg-tertiary border border-border-subtle rounded-xl px-3 py-2.5 text-sm font-body text-text-primary placeholder:text-text-muted focus:outline-none focus:border-brand-blue transition-colors"
           />
         </div>
@@ -133,17 +210,90 @@ function SubmitModal({ isOpen, onClose }: { isOpen: boolean; onClose: () => void
   )
 }
 
-// ── Page ──────────────────────────────────────────────────────────────────────
+/* ─────────────────────────────────────────
+   Page
+───────────────────────────────────────── */
 export default function Leaderboard() {
   const navigate = useNavigate()
   const [showModal, setShowModal] = useState(false)
+  const [entries, setEntries] = useState<LeaderEntry[]>([])
+  const [week, setWeek] = useState('')
+  const [loading, setLoading] = useState(true)
+  const [upvotingId, setUpvotingId] = useState<string | null>(null)
+
+  async function load() {
+    setLoading(true)
+    try {
+      const res = await api.get<{ success: boolean; data: ApiEntry[]; week: string }>(
+        '/api/v1/leaderboard/feynman/weekly'
+      )
+      const mapped: LeaderEntry[] = (res.data ?? []).map((entry, i) => ({
+        id: entry.id,
+        rank: i + 1,
+        name: entry.learnerName,
+        module: entry.module,
+        prompt: entry.prompt,
+        responseText: entry.responseText,
+        score: entry.clarityScore,
+        upvoteCount: entry.upvoteCount,
+        submittedAt: entry.submittedAt,
+        hasUpvoted: false,
+      }))
+      setEntries(mapped)
+      setWeek(res.week ?? '')
+    } catch {
+      setEntries([])
+    } finally {
+      setLoading(false)
+    }
+  }
+
+  useEffect(() => {
+    load()
+  }, [])
+
+  async function handleUpvote(entryId: string) {
+    if (upvotingId) return
+    setUpvotingId(entryId)
+    try {
+      const res = await api.post<{ success: boolean; data: { upvoteCount: number } }>(
+        `/api/v1/leaderboard/feynman/${entryId}/upvote`
+      )
+      setEntries((prev) =>
+        prev.map((e) =>
+          e.id === entryId
+            ? { ...e, upvoteCount: res.data.upvoteCount, hasUpvoted: true }
+            : e
+        )
+      )
+    } catch {
+      // entry may already be upvoted — mark as upvoted locally
+      setEntries((prev) =>
+        prev.map((e) => e.id === entryId ? { ...e, hasUpvoted: true } : e)
+      )
+    } finally {
+      setUpvotingId(null)
+    }
+  }
+
+  const top3 = entries.slice(0, 3)
+  const rest = entries.slice(3)
+
+  const weekLabel = week
+    ? (() => {
+        const [y, w] = week.split('-W')
+        const jan1 = new Date(Date.UTC(parseInt(y), 0, 1))
+        const weekStart = new Date(jan1.getTime() + (parseInt(w) - 1) * 7 * 24 * 60 * 60 * 1000)
+        return weekStart.toLocaleDateString('en-US', { month: 'long', day: 'numeric', year: 'numeric', timeZone: 'UTC' })
+      })()
+    : ''
 
   return (
     <div className="min-h-screen bg-bg-primary font-body">
       {/* Nav */}
       <header className="sticky top-0 z-20 bg-bg-primary/80 backdrop-blur-sm border-b border-border-subtle flex items-center justify-between px-4 py-3.5">
         <button
-          onClick={() => navigate('/dashboard')}
+          onClick={() => navigate('/map')}
           className="flex items-center gap-2 text-text-muted hover:text-text-primary transition-colors"
         >
           <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
@@ -168,79 +318,128 @@ export default function Leaderboard() {
         >
           <div>
             <p className="text-xs font-mono text-text-muted uppercase tracking-widest">This Week</p>
-            <p className="text-sm font-body text-text-secondary mt-0.5">Week of {WEEK_OF}</p>
+            {weekLabel && <p className="text-sm font-body text-text-secondary mt-0.5">Week of {weekLabel}</p>}
           </div>
-          <Badge variant="gold" size="sm">🏆 {ENTRIES.length} learners</Badge>
+          <Badge variant="gold" size="sm">🏆 {entries.length} learner{entries.length !== 1 ? 's' : ''}</Badge>
         </motion.div>
+
+        {/* Loading */}
+        {loading && (
+          <div className="flex flex-col items-center gap-3 py-16 text-text-muted">
+            <div className="w-8 h-8 rounded-full border-2 border-border-subtle border-t-brand-blue animate-spin" />
+            <p className="text-xs font-mono">Loading leaderboard…</p>
+          </div>
+        )}
+
+        {/* Empty state */}
+        {!loading && entries.length === 0 && (
+          <motion.div
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            className="text-center py-16"
+          >
+            <span className="text-5xl block mb-4">🏆</span>
+            <p className="text-text-secondary font-body text-sm">No entries this week yet.</p>
+            <p className="text-text-muted font-mono text-xs mt-1">Be the first to submit your best explanation!</p>
+          </motion.div>
+        )}
 
         {/* Top 3 podium */}
-        <div className="flex gap-3">
-          {TOP3.map((entry, i) => (
-            <PodiumCard key={entry.rank} entry={entry} config={RANK_CONFIG[i]} delay={i * 0.1} />
-          ))}
-        </div>
-
-        {/* Rest of list */}
-        <motion.div
-          initial={{ opacity: 0, y: 12 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ delay: 0.35, duration: 0.35 }}
-          className="bg-bg-secondary border border-border-subtle rounded-2xl overflow-hidden"
-        >
-          <div className="px-4 py-3 border-b border-border-subtle">
-            <p className="text-xs font-mono text-text-muted uppercase tracking-wider">All Entries</p>
-          </div>
-          <div className="divide-y divide-border-subtle">
-            {REST.map((entry, i) => (
-              <motion.div
-                key={entry.rank}
-                initial={{ opacity: 0, x: -8 }}
-                animate={{ opacity: 1, x: 0 }}
-                transition={{ delay: 0.38 + i * 0.05, duration: 0.28 }}
-                className={[
-                  'flex items-center gap-3 px-4 py-3 transition-colors',
-                  entry.isMe ? 'bg-brand-blue/5' : 'hover:bg-bg-tertiary',
-                ].join(' ')}
-              >
-                <span className={`w-7 h-7 rounded-full flex items-center justify-center shrink-0 text-xs font-display font-bold ${entry.isMe ? 'bg-brand-blue/20 text-brand-blue' : 'bg-bg-tertiary text-text-muted'}`}>
-                  {entry.rank}
-                </span>
-                <div className="flex-1 min-w-0">
-                  <div className="flex items-center gap-2">
-                    <span className={`text-sm font-body font-medium ${entry.isMe ? 'text-brand-blue' : 'text-text-primary'}`}>
-                      {entry.name}
-                    </span>
-                    {entry.isMe && <Badge variant="blue" size="sm">You</Badge>}
-                  </div>
-                  <p className="text-xs text-text-muted truncate mt-0.5">{entry.module}</p>
-                </div>
-                <span className={`font-display font-bold text-sm shrink-0 ${entry.isMe ? 'text-brand-blue' : 'text-text-secondary'}`}>
-                  {entry.score}%
-                </span>
-              </motion.div>
+        {!loading && top3.length > 0 && (
+          <div className="flex gap-3">
+            {top3.map((entry, i) => (
+              <PodiumCard
+                key={entry.id}
+                entry={entry}
+                config={RANK_CONFIG[i]}
+                delay={i * 0.1}
+                onUpvote={handleUpvote}
+                upvoting={upvotingId === entry.id}
+              />
             ))}
           </div>
-        </motion.div>
+        )}
+
+        {/* Rest of list */}
+        {!loading && rest.length > 0 && (
+          <motion.div
+            initial={{ opacity: 0, y: 12 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ delay: 0.35, duration: 0.35 }}
+            className="bg-bg-secondary border border-border-subtle rounded-2xl overflow-hidden"
+          >
+            <div className="px-4 py-3 border-b border-border-subtle">
+              <p className="text-xs font-mono text-text-muted uppercase tracking-wider">All Entries</p>
+            </div>
+            <div className="divide-y divide-border-subtle">
+              {rest.map((entry, i) => (
+                <motion.div
+                  key={entry.id}
+                  initial={{ opacity: 0, x: -8 }}
+                  animate={{ opacity: 1, x: 0 }}
+                  transition={{ delay: 0.38 + i * 0.05, duration: 0.28 }}
+                  className="flex items-center gap-3 px-4 py-3 transition-colors hover:bg-bg-tertiary"
+                >
+                  <span className="w-7 h-7 rounded-full flex items-center justify-center shrink-0 text-xs font-display font-bold bg-bg-tertiary text-text-muted">
+                    {entry.rank}
+                  </span>
+                  <div className="flex-1 min-w-0">
+                    <span className="text-sm font-body font-medium text-text-primary">{entry.name}</span>
+                    <p className="text-xs text-text-muted truncate mt-0.5">Module {entry.module}</p>
+                  </div>
+                  <div className="flex items-center gap-3 shrink-0">
+                    <span className="font-display font-bold text-sm text-text-secondary">
+                      {Math.round(entry.score)}%
+                    </span>
+                    <button
+                      onClick={() => handleUpvote(entry.id)}
+                      disabled={entry.hasUpvoted || upvotingId !== null}
+                      className={[
+                        'flex items-center gap-1 px-2 py-1 rounded-full text-xs font-mono transition-all',
+                        entry.hasUpvoted
+                          ? 'bg-brand-blue/20 text-brand-blue border border-brand-blue/30'
+                          : 'bg-bg-tertiary text-text-muted border border-border-subtle hover:border-brand-blue/30 hover:text-brand-blue',
+                        'disabled:opacity-50 disabled:cursor-not-allowed',
+                      ].join(' ')}
+                    >
+                      👍 {entry.upvoteCount}
+                    </button>
+                  </div>
+                </motion.div>
+              ))}
+            </div>
+          </motion.div>
+        )}
 
         {/* Submit CTA */}
-        <motion.div
-          initial={{ opacity: 0, scale: 0.97 }}
-          animate={{ opacity: 1, scale: 1 }}
-          transition={{ delay: 0.6, type: 'spring', stiffness: 320, damping: 22 }}
-        >
-          <Button
-            variant="primary"
-            size="lg"
-            className="w-full"
-            onClick={() => setShowModal(true)}
+        {!loading && (
+          <motion.div
+            initial={{ opacity: 0, scale: 0.97 }}
+            animate={{ opacity: 1, scale: 1 }}
+            transition={{ delay: 0.6, type: 'spring', stiffness: 320, damping: 22 }}
           >
-            Submit My Best Explanation This Week →
-          </Button>
-        </motion.div>
+            <Button
+              variant="primary"
+              size="lg"
+              className="w-full"
+              onClick={() => setShowModal(true)}
+            >
+              Submit My Best Explanation This Week →
+            </Button>
+          </motion.div>
+        )}
 
       </div>
 
-      <SubmitModal isOpen={showModal} onClose={() => setShowModal(false)} />
+      <AnimatePresence>
+        {showModal && (
+          <SubmitModal
+            isOpen={showModal}
+            onClose={() => setShowModal(false)}
+            onSubmitted={load}
+          />
+        )}
+      </AnimatePresence>
     </div>
   )
 }
