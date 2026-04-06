@@ -2,6 +2,8 @@ import { useState, useRef, useEffect } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { motion, AnimatePresence } from 'framer-motion'
 import Button from '@/components/ui/Button'
+import LevelWrapCeremony from '@/components/mission/LevelWrapCeremony'
+import { useProgressStore } from '@/stores/progressStore'
 
 // ── Question types & data ─────────────────────────────────────────────────────
 
@@ -368,14 +370,28 @@ function ScoreReveal({ correct, total, wrongIds, onRetry, onPass }: {
   )
 }
 
+// ── Level metadata ─────────────────────────────────────────────────────────────
+
+const LEVEL_NAMES: Record<number, string> = {
+  1: 'Base Camp',
+  2: 'Village',
+  3: 'Town',
+  4: 'City',
+  5: 'Capital',
+  6: 'World Stage',
+}
+
 // ── Page ──────────────────────────────────────────────────────────────────────
 export default function LevelGate() {
   const navigate = useNavigate()
+  const learnerProfile = useProgressStore(s => s.learnerProfile)
+
   const [currentIdx, setCurrentIdx] = useState(0)
   const [answers, setAnswers] = useState<boolean[]>([])
   const [showHint, setShowHint] = useState(false)
   const [done, setDone] = useState(false)
   const [wrongIds, setWrongIds] = useState<number[]>([])
+  const [showCeremony, setShowCeremony] = useState(false)
 
   const current = QUESTIONS[currentIdx]
   const total   = QUESTIONS.length
@@ -397,6 +413,27 @@ export default function LevelGate() {
 
   const correctCount = answers.filter(Boolean).length
 
+  // Show the ceremony overlay when the gate is passed
+  if (showCeremony) {
+    const level = learnerProfile?.currentLevel ?? 1
+    return (
+      <LevelWrapCeremony
+        level={level}
+        locationName={LEVEL_NAMES[level] ?? `Level ${level}`}
+        stats={{
+          vocabWords: 100,
+          grammarRules: 12,
+          daysCompleted: learnerProfile?.dayNumber ?? 30,
+          feynmanImprovement: 34,
+        }}
+        myWhy={learnerProfile?.why ?? 'Career Growth'}
+        nextLevelName={LEVEL_NAMES[level + 1] ?? `Level ${level + 1}`}
+        onBegin={() => navigate('/dashboard')}
+        onReturnToMap={() => navigate('/map')}
+      />
+    )
+  }
+
   if (done) {
     return (
       <div className="min-h-screen bg-bg-primary flex flex-col">
@@ -409,7 +446,7 @@ export default function LevelGate() {
             total={total}
             wrongIds={wrongIds}
             onRetry={() => navigate('/dashboard')}
-            onPass={() => navigate('/dashboard')}
+            onPass={() => setShowCeremony(true)}
           />
         </div>
       </div>
