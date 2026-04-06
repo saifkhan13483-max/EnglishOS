@@ -1,6 +1,7 @@
 import { useEffect, useState } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { motion } from 'framer-motion'
+import SEO from '@/components/layout/SEO'
 import {
   LineChart, Line, XAxis, YAxis, Tooltip, ResponsiveContainer, CartesianGrid,
 } from 'recharts'
@@ -191,6 +192,12 @@ export default function Progress() {
 
   return (
     <div className="min-h-screen bg-bg-primary font-body">
+      <SEO
+        title="Your Progress — EnglishOS"
+        description="Track your English learning progress, XP, streaks, Brain Compound score, and Feynman improvement over time."
+        url="/progress"
+      />
+
       {/* Nav */}
       <header className="sticky top-0 z-20 bg-bg-primary/80 backdrop-blur-sm border-b border-border-subtle flex items-center justify-between px-4 py-3.5">
         <button

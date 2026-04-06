@@ -4,6 +4,7 @@ import { motion } from 'framer-motion'
 import Button from '@/components/ui/Button'
 import Badge from '@/components/ui/Badge'
 import Card from '@/components/ui/Card'
+import SEO from '@/components/layout/SEO'
 
 const fadeUp = {
   hidden: { opacity: 0, y: 28 },
@@ -124,8 +125,28 @@ export default function Landing() {
     methodRef.current?.scrollIntoView({ behavior: 'smooth', block: 'start' })
   }
 
+  const jsonLd = {
+    '@context': 'https://schema.org',
+    '@type': 'SoftwareApplication',
+    name: 'EnglishOS',
+    description: 'An operating system for learning English using the Polymath methodology',
+    applicationCategory: 'EducationalApplication',
+    operatingSystem: 'Web',
+    offers: { '@type': 'Offer', price: '0', priceCurrency: 'PKR' },
+    audience: {
+      '@type': 'Audience',
+      audienceType: 'Urdu/Hindi speaking South Asian learners',
+    },
+  }
+
   return (
     <div className="min-h-screen bg-bg-primary font-body overflow-x-hidden">
+      <SEO
+        title="EnglishOS — Learn English in 300 Days | Polymath Method"
+        description="EnglishOS is the most methodologically rigorous English learning platform for South Asian learners. Reach fluency in 300 focused days using DiSS, Feynman Technique, and Spaced Repetition."
+        url="/"
+        jsonLd={jsonLd}
+      />
 
       {/* ── NAV ── */}
       <nav className="fixed top-0 left-0 right-0 z-40 flex items-center justify-between px-6 py-4 border-b border-border-subtle bg-bg-primary/80 backdrop-blur-md">

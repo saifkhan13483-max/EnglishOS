@@ -7,6 +7,7 @@ import Badge from '@/components/ui/Badge'
 import { useUIStore, type WhyOption } from '@/stores/uiStore'
 import { useAuthStore } from '@/stores/authStore'
 import { api, ApiError } from '@/services/api'
+import SEO from '@/components/layout/SEO'
 
 const TOTAL_STEPS = 5
 
@@ -70,6 +71,12 @@ export default function Onboarding() {
 
   return (
     <div className="min-h-screen bg-bg-primary font-body flex flex-col">
+      <SEO
+        title="Start Your English Journey — EnglishOS"
+        description="Set up your EnglishOS profile and start your 300-day English fluency journey. Powered by the Polymath methodology for Urdu and Hindi speakers."
+        url="/onboarding"
+      />
+
       {/* ── top bar ── */}
       <div className="shrink-0 px-6 pt-6 pb-2 flex items-center justify-between max-w-2xl mx-auto w-full">
         <span className="font-display font-bold text-lg text-text-primary">

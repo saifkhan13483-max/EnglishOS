@@ -10,6 +10,7 @@ import { Skeleton } from '@/components/ui/Skeleton'
 import { useShallow } from 'zustand/react/shallow'
 import { useProgressStore, type MapLevel, type MapModule } from '@/stores/progressStore'
 import { api } from '@/services/api'
+import SEO from '@/components/layout/SEO'
 
 /* ─────────────────────────────────────────
    Client-side display config (names/colors/metadata)
@@ -178,8 +179,12 @@ export default function MasteryMap() {
   const [selectedLevel, setSelectedLevel] = useState<DisplayLevel | null>(null)
   const [isLoading, setIsLoading] = useState(true)
 
-  const { mapLevels, loadMasteryMap } = useProgressStore(
-    useShallow((s) => ({ mapLevels: s.mapLevels, loadMasteryMap: s.loadMasteryMap }))
+  const { mapLevels, loadMasteryMap, learnerProfile } = useProgressStore(
+    useShallow((s) => ({
+      mapLevels: s.mapLevels,
+      loadMasteryMap: s.loadMasteryMap,
+      learnerProfile: s.learnerProfile,
+    }))
   )
 
   useEffect(() => {
@@ -190,8 +195,17 @@ export default function MasteryMap() {
   const displayLevels = buildDisplayLevels(mapLevels)
   const paths = buildPaths(mapLevels)
 
+  const currentLevel = learnerProfile?.currentLevel ?? 1
+  const levelName = LEVEL_DISPLAY[currentLevel]?.name ?? `Level ${currentLevel}`
+  const mapTitle = `Your English Journey — Level ${currentLevel}: ${levelName} — EnglishOS`
+
   return (
     <div className="flex flex-col md:flex-row h-screen bg-bg-primary overflow-hidden font-body">
+      <SEO
+        title={mapTitle}
+        description="Follow your personal English learning path. Complete daily missions, pass Level Gates, and track your progression from Base Camp to World Stage."
+        url="/map"
+      />
 
       {/* ── Map canvas ── */}
       <div className="flex-1 relative overflow-hidden">

@@ -5,6 +5,7 @@ import Modal from '@/components/ui/Modal'
 import Button from '@/components/ui/Button'
 import Badge from '@/components/ui/Badge'
 import { api } from '@/services/api'
+import SEO from '@/components/layout/SEO'
 
 /* ─────────────────────────────────────────
    Types
@@ -290,6 +291,12 @@ export default function Leaderboard() {
 
   return (
     <div className="min-h-screen bg-bg-primary font-body">
+      <SEO
+        title="Feynman Leaderboard — EnglishOS"
+        description="See the best Feynman Technique explanations from EnglishOS learners. The Feynman Leaderboard celebrates clarity, simplicity, and understanding."
+        url="/leaderboard"
+      />
+
       {/* Nav */}
       <header className="sticky top-0 z-20 bg-bg-primary/80 backdrop-blur-sm border-b border-border-subtle flex items-center justify-between px-4 py-3.5">
         <button

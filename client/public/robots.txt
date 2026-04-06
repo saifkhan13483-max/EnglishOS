@@ -1,0 +1,14 @@
+User-agent: *
+Allow: /
+Allow: /login
+Allow: /register
+
+Disallow: /map
+Disallow: /mission
+Disallow: /progress
+Disallow: /profile
+Disallow: /feynman-archive
+Disallow: /level-gate
+Disallow: /leaderboard
+
+Sitemap: https://englishos.app/sitemap.xml
