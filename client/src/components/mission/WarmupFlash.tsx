@@ -2,7 +2,6 @@ import { useEffect, useState } from 'react'
 import { motion, AnimatePresence } from 'framer-motion'
 import Button from '@/components/ui/Button'
 import { useSRStore, SRCard } from '@/stores/srStore'
-import { useMissionStore } from '@/stores/missionStore'
 
 interface WarmupFlashProps {
   onComplete: () => void
@@ -10,22 +9,21 @@ interface WarmupFlashProps {
 }
 
 export default function WarmupFlash({ onComplete, onXpEarned }: WarmupFlashProps) {
-  const dailyQueue = useSRStore((s) => s.dailyQueue)
-  const markReviewed = useSRStore((s) => s.markReviewed)
-  const loadDailyQueue = useMissionStore((s) => s.loadDailyQueue)
-  const isLoading = useMissionStore((s) => s.isLoading)
-
+  const { dailyQueue, loadDailyQueue, markReviewed, syncReviews } = useSRStore()
   const [cards, setCards] = useState<SRCard[]>([])
   const [cardIndex, setCardIndex] = useState(0)
   const [flipped, setFlipped] = useState(false)
   const [direction, setDirection] = useState(1)
   const [initialised, setInitialised] = useState(false)
+  const [loading, setLoading] = useState(false)
 
   // Load the SR queue when mounting, then snapshot first 5 cards
   useEffect(() => {
     async function init() {
-      if (dailyQueue.length === 0) {
+      if (useSRStore.getState().dailyQueue.length === 0) {
+        setLoading(true)
         await loadDailyQueue()
+        setLoading(false)
       }
       setInitialised(true)
     }
@@ -44,21 +42,26 @@ export default function WarmupFlash({ onComplete, onXpEarned }: WarmupFlashProps
   const card = cards[cardIndex]
   const isLast = cardIndex === cards.length - 1
 
-  async function handleGotIt() {
+  async function finishAndSync() {
+    onXpEarned(20)
+    await syncReviews()
+    setTimeout(onComplete, 400)
+  }
+
+  function handleGotIt() {
     if (!flipped) { setFlipped(true); return }
-    if (card) await markReviewed(card.id, true)
+    if (card) markReviewed(card.itemId, true)
     setDirection(1)
     setFlipped(false)
     if (isLast || cardIndex >= cards.length - 1) {
-      onXpEarned(20)
-      setTimeout(onComplete, 400)
+      finishAndSync()
     } else {
       setCardIndex((i) => i + 1)
     }
   }
 
-  async function handleReviewAgain() {
-    if (card) await markReviewed(card.id, false)
+  function handleReviewAgain() {
+    if (card) markReviewed(card.itemId, false)
     setDirection(-1)
     setFlipped(false)
     setTimeout(() => {
@@ -67,7 +70,7 @@ export default function WarmupFlash({ onComplete, onXpEarned }: WarmupFlashProps
   }
 
   // Loading state
-  if (isLoading && !initialised) {
+  if (loading && !initialised) {
     return (
       <div className="flex flex-col items-center gap-8 py-16 px-4 max-w-lg mx-auto w-full">
         <div className="text-center">

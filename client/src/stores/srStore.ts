@@ -1,9 +1,11 @@
 import { create } from 'zustand'
 import { api } from '@/services/api'
 
+// ── Types ──────────────────────────────────────────────────────────────────────
+
 export interface SRCard {
-  id: string          // SRQueueItem.id — used for markReviewed
-  itemId: string      // ContentItem.id
+  id: string          // SRQueueItem.id
+  itemId: string      // ContentItem.id — used for bulk review calls
   english: string
   romanUrdu: string
   example: string
@@ -25,14 +27,28 @@ interface RawQueueItem {
   }
 }
 
+interface PendingReview {
+  itemId: string
+  wasCorrect: boolean
+}
+
 interface SRStore {
   dailyQueue: SRCard[]
-  reviewedToday: number
-  pendingCount: number
+  reviewedToday: string[]       // itemIds reviewed this session
+  pendingCount: number          // items still due (total from server)
+  brainCompoundPct: number      // updated after syncReviews
+  _pendingReviews: PendingReview[] // internal buffer — not for external use
 
+  // Backward-compat setter used by missionStore.loadDailyQueue
   setDailyQueue: (raw: unknown[]) => void
-  markReviewed: (queueItemId: string, correct: boolean) => Promise<void>
+
+  // Primary actions
+  loadDailyQueue: () => Promise<void>
+  markReviewed: (itemId: string, wasCorrect: boolean) => void
+  syncReviews: () => Promise<{ newBrainCompoundPct: number; deepMissionUnlocked: boolean } | null>
 }
+
+// ── Mapper ────────────────────────────────────────────────────────────────────
 
 function mapRawToCard(raw: RawQueueItem): SRCard {
   return {
@@ -47,25 +63,68 @@ function mapRawToCard(raw: RawQueueItem): SRCard {
   }
 }
 
-export const useSRStore = create<SRStore>((set) => ({
-  dailyQueue: [],
-  reviewedToday: 0,
-  pendingCount: 0,
+// ── Store ─────────────────────────────────────────────────────────────────────
 
+export const useSRStore = create<SRStore>((set, get) => ({
+  dailyQueue: [],
+  reviewedToday: [],
+  pendingCount: 0,
+  brainCompoundPct: 0,
+  _pendingReviews: [],
+
+  // ── Backward-compat: missionStore still calls this via setDailyQueue
   setDailyQueue: (raw) => {
-    const cards = (raw as RawQueueItem[]).slice(0, 5).map(mapRawToCard)
-    set({ dailyQueue: cards, pendingCount: raw.length })
+    const all = raw as RawQueueItem[]
+    const cards = all.slice(0, 5).map(mapRawToCard)
+    set({ dailyQueue: cards, pendingCount: all.length })
   },
 
-  markReviewed: async (queueItemId, correct) => {
+  // ── Load today's SR queue directly from the store
+  loadDailyQueue: async () => {
     try {
-      await api.patch(`/api/v1/content/sr-queue/${queueItemId}`, { correct })
-      set((s) => ({
-        reviewedToday: s.reviewedToday + 1,
-        dailyQueue: s.dailyQueue.filter((c) => c.id !== queueItemId),
-      }))
+      const res = await api.get<{ success: boolean; data: unknown[] }>(
+        '/api/v1/content/sr-queue/today'
+      )
+      const all = res.data as RawQueueItem[]
+      const cards = all.slice(0, 20).map(mapRawToCard)
+      set({ dailyQueue: cards, pendingCount: all.length })
     } catch {
-      // Fail silently — review continues even if API call fails
+      // Fail silently — queue stays empty, mission can still proceed
+    }
+  },
+
+  // ── Buffer a review locally (removes card from queue immediately)
+  markReviewed: (itemId, wasCorrect) => {
+    set((s) => ({
+      dailyQueue: s.dailyQueue.filter((c) => c.itemId !== itemId),
+      reviewedToday: s.reviewedToday.includes(itemId)
+        ? s.reviewedToday
+        : [...s.reviewedToday, itemId],
+      _pendingReviews: [...s._pendingReviews, { itemId, wasCorrect }],
+    }))
+  },
+
+  // ── Flush the buffer to the server in one bulk call
+  syncReviews: async () => {
+    const { _pendingReviews } = get()
+    if (_pendingReviews.length === 0) return null
+
+    try {
+      const res = await api.post<{
+        success: boolean
+        data: {
+          updatedItems: unknown[]
+          newBrainCompoundPct: number
+          deepMissionUnlocked: boolean
+        }
+      }>('/api/v1/content/sr-review', { reviews: _pendingReviews })
+
+      const { newBrainCompoundPct, deepMissionUnlocked } = res.data
+      set({ brainCompoundPct: newBrainCompoundPct, _pendingReviews: [] })
+      return { newBrainCompoundPct, deepMissionUnlocked }
+    } catch {
+      // Fail silently — reviews stay buffered, will retry on next sync
+      return null
     }
   },
 }))

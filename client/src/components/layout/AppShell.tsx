@@ -1,7 +1,7 @@
 import { useState } from 'react'
 import { NavLink, useLocation } from 'react-router-dom'
-import { motion } from 'framer-motion'
 import { useProgressStore } from '@/stores/progressStore'
+import BrainCompoundMeter from '@/components/gamification/BrainCompoundMeter'
 
 interface NavItem {
   to: string
@@ -90,17 +90,8 @@ function TopBar() {
         </div>
 
         {/* Brain Compound mini bar */}
-        <div className="hidden sm:flex items-center gap-2">
-          <span className="text-sm leading-none">🧠</span>
-          <div className="w-20 h-1.5 bg-bg-secondary rounded-full overflow-hidden border border-border-subtle">
-            <motion.div
-              className="h-full rounded-full bg-brand-blue"
-              initial={{ width: 0 }}
-              animate={{ width: `${brainCompoundPct}%` }}
-              transition={{ duration: 0.8, ease: 'easeOut' }}
-            />
-          </div>
-          <span className="text-xs font-mono text-text-muted">{brainCompoundPct}%</span>
+        <div className="hidden sm:block">
+          <BrainCompoundMeter size="mini" value={brainCompoundPct} />
         </div>
 
         {/* Notifications bell */}
