@@ -48,15 +48,15 @@ export const SCENARIOS: Record<number, Scenario> = {
       'Notice: one positive sentence, one negative (do not), and one question — all three sentence types in a natural flow.',
   },
   4: {
-    icon: '📱',
-    title: 'Texting a Friend',
+    icon: '🙏',
+    title: 'Good Morning!',
     description:
-      'Your friend texts you asking what you are doing right now, what you did yesterday, and what you will do tomorrow. Reply in English using the correct tenses.',
-    hint: 'Use: am/is/are + -ing for now; did/was for yesterday; will for tomorrow',
+      'You arrive at your workplace in the morning. Your manager is standing at the door. Greet your manager politely in English, then ask for something you need using "please" and "thank you".',
+    hint: 'Use: Good morning, How are you, I am fine thank you, please, excuse me, thank you very much',
     modelResponse:
-      'I am studying English right now. Yesterday I went to the market with my family. Tomorrow I will go to work early.',
+      'Good morning! How are you today? I am doing well, thank you. Excuse me — could I please get the key for the meeting room? Thank you very much!',
     modelNotes:
-      'Notice: present continuous (am studying), simple past (went), and simple future (will go) — each in the right context.',
+      'Notice: starting with "Good morning", asking how they are, saying "excuse me" before a request, using "please" in the request, and ending with "thank you".',
   },
   5: {
     icon: '🏪',
@@ -99,9 +99,9 @@ export const FEYNMAN_PROMPTS: Record<number, FeynmanPromptInfo> = {
       "Explain the Subject-Verb-Object formula for making English sentences. Give one positive sentence, one negative sentence, and one question as examples.",
   },
   4: {
-    concept: 'Tenses — Module 4',
+    concept: 'Daily Speaking Patterns — Module 4',
     prompt:
-      "Explain the difference between present, past, and future tense. Give a real-life example sentence for each tense.",
+      'Explain how to greet someone in English and make a polite request. Give real-life examples of "good morning", "please", "thank you", and "excuse me" — and explain when you would use each one.',
   },
   5: {
     concept: 'Daily Conversations — Module 5',
