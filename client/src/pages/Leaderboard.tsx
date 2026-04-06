@@ -155,7 +155,7 @@ function SubmitModal({ isOpen, onClose, onSubmitted }: {
                 variant="primary"
                 size="md"
                 className="flex-1"
-                onClick={handleSubmit as () => void}
+                onClick={() => void handleSubmit({ preventDefault: () => {} } as React.FormEvent)}
                 disabled={submitting}
               >
                 {submitting ? 'Submitting…' : 'Submit →'}

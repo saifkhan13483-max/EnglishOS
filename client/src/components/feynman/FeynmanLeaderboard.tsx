@@ -1,7 +1,6 @@
 import { useState } from 'react'
 import { motion, AnimatePresence } from 'framer-motion'
 import Badge from '@/components/ui/Badge'
-import Button from '@/components/ui/Button'
 
 export interface LeaderboardEntry {
   id: string

@@ -246,7 +246,7 @@ export default function FeynmanMoment({ onComplete }: FeynmanMomentProps) {
                 size="lg"
                 className="w-full"
                 loading={completing}
-                onClick={handleComplete}
+                onClick={() => handleComplete()}
               >
                 🎉 Complete Mission
               </Button>
