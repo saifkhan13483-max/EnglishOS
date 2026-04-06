@@ -246,6 +246,33 @@ A reward system for learners who maintain long streaks:
 - **Client state**: `progressStore` holds `batmanModeActive` and `batmanSkipUsedThisWeek`; `setBatmanState` action updates both.
 - **Color**: `brand-purple` = `#A855F7` in Tailwind config.
 
+## Notification & Scheduler System
+
+### emailService (`server/src/services/emailService.ts`)
+
+Two functions built on Resend. Both silently no-op when `RESEND_API_KEY` is not set (Resend client is lazily instantiated via `getResend()`).
+
+| Function | Recipient | Trigger |
+|---|---|---|
+| `sendMissedDaysAlert(learnerEmail, accountabilityEmail, learnerName, daysMissed, whyMotivation?)` | Accountability partner | Learner missed exactly 3 consecutive days |
+| `sendDailyReminder(learnerEmail, learnerName, sessionType, sessionTime, streak?)` | Learner | Daily morning / evening cron |
+
+### schedulerService (`server/src/services/schedulerService.ts`)
+
+Uses `node-cron`. Three jobs, all expressed in UTC (PKT = UTC+5):
+
+| Cron (UTC) | PKT time | Job |
+|---|---|---|
+| `59 18 * * *` | 11:59 PM PKT | Missed-day check — finds learners whose `lastActiveDt` was exactly 3 days ago AND have `accountabilityEmail` set; sends one alert per learner |
+| `0 3 * * *` | 8:00 AM PKT | Morning reminders — finds all onboarded learners who have no COMPLETE MORNING session today; sends reminder email |
+| `0 15 * * *` | 8:00 PM PKT | Evening reminders — same logic for EVENING sessions |
+
+The scheduler is started in `server.ts` inside the `app.listen` callback via `startScheduler()`. All individual email send errors are caught and logged — one failure does not affect the rest.
+
+### Resend lib (`server/src/lib/resend.ts`)
+
+Lazily instantiated via `getResend()`. Returns `null` when `RESEND_API_KEY` is not set, allowing the server to start in development without email credentials.
+
 ## Notes
 
 - Vite runs on port **5000** (adjusted from 5173 for Replit preview pane compatibility); the dev server proxies `/api/*` to Express on port **3000**
