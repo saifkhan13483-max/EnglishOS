@@ -1,34 +1,17 @@
 import { Response } from 'express'
 import { AuthRequest } from '../middleware/auth'
 import { prisma } from '../lib/prisma'
-import { getGemini } from '../lib/gemini'
 import { checkAndAwardBadges } from '../services/badgeService'
+import {
+  evaluateFeynmanResponse,
+  calculateBrainCompoundIncrement,
+} from '../services/feynmanEvaluator'
 
 interface EvaluateBody {
   missionId: string
   module: number
   prompt: string
   responseText: string
-}
-
-interface GeminiEvaluation {
-  vocabulary_score: number
-  simplicity_score: number
-  relevance_score: number
-  overall_score: number
-  knowledge_gaps: string[]
-  feedback: string
-  suggestion: string
-}
-
-const FALLBACK_EVALUATION: GeminiEvaluation = {
-  vocabulary_score: 65,
-  simplicity_score: 70,
-  relevance_score: 75,
-  overall_score: Math.round(65 * 0.4 + 70 * 0.35 + 75 * 0.25),
-  knowledge_gaps: [],
-  feedback: 'Good attempt! Keep practicing explaining concepts in your own words — this is the most powerful learning technique.',
-  suggestion: 'Try to use the vocabulary words you have learned in your explanation next time.',
 }
 
 // POST /api/v1/feynman/evaluate
@@ -58,6 +41,7 @@ export async function evaluateFeynman(req: AuthRequest, res: Response): Promise<
     return
   }
 
+  // Build vocabulary word list for evaluation context
   const coveredItems = await prisma.contentItem.findMany({
     where: {
       OR: [
@@ -69,58 +53,10 @@ export async function evaluateFeynman(req: AuthRequest, res: Response): Promise<
   })
   const wordList = coveredItems.map((ci) => ci.english).join(', ')
 
-  let evaluation: GeminiEvaluation
+  // Evaluate using the Feynman evaluator service
+  const evaluation = await evaluateFeynmanResponse(wordList, prompt, responseText)
 
-  const genAI = getGemini()
-  if (!genAI) {
-    evaluation = { ...FALLBACK_EVALUATION }
-  } else {
-    const evaluationPrompt = `You are evaluating an English learner's explanation for clarity and vocabulary usage.
-The learner has covered these vocabulary words: ${wordList}.
-The learner was asked to explain: ${prompt}
-Their response: ${responseText}
-
-Evaluate on three dimensions (score each 0-100):
-1. Vocabulary Usage (40%): How many of their learned vocabulary words appear in the response?
-2. Simplicity (35%): Is the explanation simple enough for a 10-year-old? Target Flesch-Kincaid grade level 3-5.
-3. Relevance (25%): Does the response address the concept asked about?
-
-Return ONLY valid JSON with no markdown, no explanation, nothing else:
-{ "vocabulary_score": number, "simplicity_score": number, "relevance_score": number, "overall_score": number, "knowledge_gaps": string[], "feedback": string, "suggestion": string }`
-
-    try {
-      const model = genAI.getGenerativeModel({
-        model: 'gemini-1.5-flash',
-        generationConfig: {
-          responseMimeType: 'application/json',
-          maxOutputTokens: 512,
-          temperature: 0.3,
-        },
-      })
-
-      const result = await model.generateContent(evaluationPrompt)
-      const raw = result.response.text()
-      const parsed = JSON.parse(raw) as Partial<GeminiEvaluation>
-
-      const vocabScore      = Math.min(100, Math.max(0, Number(parsed.vocabulary_score) || 0))
-      const simplicityScore = Math.min(100, Math.max(0, Number(parsed.simplicity_score) || 0))
-      const relevanceScore  = Math.min(100, Math.max(0, Number(parsed.relevance_score)  || 0))
-      const overallScore    = Math.round(vocabScore * 0.4 + simplicityScore * 0.35 + relevanceScore * 0.25)
-
-      evaluation = {
-        vocabulary_score: vocabScore,
-        simplicity_score: simplicityScore,
-        relevance_score:  relevanceScore,
-        overall_score:    overallScore,
-        knowledge_gaps:   Array.isArray(parsed.knowledge_gaps) ? parsed.knowledge_gaps : [],
-        feedback:   typeof parsed.feedback   === 'string' ? parsed.feedback   : '',
-        suggestion: typeof parsed.suggestion === 'string' ? parsed.suggestion : '',
-      }
-    } catch {
-      evaluation = { ...FALLBACK_EVALUATION }
-    }
-  }
-
+  // Persist Feynman response record
   const saved = await prisma.feynmanResponse.create({
     data: {
       learnerId,
@@ -138,11 +74,13 @@ Return ONLY valid JSON with no markdown, no explanation, nothing else:
     },
   })
 
+  // Update mission session with Feynman data
   await prisma.missionSession.update({
     where: { id: missionId },
     data: { feynmanScore: evaluation.overall_score, feynmanText: responseText },
   })
 
+  // Schedule knowledge gap items for next-day review
   if (evaluation.knowledge_gaps.length > 0) {
     const tomorrow = new Date()
     tomorrow.setDate(tomorrow.getDate() + 1)
@@ -173,13 +111,15 @@ Return ONLY valid JSON with no markdown, no explanation, nothing else:
     )
   }
 
-  const increment = (evaluation.overall_score / 100) * 2
+  // Update Brain Compound Meter
+  const increment = calculateBrainCompoundIncrement(evaluation.overall_score)
   const newBrainPct = Math.min(100, learner.brainCompoundPct + increment)
   await prisma.learner.update({
     where: { id: learnerId },
     data: { brainCompoundPct: newBrainPct },
   })
 
+  // Check and award relevant badges
   const newBadges = await checkAndAwardBadges(learnerId, {
     type: 'FEYNMAN_COMPLETE',
     score: evaluation.overall_score,
