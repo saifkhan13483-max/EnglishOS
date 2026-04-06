@@ -7,6 +7,7 @@ import {
   getTodayQueue,
   getTomorrowQueue,
   reviewQueueItem,
+  bulkReview,
 } from '../controllers/content.controller'
 
 const router = Router()
@@ -17,6 +18,7 @@ router.get('/levels', getLevels)
 router.get('/sr-queue/today', getTodayQueue)
 router.get('/sr-queue/tomorrow', getTomorrowQueue)
 router.patch('/sr-queue/:id', reviewQueueItem)
+router.post('/sr-review', bulkReview)
 router.get('/module/:level/:module', getModule)
 router.get('/item/:id', getItem)
 

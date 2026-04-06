@@ -4,6 +4,7 @@ import { AuthRequest } from '../middleware/auth'
 import { prisma } from '../lib/prisma'
 import { calculateRank } from '../services/rankService'
 import { checkAndAwardBadges } from '../services/badgeService'
+import { initializeSRQueue } from '../services/srEngine'
 
 // ── Course structure constants ─────────────────────────────────────────────────
 
@@ -328,6 +329,16 @@ export async function submitGate(req: AuthRequest, res: Response): Promise<void>
 
   await Promise.all([...moduleUpserts, gateUpdate, ...nextLevelUpserts, learnerUpdate])
 
+  // Seed SR queue for the first module of the newly unlocked next level
+  if (nextLevel) {
+    const nextLevelModule1Items = await prisma.contentItem.findMany({
+      where: { level: nextLevel, module: 1 },
+    })
+    if (nextLevelModule1Items.length > 0) {
+      await initializeSRQueue(learnerId, nextLevelModule1Items)
+    }
+  }
+
   // Award any badges triggered by passing the gate
   const newBadges = await checkAndAwardBadges(learnerId, {
     type: 'GATE_PASS',
@@ -409,6 +420,14 @@ export async function completeModule(req: AuthRequest, res: Response): Promise<v
         unlockedAt: now,
       },
     })
+
+    // Seed the SR queue for the newly unlocked module
+    const nextModuleItems = await prisma.contentItem.findMany({
+      where: { level, module: nextModule },
+    })
+    if (nextModuleItems.length > 0) {
+      await initializeSRQueue(learnerId, nextModuleItems)
+    }
   }
 
   // Award any badges triggered by completing this module

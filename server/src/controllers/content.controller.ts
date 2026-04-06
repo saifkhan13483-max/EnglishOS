@@ -1,6 +1,7 @@
 import { Response } from 'express'
 import { AuthRequest } from '../middleware/auth'
 import { prisma } from '../lib/prisma'
+import { processReview } from '../services/srEngine'
 
 // GET /api/v1/content/module/:level/:module
 export async function getModule(req: AuthRequest, res: Response): Promise<void> {
@@ -193,4 +194,68 @@ export async function reviewQueueItem(req: AuthRequest, res: Response): Promise<
   }
 
   res.json({ success: true, data: updated, srXpAwarded })
+}
+
+// POST /api/v1/content/sr-review — bulk batch review using the full SR engine
+// Body: { reviews: { itemId: string, wasCorrect: boolean }[] }
+// Brain Compound increment: (correct / total) * 3, capped at +10 per day
+// If brainCompoundPct reaches 100: deepMissionUnlocked: true in response
+
+export async function bulkReview(req: AuthRequest, res: Response): Promise<void> {
+  const learnerId = req.learnerId as string
+
+  const { reviews } = req.body as {
+    reviews: { itemId: string; wasCorrect: boolean }[]
+  }
+
+  if (!Array.isArray(reviews) || reviews.length === 0) {
+    res.status(400).json({ success: false, error: 'reviews must be a non-empty array' })
+    return
+  }
+
+  for (const r of reviews) {
+    if (typeof r.itemId !== 'string' || typeof r.wasCorrect !== 'boolean') {
+      res.status(400).json({
+        success: false,
+        error: 'Each review must have itemId (string) and wasCorrect (boolean)',
+      })
+      return
+    }
+  }
+
+  const updatedItems = await Promise.all(
+    reviews.map((r) => processReview(learnerId, r.itemId, r.wasCorrect)),
+  )
+
+  const correctCount = reviews.filter((r) => r.wasCorrect).length
+  const totalCount = reviews.length
+  const rawIncrement = (correctCount / totalCount) * 3
+  const increment = Math.min(10, rawIncrement)
+
+  const learner = await prisma.learner.findUnique({
+    where: { id: learnerId },
+    select: { brainCompoundPct: true },
+  })
+
+  if (!learner) {
+    res.status(404).json({ success: false, error: 'Learner not found' })
+    return
+  }
+
+  const newBrainCompoundPct = Math.min(100, learner.brainCompoundPct + increment)
+  const deepMissionUnlocked = newBrainCompoundPct >= 100 && learner.brainCompoundPct < 100
+
+  await prisma.learner.update({
+    where: { id: learnerId },
+    data: { brainCompoundPct: newBrainCompoundPct },
+  })
+
+  res.json({
+    success: true,
+    data: {
+      updatedItems,
+      newBrainCompoundPct,
+      deepMissionUnlocked,
+    },
+  })
 }

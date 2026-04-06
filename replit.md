@@ -202,6 +202,7 @@ All FK relations use `CASCADE` delete. Prisma migration file: `server/prisma/mig
 | `GET` | `/api/v1/feynman/archive` | All FeynmanResponse records for the learner (desc), joined with MissionSession |
 | `POST` | `/api/v1/conversation/message` | Stateless conversation turn — send full `messageHistory`; empty array = opening message |
 | `POST` | `/api/v1/learner/batman-skip` | Use the weekly skip day (requires batmanModeActive=true, batmanSkipUsedThisWeek=false) |
+| `POST` | `/api/v1/content/sr-review` | Bulk batch review — `{ reviews: { itemId, wasCorrect }[] }` — processes SM-2 for all items, increments Brain Compound Meter, returns `{ updatedItems, newBrainCompoundPct, deepMissionUnlocked }` |
 
 ## Constants
 
@@ -213,6 +214,25 @@ All FK relations use `CASCADE` delete. Prisma migration file: `server/prisma/mig
 - **CoreDrop**: calls `missionStore.loadModuleContent(level, module)` → reads `missionStore.moduleContent`; Roman Urdu toggle persisted in `uiStore.romanUrduEnabled`
 - **ApplyIt**: reads scenario from `getScenario(currentModule)` (static map)
 - **FeynmanMoment**: calls `missionStore.submitFeynmanResponse(text)` → `POST /api/v1/feynman/evaluate`; displays real scores/feedback/gaps; calls `completeMission()` → `PUT /api/v1/mission/:id/complete`
+
+## Spaced Repetition Engine (`server/src/services/srEngine.ts`)
+
+All SR logic lives in one service with four exported functions:
+
+| Function | When called | What it does |
+|---|---|---|
+| `initializeSRQueue(learnerId, items)` | On onboarding complete, on module unlock, on gate pass | Creates `SRQueueItem` for each `ContentItem`; Power Pack items start with easeFactor=2.7, regular=2.5; nextReviewDate=tomorrow |
+| `processReview(learnerId, itemId, wasCorrect)` | Inside `POST /api/v1/content/sr-review` | SM-2: correct → interval=min(180, round(interval×ease)), ease=min(3.5, ease+0.1), gap=false; incorrect → interval=1, ease=max(1.3, ease-0.2), gap unchanged |
+| `markAsKnowledgeGap(learnerId, itemId)` | Called by Feynman evaluator when gap items detected | Sets isKnowledgeGap=true, nextReviewDate=tomorrow |
+| `getDailyQueue(learnerId, limit=20)` | Backing service for `GET /api/v1/content/sr-queue/today` | Returns items due today, sorted: gaps → Power Pack → date |
+| `calculateBrainCompoundDrain(learnerId)` | On demand / scheduled | If no SR review in 3+ days, drains brainCompoundPct by 5/day (min 0) |
+
+**Brain Compound Meter** on bulk review: `increment = min(10, (correct/total) × 3)`. Capped at 100. When it first hits 100 the response includes `deepMissionUnlocked: true`.
+
+**Auto-seeding**: `initializeSRQueue` is called automatically from three places:
+- `completeOnboarding` → seeds module 1 of placement level
+- `completeModule` → seeds next module when it unlocks
+- `submitGate` → seeds module 1 of the next level on gate pass
 
 ## Batman Mode
 

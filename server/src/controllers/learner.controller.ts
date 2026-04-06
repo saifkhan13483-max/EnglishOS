@@ -3,6 +3,7 @@ import bcrypt from 'bcryptjs'
 import { ModuleStatus } from '@prisma/client'
 import { AuthRequest } from '../middleware/auth'
 import { prisma } from '../lib/prisma'
+import { initializeSRQueue } from '../services/srEngine'
 
 // ── Course structure (mirrored from progress controller) ───────────────────────
 
@@ -220,6 +221,14 @@ export async function completeOnboarding(req: AuthRequest, res: Response): Promi
     }),
     ...progressUpserts,
   ])
+
+  // Seed SR queue for module 1 of the placement level
+  const module1Items = await prisma.contentItem.findMany({
+    where: { level: placementLevel, module: 1 },
+  })
+  if (module1Items.length > 0) {
+    await initializeSRQueue(learnerId, module1Items)
+  }
 
   res.json({ success: true, data: learner })
 }
