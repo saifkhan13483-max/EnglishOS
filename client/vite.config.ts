@@ -20,4 +20,17 @@ export default defineConfig({
       },
     },
   },
+  build: {
+    rollupOptions: {
+      output: {
+        manualChunks: {
+          'react-vendor': ['react', 'react-dom', 'react-router-dom'],
+          'framer':        ['framer-motion'],
+          'charts':        ['recharts'],
+          'dnd':           ['@dnd-kit/core', '@dnd-kit/utilities'],
+          'zustand':       ['zustand'],
+        },
+      },
+    },
+  },
 })

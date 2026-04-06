@@ -8,6 +8,7 @@ import ProgressBar from '@/components/ui/ProgressBar'
 import Badge from '@/components/ui/Badge'
 import { SkeletonStatRow } from '@/components/ui/Skeleton'
 import BrainCompoundMeter from '@/components/gamification/BrainCompoundMeter'
+import { useShallow } from 'zustand/react/shallow'
 import { useProgressStore } from '@/stores/progressStore'
 
 /* ─────────────────────────────────────────
@@ -101,7 +102,20 @@ export default function Progress() {
     streak, totalXP, brainCompoundPct, totalDaysActive,
     feynmanScoreTrend, serverBadges, levelProgressList,
     loadStats, mapLevels, loadMasteryMap,
-  } = useProgressStore()
+  } = useProgressStore(
+    useShallow((s) => ({
+      streak: s.streak,
+      totalXP: s.totalXP,
+      brainCompoundPct: s.brainCompoundPct,
+      totalDaysActive: s.totalDaysActive,
+      feynmanScoreTrend: s.feynmanScoreTrend,
+      serverBadges: s.serverBadges,
+      levelProgressList: s.levelProgressList,
+      loadStats: s.loadStats,
+      mapLevels: s.mapLevels,
+      loadMasteryMap: s.loadMasteryMap,
+    }))
+  )
 
   useEffect(() => {
     setIsLoading(true)

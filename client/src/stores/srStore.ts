@@ -40,6 +40,9 @@ interface SRStore {
   brainCompoundPct: number      // updated after syncReviews
   _pendingReviews: PendingReview[] // internal buffer — not for external use
 
+  /** ISO date string (YYYY-MM-DD) of the day the queue was last loaded */
+  _srQueueDate: string
+
   // Backward-compat setter used by missionStore.loadDailyQueue
   setDailyQueue: (raw: unknown[]) => void
 
@@ -47,6 +50,12 @@ interface SRStore {
   loadDailyQueue: () => Promise<void>
   markReviewed: (itemId: string, wasCorrect: boolean) => void
   syncReviews: () => Promise<{ newBrainCompoundPct: number; deepMissionUnlocked: boolean } | null>
+}
+
+// ── Helpers ───────────────────────────────────────────────────────────────────
+
+function todayISO(): string {
+  return new Date().toISOString().slice(0, 10) // "YYYY-MM-DD"
 }
 
 // ── Mapper ────────────────────────────────────────────────────────────────────
@@ -72,6 +81,7 @@ export const useSRStore = create<SRStore>((set, get) => ({
   pendingCount: 0,
   brainCompoundPct: 0,
   _pendingReviews: [],
+  _srQueueDate: '',
 
   // ── Backward-compat: missionStore still calls this via setDailyQueue
   setDailyQueue: (raw) => {
@@ -80,15 +90,20 @@ export const useSRStore = create<SRStore>((set, get) => ({
     set({ dailyQueue: cards, pendingCount: all.length })
   },
 
-  // ── Load today's SR queue directly from the store
+  // ── Load today's SR queue — skip if already loaded today
   loadDailyQueue: async () => {
+    const { _srQueueDate, dailyQueue } = get()
+    const today = todayISO()
+    // If the queue was loaded today and is non-empty, skip the network call
+    if (_srQueueDate === today && dailyQueue.length > 0) return
+
     try {
       const res = await api.get<{ success: boolean; data: unknown[] }>(
         '/api/v1/content/sr-queue/today'
       )
       const all = res.data as RawQueueItem[]
       const cards = all.slice(0, 20).map(mapRawToCard)
-      set({ dailyQueue: cards, pendingCount: all.length })
+      set({ dailyQueue: cards, pendingCount: all.length, _srQueueDate: today })
     } catch {
       // Fail silently — queue stays empty, mission can still proceed
     }

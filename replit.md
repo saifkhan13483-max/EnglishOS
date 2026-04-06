@@ -65,6 +65,33 @@ An English learning platform for South Asian learners built around the Polymath 
 └── pnpm-workspace.yaml    # pnpm workspace definition
 ```
 
+## Performance Optimizations
+
+### Bundle Splitting (vite.config.ts)
+- `manualChunks` splits vendors into separate cached chunks: `react-vendor`, `framer`, `charts`, `dnd`, `zustand`
+- Result: initial JS chunk went from **1,373 kB → 61 kB** (gzip: 364 kB → 15 kB)
+
+### Code Splitting (AppRouter.tsx)
+- All page components use `React.lazy()` + top-level `<Suspense>` fallback
+- Each page (MasteryMap, Mission, Progress, etc.) is its own JS chunk, loaded on demand
+
+### Client-Side Caching
+- `progressStore.loadDashboard()` has a **30-second TTL** — navigating back within 30s skips the API call
+- `srStore.loadDailyQueue()` is **date-keyed** — the SR queue is fetched at most once per calendar day; returning to the Mission after navigating away reuses the cached queue
+
+### Response Compression (server/src/app.ts)
+- `compression` middleware applied globally — reduces JSON API responses by 60–80%
+
+### Audio Asset Caching (server/src/app.ts)
+- `/audio/*` route serves from `server/public/audio/` with `Cache-Control: public, max-age=31536000, immutable`
+
+### React Rendering
+- **`React.memo`** wraps `LevelNode` — only re-renders when its own `status`/`color` props change, not when any sibling level updates
+- **`useShallow`** (from `zustand/react/shallow`) wraps all multi-property Zustand selectors in `AppShell`, `MasteryMap`, and `Progress` — prevents re-renders when unrelated store slices change
+
+### SVG Icons
+- All icons are already inlined as React components (not external `.svg` files) — zero network requests for icons
+
 ## Development
 
 ```bash

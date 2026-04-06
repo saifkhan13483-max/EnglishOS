@@ -1,4 +1,4 @@
-import { useEffect } from 'react'
+import { lazy, Suspense, useEffect } from 'react'
 import { BrowserRouter, Routes, Route, Navigate, Outlet } from 'react-router-dom'
 import { useAuthStore } from '@/stores/authStore'
 import { setAccessToken } from '@/services/api'
@@ -7,18 +7,19 @@ import AppShell from '@/components/layout/AppShell'
 import BadgeToast from '@/components/ui/BadgeToast'
 import ToastContainer from '@/components/ui/Toast'
 
-import Landing        from '@/pages/Landing'
-import Login          from '@/pages/Login'
-import Register       from '@/pages/Register'
-import Onboarding     from '@/pages/Onboarding'
-import MasteryMap     from '@/pages/MasteryMap'
-import Mission        from '@/pages/Mission'
-import Progress       from '@/pages/Progress'
-import FeynmanArchive from '@/pages/FeynmanArchive'
-import Leaderboard    from '@/pages/Leaderboard'
-import LevelGate      from '@/pages/LevelGate'
-import Profile        from '@/pages/Profile'
-import NotFound       from '@/pages/NotFound'
+/* ── Lazy page imports — each page becomes its own JS chunk ─────────── */
+const Landing        = lazy(() => import('@/pages/Landing'))
+const Login          = lazy(() => import('@/pages/Login'))
+const Register       = lazy(() => import('@/pages/Register'))
+const Onboarding     = lazy(() => import('@/pages/Onboarding'))
+const MasteryMap     = lazy(() => import('@/pages/MasteryMap'))
+const Mission        = lazy(() => import('@/pages/Mission'))
+const Progress       = lazy(() => import('@/pages/Progress'))
+const FeynmanArchive = lazy(() => import('@/pages/FeynmanArchive'))
+const Leaderboard    = lazy(() => import('@/pages/Leaderboard'))
+const LevelGate      = lazy(() => import('@/pages/LevelGate'))
+const Profile        = lazy(() => import('@/pages/Profile'))
+const NotFound       = lazy(() => import('@/pages/NotFound'))
 
 /* ── Full-screen loading spinner ────────────────────────────────────── */
 function LoadingScreen() {
@@ -104,35 +105,37 @@ export default function AppRouter() {
       <SessionLoader />
       <BadgeToast />
       <ToastContainer />
-      <Routes>
+      <Suspense fallback={<LoadingScreen />}>
+        <Routes>
 
-        {/* Public routes — redirect to /map when already logged in */}
-        <Route element={<PublicRoute />}>
-          <Route path="/"         element={<Landing />} />
-          <Route path="/login"    element={<Login />} />
-          <Route path="/register" element={<Register />} />
-        </Route>
+          {/* Public routes — redirect to /map when already logged in */}
+          <Route element={<PublicRoute />}>
+            <Route path="/"         element={<Landing />} />
+            <Route path="/login"    element={<Login />} />
+            <Route path="/register" element={<Register />} />
+          </Route>
 
-        {/* Onboarding — auth required, redirect to /map if already done */}
-        <Route element={<OnboardingRoute />}>
-          <Route path="/onboarding" element={<Onboarding />} />
-        </Route>
+          {/* Onboarding — auth required, redirect to /map if already done */}
+          <Route element={<OnboardingRoute />}>
+            <Route path="/onboarding" element={<Onboarding />} />
+          </Route>
 
-        {/* Protected routes — wrapped in AppShell */}
-        <Route element={<ProtectedRoute />}>
-          <Route path="/map"                    element={<MasteryMap />} />
-          <Route path="/mission/:type"          element={<Mission />} />
-          <Route path="/progress"               element={<Progress />} />
-          <Route path="/feynman-archive"        element={<FeynmanArchive />} />
-          <Route path="/leaderboard"            element={<Leaderboard />} />
-          <Route path="/level-gate/:level"      element={<LevelGate />} />
-          <Route path="/profile"                element={<Profile />} />
-        </Route>
+          {/* Protected routes — wrapped in AppShell */}
+          <Route element={<ProtectedRoute />}>
+            <Route path="/map"                    element={<MasteryMap />} />
+            <Route path="/mission/:type"          element={<Mission />} />
+            <Route path="/progress"               element={<Progress />} />
+            <Route path="/feynman-archive"        element={<FeynmanArchive />} />
+            <Route path="/leaderboard"            element={<Leaderboard />} />
+            <Route path="/level-gate/:level"      element={<LevelGate />} />
+            <Route path="/profile"                element={<Profile />} />
+          </Route>
 
-        {/* 404 */}
-        <Route path="*" element={<NotFound />} />
+          {/* 404 */}
+          <Route path="*" element={<NotFound />} />
 
-      </Routes>
+        </Routes>
+      </Suspense>
     </BrowserRouter>
   )
 }

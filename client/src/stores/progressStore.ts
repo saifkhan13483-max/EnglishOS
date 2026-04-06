@@ -75,6 +75,8 @@ export interface LevelProgressRecord {
   completedAt: string | null
 }
 
+const DASHBOARD_TTL_MS = 30_000 // 30 seconds
+
 interface ProgressStore {
   learnerProfile: LearnerProfile | null
   levelProgress: LevelProgress[]
@@ -93,6 +95,9 @@ interface ProgressStore {
   totalDaysActive: number
   serverBadges: ServerBadge[]
 
+  /** Timestamp (Date.now()) of the last successful loadDashboard call */
+  _dashboardLastFetched: number
+
   setLearnerProfile: (profile: LearnerProfile) => void
   setStats: (stats: { xp: number; streak: number; brainCompoundPct: number }) => void
   setBatmanState: (state: { batmanModeActive: boolean; batmanSkipUsedThisWeek: boolean }) => void
@@ -102,7 +107,7 @@ interface ProgressStore {
   loadStats: () => Promise<void>
 }
 
-export const useProgressStore = create<ProgressStore>((set) => ({
+export const useProgressStore = create<ProgressStore>((set, get) => ({
   learnerProfile: null,
   levelProgress: [],
   totalXP: 0,
@@ -120,6 +125,8 @@ export const useProgressStore = create<ProgressStore>((set) => ({
   totalDaysActive: 0,
   serverBadges: [],
 
+  _dashboardLastFetched: 0,
+
   setLearnerProfile: (profile) => set({ learnerProfile: profile }),
 
   setStats: ({ xp, streak, brainCompoundPct }) =>
@@ -129,6 +136,10 @@ export const useProgressStore = create<ProgressStore>((set) => ({
     set({ batmanModeActive, batmanSkipUsedThisWeek }),
 
   loadDashboard: async () => {
+    // 30-second client-side cache: skip the API call if data is still fresh
+    const { _dashboardLastFetched } = get()
+    if (Date.now() - _dashboardLastFetched < DASHBOARD_TTL_MS) return
+
     try {
       const res = await api.get<{
         success: boolean
@@ -151,6 +162,7 @@ export const useProgressStore = create<ProgressStore>((set) => ({
         totalXP: d.xp,
         myWhy: d.myWhy,
         todayMissions: d.todayMissions,
+        _dashboardLastFetched: Date.now(),
       })
     } catch {
       // silently fail — stale data is better than crashing

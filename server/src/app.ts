@@ -3,6 +3,8 @@ import cors from 'cors'
 import helmet from 'helmet'
 import morgan from 'morgan'
 import rateLimit from 'express-rate-limit'
+import compression from 'compression'
+import path from 'path'
 
 import { errorHandler } from './middleware/errorHandler'
 
@@ -18,6 +20,9 @@ import leaderboardRoutes from './routes/leaderboard.routes'
 const app = express()
 
 app.set('trust proxy', 1)
+
+// ── Response compression — reduces JSON payload sizes by 60–80% ──────────────
+app.use(compression())
 
 app.use(
   helmet({
@@ -57,6 +62,18 @@ if (process.env.NODE_ENV !== 'production') {
 
 app.use(express.json({ limit: '10mb' }))
 app.use(express.urlencoded({ extended: true, limit: '10mb' }))
+
+// ── Static audio file serving with long-lived cache headers ──────────────────
+// Vocabulary pronunciation audio files are served from /public/audio/
+// Cache-Control: max-age=31536000, immutable tells browsers/CDNs to cache for 1 year
+app.use(
+  '/audio',
+  (req: Request, res: Response, next) => {
+    res.setHeader('Cache-Control', 'public, max-age=31536000, immutable')
+    next()
+  },
+  express.static(path.join(__dirname, '../public/audio'))
+)
 
 const limiter = rateLimit({
   windowMs: 15 * 60 * 1000,

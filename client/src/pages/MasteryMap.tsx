@@ -7,6 +7,7 @@ import Button from '@/components/ui/Button'
 import Badge  from '@/components/ui/Badge'
 import ProgressBar from '@/components/ui/ProgressBar'
 import { Skeleton } from '@/components/ui/Skeleton'
+import { useShallow } from 'zustand/react/shallow'
 import { useProgressStore, type MapLevel, type MapModule } from '@/stores/progressStore'
 import { api } from '@/services/api'
 
@@ -177,7 +178,9 @@ export default function MasteryMap() {
   const [selectedLevel, setSelectedLevel] = useState<DisplayLevel | null>(null)
   const [isLoading, setIsLoading] = useState(true)
 
-  const { mapLevels, loadMasteryMap } = useProgressStore()
+  const { mapLevels, loadMasteryMap } = useProgressStore(
+    useShallow((s) => ({ mapLevels: s.mapLevels, loadMasteryMap: s.loadMasteryMap }))
+  )
 
   useEffect(() => {
     setIsLoading(true)
@@ -253,7 +256,9 @@ export default function MasteryMap() {
    Top bar streak / day badge
 ───────────────────────────────────────── */
 function TopBarStats() {
-  const { streak, learnerProfile } = useProgressStore()
+  const { streak, learnerProfile } = useProgressStore(
+    useShallow((s) => ({ streak: s.streak, learnerProfile: s.learnerProfile }))
+  )
   const dayNumber = learnerProfile?.dayNumber ?? 0
   return (
     <div className="flex items-center gap-3">
@@ -408,7 +413,19 @@ function MobileMap({ levels, onSelect }: { levels: DisplayLevel[]; onSelect: (l:
    Dashboard Panel
 ───────────────────────────────────────── */
 function DashboardPanel({ onStartMission }: { onStartMission: () => void }) {
-  const { streak, brainCompoundPct, todayMissions, myWhy, batmanModeActive, batmanSkipUsedThisWeek, setBatmanState } = useProgressStore()
+  const {
+    streak, brainCompoundPct, todayMissions, myWhy, batmanModeActive, batmanSkipUsedThisWeek, setBatmanState,
+  } = useProgressStore(
+    useShallow((s) => ({
+      streak: s.streak,
+      brainCompoundPct: s.brainCompoundPct,
+      todayMissions: s.todayMissions,
+      myWhy: s.myWhy,
+      batmanModeActive: s.batmanModeActive,
+      batmanSkipUsedThisWeek: s.batmanSkipUsedThisWeek,
+      setBatmanState: s.setBatmanState,
+    }))
+  )
   const [skipLoading, setSkipLoading] = useState(false)
   const [skipError, setSkipError] = useState<string | null>(null)
 

@@ -1,3 +1,4 @@
+import { memo } from 'react'
 import { motion } from 'framer-motion'
 import Badge from '@/components/ui/Badge'
 
@@ -28,7 +29,7 @@ const CheckIcon = () => (
   </svg>
 )
 
-export default function LevelNode({
+function LevelNodeBase({
   level, name, totalDays, currentDay = 0, status, color, onClick,
 }: LevelNodeProps) {
   const isActive   = status === 'active'
@@ -125,3 +126,7 @@ export default function LevelNode({
     </div>
   )
 }
+
+// Memoize: only re-render when this level's own props change (status, color, etc.)
+const LevelNode = memo(LevelNodeBase)
+export default LevelNode

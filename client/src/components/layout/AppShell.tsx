@@ -1,5 +1,7 @@
 import { useState } from 'react'
 import { NavLink, useLocation } from 'react-router-dom'
+import { motion } from 'framer-motion'
+import { useShallow } from 'zustand/react/shallow'
 import { useProgressStore } from '@/stores/progressStore'
 import BrainCompoundMeter from '@/components/gamification/BrainCompoundMeter'
 
@@ -74,7 +76,9 @@ function isNavItemActive(item: NavItem, pathname: string): boolean {
 
 /* ── Top Bar ─────────────────────────────────────────────────────────── */
 function TopBar() {
-  const { streak, brainCompoundPct } = useProgressStore()
+  const { streak, brainCompoundPct } = useProgressStore(
+    useShallow((s) => ({ streak: s.streak, brainCompoundPct: s.brainCompoundPct }))
+  )
 
   return (
     <header className="shrink-0 h-14 flex items-center justify-between px-4 border-b border-border-subtle bg-bg-primary z-20">
