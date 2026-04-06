@@ -3,18 +3,22 @@ import dotenv from 'dotenv'
 dotenv.config()
 
 import { execSync } from 'child_process'
+import path from 'path'
 import http from 'http'
 import app from './app'
 import { startScheduler } from './services/schedulerService'
 import { prisma } from './lib/prisma'
 
-const PORT = parseInt(process.env.PORT || '3000', 10)
+const PORT = parseInt(process.env.PORT || '5000', 10)
 const IS_PRODUCTION = process.env.NODE_ENV === 'production'
 
 if (IS_PRODUCTION) {
   console.log('[startup] Running prisma migrate deploy...')
   try {
-    execSync('npx prisma migrate deploy', { stdio: 'inherit' })
+    // __dirname is server/dist/ in the compiled output; go up one level to server/
+    const serverRoot = path.join(__dirname, '..')
+    const prismaBin = path.join(serverRoot, 'node_modules', '.bin', 'prisma')
+    execSync(`${prismaBin} migrate deploy`, { stdio: 'inherit', cwd: serverRoot })
     console.log('[startup] Migrations applied successfully.')
   } catch (err) {
     console.error('[startup] Migration failed:', err)

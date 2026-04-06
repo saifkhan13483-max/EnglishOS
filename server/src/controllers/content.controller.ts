@@ -5,8 +5,8 @@ import { processReview } from '../services/srEngine'
 
 // GET /api/v1/content/module/:level/:module
 export async function getModule(req: AuthRequest, res: Response): Promise<void> {
-  const level = parseInt(req.params.level, 10)
-  const module = parseInt(req.params.module, 10)
+  const level = parseInt(String(req.params.level), 10)
+  const module = parseInt(String(req.params.module), 10)
 
   if (isNaN(level) || isNaN(module) || level < 1 || module < 1) {
     res.status(400).json({ success: false, error: 'Invalid level or module' })
@@ -27,7 +27,7 @@ export async function getModule(req: AuthRequest, res: Response): Promise<void> 
 // GET /api/v1/content/item/:id
 export async function getItem(req: AuthRequest, res: Response): Promise<void> {
   const item = await prisma.contentItem.findUnique({
-    where: { id: req.params.id },
+    where: { id: String(req.params.id) },
   })
 
   if (!item) {
@@ -39,7 +39,7 @@ export async function getItem(req: AuthRequest, res: Response): Promise<void> {
 }
 
 // GET /api/v1/content/levels
-export async function getLevels(req: AuthRequest, res: Response): Promise<void> {
+export async function getLevels(_req: AuthRequest, res: Response): Promise<void> {
   const rows = await prisma.contentItem.groupBy({
     by: ['level', 'module'],
     _count: { id: true },
@@ -147,7 +147,7 @@ export async function getRecentQueue(req: AuthRequest, res: Response): Promise<v
 // SR XP: +10 per correct review, daily cap of 10 correct reviews (100 XP max)
 export async function reviewQueueItem(req: AuthRequest, res: Response): Promise<void> {
   const learnerId = req.learnerId as string
-  const { id } = req.params
+  const id = String(req.params.id)
   const { correct } = req.body as { correct: boolean }
 
   if (typeof correct !== 'boolean') {
@@ -181,7 +181,7 @@ export async function reviewQueueItem(req: AuthRequest, res: Response): Promise<
   const nextReviewDate = new Date(now.getTime() + newIntervalDays * 24 * 60 * 60 * 1000)
 
   const updated = await prisma.sRQueueItem.update({
-    where: { id },
+    where: { id: String(id) },
     data: {
       intervalDays: newIntervalDays,
       easeFactor: newEaseFactor,

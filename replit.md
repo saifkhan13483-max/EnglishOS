@@ -8,8 +8,8 @@ An English learning platform for South Asian learners built around the Polymath 
 
 | Package | Location | Port | Description |
 |---------|----------|------|-------------|
-| `client` | `/client` | 5000 | React 18 + Vite frontend |
-| `server` | `/server` | 3000 | Express + Node.js API |
+| `client` | `/client` | — | React 18 + Vite frontend (served by Express in production) |
+| `server` | `/server` | 5000 | Express + Node.js API (serves both API + static client in production) |
 
 ## Tech Stack
 
@@ -92,16 +92,22 @@ An English learning platform for South Asian learners built around the Polymath 
 ### SVG Icons
 - All icons are already inlined as React components (not external `.svg` files) — zero network requests for icons
 
-## Development
+## Development & Running
+
+The Replit "Start application" workflow runs `pnpm start` (the pre-built production server on port 5000).
 
 ```bash
-# Run both client and server
-pnpm dev
+# Build both client and server
+pnpm build
 
-# Run individually
-pnpm dev:client   # Vite on port 5000
-pnpm dev:server   # Express on port 3000
+# Start the production server (after building)
+pnpm start
+
+# Development mode (both client Vite + server tsx watch in parallel)
+pnpm dev
 ```
+
+When iterating in Replit: run `pnpm build` after code changes, then restart the workflow.
 
 ## Design System
 
@@ -374,7 +380,7 @@ Full regex scan of `server/src` and `client/src` confirmed **zero hardcoded secr
 
 ## Notes
 
-- Vite runs on port **5000** (adjusted from 5173 for Replit preview pane compatibility); the dev server proxies `/api/*` to Express on port **3000**
+- In production, Express serves both the React SPA (`client/dist/`) and the API on port **5000**. In dev mode (`pnpm dev`), Vite dev server proxies `/api/*` to Express running on port **5001**.
 - Tailwind custom color/font tokens are fully configured — see Design System section above
 - Environment variables: JWT_SECRET, JWT_REFRESH_SECRET, DATABASE_URL, PORT, CLIENT_URL are set; OPENAI_API_KEY and RESEND_API_KEY are optional (Feynman returns a fallback score when OpenAI is absent)
 - The OpenAI client is lazily instantiated — the server starts without OPENAI_API_KEY; add it to enable AI evaluation

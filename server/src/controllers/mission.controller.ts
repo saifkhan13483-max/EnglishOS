@@ -125,7 +125,7 @@ export async function startMission(req: AuthRequest, res: Response): Promise<voi
 
 export async function completeMission(req: AuthRequest, res: Response): Promise<void> {
   const learnerId = req.learnerId as string
-  const { id } = req.params
+  const id = String(req.params.id)
   const {
     feynmanScore,
     warmupPerfect,

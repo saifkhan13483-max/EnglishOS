@@ -1,4 +1,4 @@
-import express, { Request, Response } from 'express'
+import express, { Request, Response, NextFunction } from 'express'
 import cors from 'cors'
 import helmet from 'helmet'
 import morgan from 'morgan'
@@ -18,15 +18,27 @@ import progressRoutes from './routes/progress.routes'
 import leaderboardRoutes from './routes/leaderboard.routes'
 
 const app = express()
+const IS_PRODUCTION = process.env.NODE_ENV === 'production'
 
 app.set('trust proxy', 1)
 
-// ── Response compression — reduces JSON payload sizes by 60–80% ──────────────
 app.use(compression())
 
 app.use(
   helmet({
     crossOriginEmbedderPolicy: false,
+    contentSecurityPolicy: IS_PRODUCTION
+      ? {
+          directives: {
+            defaultSrc: ["'self'"],
+            scriptSrc: ["'self'", "'unsafe-inline'", 'https://app.posthog.com'],
+            styleSrc: ["'self'", "'unsafe-inline'", 'https://fonts.googleapis.com'],
+            fontSrc: ["'self'", 'https://fonts.gstatic.com'],
+            imgSrc: ["'self'", 'data:', 'blob:'],
+            connectSrc: ["'self'", 'https://app.posthog.com'],
+          },
+        }
+      : false,
   })
 )
 
@@ -34,6 +46,7 @@ const allowedOrigins = [
   process.env.CLIENT_URL,
   'http://localhost:5000',
   'http://localhost:5173',
+  'http://localhost:3000',
 ].filter(Boolean) as string[]
 
 app.use(
@@ -56,7 +69,7 @@ app.use(
   })
 )
 
-if (process.env.NODE_ENV !== 'production') {
+if (!IS_PRODUCTION) {
   app.use(morgan('dev'))
 }
 
@@ -64,12 +77,10 @@ app.use(express.json({ limit: '10mb' }))
 app.use(express.urlencoded({ extended: true, limit: '10mb' }))
 
 // ── Static audio file serving with long-lived cache headers ──────────────────
-// Vocabulary pronunciation audio files are served from /public/audio/
-// Cache-Control: max-age=31536000, immutable tells browsers/CDNs to cache for 1 year
 app.use(
   '/audio',
-  (req: Request, res: Response, next) => {
-    res.setHeader('Cache-Control', 'public, max-age=31536000, immutable')
+  (_req: Request, _res: Response, next: NextFunction) => {
+    _res.setHeader('Cache-Control', 'public, max-age=31536000, immutable')
     next()
   },
   express.static(path.join(__dirname, '../public/audio'))
@@ -103,6 +114,24 @@ app.use(`${API}/feynman`, feynmanRoutes)
 app.use(`${API}/conversation`, conversationRoutes)
 app.use(`${API}/progress`, progressRoutes)
 app.use(`${API}/leaderboard`, leaderboardRoutes)
+
+// ── Production: serve React client build and enable client-side routing ───────
+if (IS_PRODUCTION) {
+  const clientDist = path.join(__dirname, '../../client/dist')
+
+  app.use(
+    express.static(clientDist, {
+      maxAge: '1y',
+      etag: true,
+      index: false,
+    })
+  )
+
+  // Serve index.html for all non-API routes so React Router handles routing
+  app.get(/^(?!\/(api|health))/, (_req: Request, res: Response) => {
+    res.sendFile(path.join(clientDist, 'index.html'))
+  })
+}
 
 app.use(errorHandler)
 

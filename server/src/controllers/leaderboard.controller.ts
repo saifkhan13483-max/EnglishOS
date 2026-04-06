@@ -30,7 +30,7 @@ function anonymiseName(fullName: string): string {
 
 // ── GET /api/v1/leaderboard/feynman/weekly ────────────────────────────────────
 
-export async function getWeeklyLeaderboard(req: AuthRequest, res: Response): Promise<void> {
+export async function getWeeklyLeaderboard(_req: AuthRequest, res: Response): Promise<void> {
   const week = isoWeekString()
 
   const entries = await prisma.leaderboardEntry.findMany({
