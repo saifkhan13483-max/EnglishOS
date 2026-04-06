@@ -6,6 +6,7 @@ import PathLine,  { type PathStatus }  from '@/components/map/PathLine'
 import Button from '@/components/ui/Button'
 import Badge  from '@/components/ui/Badge'
 import ProgressBar from '@/components/ui/ProgressBar'
+import { Skeleton } from '@/components/ui/Skeleton'
 import { useProgressStore, type MapLevel, type MapModule } from '@/stores/progressStore'
 import { api } from '@/services/api'
 
@@ -174,11 +175,13 @@ function buildPaths(mapLevels: MapLevel[]): PathDef[] {
 export default function MasteryMap() {
   const navigate = useNavigate()
   const [selectedLevel, setSelectedLevel] = useState<DisplayLevel | null>(null)
+  const [isLoading, setIsLoading] = useState(true)
 
   const { mapLevels, loadMasteryMap } = useProgressStore()
 
   useEffect(() => {
-    loadMasteryMap()
+    setIsLoading(true)
+    loadMasteryMap().finally(() => setIsLoading(false))
   }, [loadMasteryMap])
 
   const displayLevels = buildDisplayLevels(mapLevels)
@@ -201,12 +204,25 @@ export default function MasteryMap() {
 
         {/* Desktop Z-pattern map — hidden on mobile */}
         <div className="hidden md:block absolute inset-0 pt-16 pb-4">
-          <DesktopMap levels={displayLevels} paths={paths} onSelect={setSelectedLevel} />
+          {isLoading ? <MapSkeleton /> : (
+            <DesktopMap levels={displayLevels} paths={paths} onSelect={setSelectedLevel} />
+          )}
         </div>
 
         {/* Mobile vertical map */}
         <div className="md:hidden absolute inset-0 pt-16 pb-[200px] overflow-y-auto">
-          <MobileMap levels={displayLevels} onSelect={setSelectedLevel} />
+          {isLoading ? (
+            <div className="flex flex-col items-center gap-0 px-6 py-6">
+              {[1,2,3,4,5,6].map((i) => (
+                <div key={i} className="flex flex-col items-center">
+                  <Skeleton className="w-28 h-28" rounded="rounded-full" />
+                  {i < 6 && <div className="w-0.5 h-10 my-1 bg-bg-tertiary animate-pulse rounded-full" />}
+                </div>
+              ))}
+            </div>
+          ) : (
+            <MobileMap levels={displayLevels} onSelect={setSelectedLevel} />
+          )}
         </div>
       </div>
 
@@ -270,6 +286,26 @@ function MapBackground() {
       <div className="absolute top-[40%] right-[8%] w-32 h-20 rounded-xl border border-border-subtle/20 opacity-15 -rotate-6" />
       <div className="absolute bottom-[15%] left-[20%] w-24 h-24 rounded-full border border-border-subtle/20 opacity-20" />
       <div className="absolute top-[65%] right-[20%] w-40 h-16 rounded-xl border border-border-subtle/15 opacity-15 rotate-3" />
+    </div>
+  )
+}
+
+/* ─────────────────────────────────────────
+   Map skeleton (while loading)
+───────────────────────────────────────── */
+function MapSkeleton() {
+  const positions = Object.values(DESKTOP_POS)
+  return (
+    <div className="relative w-full h-full max-w-2xl mx-auto px-8">
+      {positions.map((pos, i) => (
+        <div
+          key={i}
+          className="absolute"
+          style={{ left: `${pos.x}%`, top: `${pos.y}%`, transform: 'translate(-50%, -50%)' }}
+        >
+          <Skeleton className="w-28 h-28" rounded="rounded-full" />
+        </div>
+      ))}
     </div>
   )
 }

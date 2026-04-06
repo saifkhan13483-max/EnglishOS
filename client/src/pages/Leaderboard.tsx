@@ -334,13 +334,18 @@ export default function Leaderboard() {
         {/* Empty state */}
         {!loading && entries.length === 0 && (
           <motion.div
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            className="text-center py-16"
+            initial={{ opacity: 0, y: 12 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.35 }}
+            className="text-center py-16 flex flex-col items-center gap-3"
           >
-            <span className="text-5xl block mb-4">🏆</span>
-            <p className="text-text-secondary font-body text-sm">No entries this week yet.</p>
-            <p className="text-text-muted font-mono text-xs mt-1">Be the first to submit your best explanation!</p>
+            <span className="text-5xl">🏆</span>
+            <div>
+              <p className="text-text-secondary font-body text-sm font-medium">No submissions this week yet.</p>
+              <p className="text-text-muted font-mono text-xs mt-1.5">
+                Be the first to share your explanation and claim the top spot!
+              </p>
+            </div>
           </motion.div>
         )}
 

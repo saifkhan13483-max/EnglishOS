@@ -2,6 +2,7 @@ import { useEffect, useState } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { motion } from 'framer-motion'
 import Badge from '@/components/ui/Badge'
+import { Skeleton } from '@/components/ui/Skeleton'
 import { api } from '@/services/api'
 
 /* ─────────────────────────────────────────
@@ -260,24 +261,47 @@ export default function FeynmanArchive() {
           </motion.div>
         )}
 
-        {/* Loading state */}
+        {/* Loading skeleton */}
         {loading && (
-          <div className="flex flex-col items-center gap-3 py-16 text-text-muted">
-            <div className="w-8 h-8 rounded-full border-2 border-border-subtle border-t-brand-blue animate-spin" />
-            <p className="text-xs font-mono">Loading your journey…</p>
+          <div className="flex flex-col gap-4">
+            {[1, 2, 3].map((i) => (
+              <div key={i} className="bg-bg-secondary border border-border-subtle rounded-2xl overflow-hidden p-4 flex flex-col gap-3">
+                <div className="flex items-start justify-between gap-3">
+                  <div className="flex-1 flex flex-col gap-2">
+                    <Skeleton className="h-3 w-24" />
+                    <Skeleton className="h-3 w-16" />
+                  </div>
+                  <Skeleton className="h-6 w-12 rounded-full" />
+                </div>
+                <div className="bg-bg-tertiary border border-border-subtle rounded-xl px-3 py-2.5 flex flex-col gap-2">
+                  <Skeleton className="h-3 w-16" />
+                  <Skeleton className="h-4 w-full" />
+                </div>
+                <div className="flex flex-col gap-2">
+                  <Skeleton className="h-3 w-24" />
+                  <Skeleton className="h-4 w-full" />
+                  <Skeleton className="h-4 w-3/4" />
+                </div>
+              </div>
+            ))}
           </div>
         )}
 
         {/* Empty state */}
         {!loading && entries.length === 0 && (
           <motion.div
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            className="text-center py-16"
+            initial={{ opacity: 0, y: 12 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.35 }}
+            className="text-center py-16 flex flex-col items-center gap-3"
           >
-            <span className="text-5xl block mb-4">🧠</span>
-            <p className="text-text-secondary font-body text-sm">No Feynman responses yet.</p>
-            <p className="text-text-muted font-mono text-xs mt-1">Complete a morning mission to start your journey.</p>
+            <span className="text-5xl">🧠</span>
+            <div>
+              <p className="text-text-secondary font-body text-sm font-medium">Your Feynman journey starts here.</p>
+              <p className="text-text-muted font-mono text-xs mt-1.5 leading-relaxed">
+                Complete your first morning mission to capture<br />your very first explanation.
+              </p>
+            </div>
           </motion.div>
         )}
 

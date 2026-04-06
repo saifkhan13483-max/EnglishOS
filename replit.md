@@ -273,6 +273,31 @@ The scheduler is started in `server.ts` inside the `app.listen` callback via `st
 
 Lazily instantiated via `getResend()`. Returns `null` when `RESEND_API_KEY` is not set, allowing the server to start in development without email credentials.
 
+## Client-Side Error Handling & UI Enhancements
+
+### ErrorBoundary (`client/src/components/ui/ErrorBoundary.tsx`)
+Class component that wraps the entire app (in `App.tsx`). On uncaught render errors it shows a full-screen fallback with "Try Again" (resets state) and "Back to Map" buttons. Accepts optional `fallback` prop for custom fallback UI.
+
+### Toast System
+- **Hook**: `client/src/hooks/useToast.ts` — Zustand-based store. `useToast()` returns `{ success, error, info, warning }` helpers. Toasts auto-dismiss after 4 seconds with a progress bar animation.
+- **Container**: `client/src/components/ui/Toast.tsx` — `<ToastContainer />` renders in `AppRouter.tsx`. Top-right fixed position, `z-[9999]`. AnimatePresence handles enter/exit springs. Each toast has a color-coded left indicator bar, icon, message, and dismiss button.
+- **Integrations**: Login, Register (errors), FeynmanMoment (evaluate errors + complete warnings), ConversationSim (AI timeout warnings).
+
+### Skeleton Components (`client/src/components/ui/Skeleton.tsx`)
+- `<Skeleton className h rounded />` — base pulsing block
+- `<SkeletonText lines className />` — N rows of text, last line 2/3 width
+- `<SkeletonCard />` — card with header + text rows
+- `<SkeletonStatRow />` — 4-column stat card row (used in Progress page)
+
+### Page-Level Loading States
+- **MasteryMap**: local `isLoading` state; shows `<MapSkeleton>` (circular skeleton nodes at Z-pattern positions) on desktop, stacked circular skeletons on mobile, while `loadMasteryMap()` resolves.
+- **Progress**: local `isLoading` state; shows `<SkeletonStatRow>` while `loadStats()` and `loadMasteryMap()` resolve.
+- **FeynmanArchive**: loading spinner replaced with 3 animated skeleton cards matching the real card structure.
+
+### Improved Empty States
+- **FeynmanArchive**: "Your Feynman journey starts here. Complete your first morning mission to capture your very first explanation."
+- **Leaderboard**: "No submissions this week yet. Be the first to share your explanation and claim the top spot!"
+
 ## Notes
 
 - Vite runs on port **5000** (adjusted from 5173 for Replit preview pane compatibility); the dev server proxies `/api/*` to Express on port **3000**

@@ -4,6 +4,7 @@ import { useAuthStore } from '@/stores/authStore'
 import { useProgressStore } from '@/stores/progressStore'
 import AppShell from '@/components/layout/AppShell'
 import BadgeToast from '@/components/ui/BadgeToast'
+import ToastContainer from '@/components/ui/Toast'
 
 import Landing        from '@/pages/Landing'
 import Login          from '@/pages/Login'
@@ -87,6 +88,7 @@ export default function AppRouter() {
     <BrowserRouter future={{ v7_startTransition: true, v7_relativeSplatPath: true }}>
       <SessionLoader />
       <BadgeToast />
+      <ToastContainer />
       <Routes>
 
         {/* Public routes — redirect to /map when already logged in */}

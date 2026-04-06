@@ -4,10 +4,12 @@ import { motion } from 'framer-motion'
 import Button from '@/components/ui/Button'
 import { useAuthStore } from '@/stores/authStore'
 import { ApiError } from '@/services/api'
+import { useToast } from '@/hooks/useToast'
 
 export default function Login() {
   const navigate = useNavigate()
   const login = useAuthStore((s) => s.login)
+  const toast = useToast()
 
   const [email, setEmail]       = useState('')
   const [password, setPassword] = useState('')
@@ -22,11 +24,11 @@ export default function Login() {
       await login(email, password)
       navigate('/map', { replace: true })
     } catch (err) {
-      if (err instanceof ApiError) {
-        setError(err.message)
-      } else {
-        setError('Something went wrong. Please try again.')
-      }
+      const message = err instanceof ApiError
+        ? err.message
+        : 'Something went wrong. Please try again.'
+      setError(message)
+      toast.error(message)
     } finally {
       setLoading(false)
     }

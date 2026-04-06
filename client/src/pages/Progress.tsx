@@ -6,6 +6,7 @@ import {
 } from 'recharts'
 import ProgressBar from '@/components/ui/ProgressBar'
 import Badge from '@/components/ui/Badge'
+import { SkeletonStatRow } from '@/components/ui/Skeleton'
 import BrainCompoundMeter from '@/components/gamification/BrainCompoundMeter'
 import { useProgressStore } from '@/stores/progressStore'
 
@@ -94,6 +95,7 @@ function StatCard({ icon, label, value, suffix, color, delay }: {
 export default function Progress() {
   const navigate = useNavigate()
   const [expandedLevel, setExpandedLevel] = useState<number | null>(1)
+  const [isLoading, setIsLoading] = useState(true)
 
   const {
     streak, totalXP, brainCompoundPct, totalDaysActive,
@@ -102,8 +104,10 @@ export default function Progress() {
   } = useProgressStore()
 
   useEffect(() => {
-    loadStats()
-    if (mapLevels.length === 0) loadMasteryMap()
+    setIsLoading(true)
+    const tasks: Promise<void>[] = [loadStats()]
+    if (mapLevels.length === 0) tasks.push(loadMasteryMap())
+    Promise.all(tasks).finally(() => setIsLoading(false))
   }, [loadStats, loadMasteryMap, mapLevels.length])
 
   const STATS = [
@@ -193,11 +197,15 @@ export default function Progress() {
         {/* ── Stats row ── */}
         <section>
           <p className="text-xs font-mono text-text-muted uppercase tracking-widest mb-3">Overview</p>
-          <div className="flex gap-3">
-            {STATS.map((s, i) => (
-              <StatCard key={s.label} {...s} delay={i * 0.07} />
-            ))}
-          </div>
+          {isLoading ? (
+            <SkeletonStatRow />
+          ) : (
+            <div className="flex gap-3">
+              {STATS.map((s, i) => (
+                <StatCard key={s.label} {...s} delay={i * 0.07} />
+              ))}
+            </div>
+          )}
         </section>
 
         {/* ── Brain Compound Meter ── */}

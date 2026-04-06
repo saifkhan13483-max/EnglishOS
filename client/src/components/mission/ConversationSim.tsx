@@ -4,6 +4,7 @@ import Button from '@/components/ui/Button'
 import { api } from '@/services/api'
 import { useProgressStore } from '@/stores/progressStore'
 import { getScenario } from '@/constants/scenarios'
+import { useToast } from '@/hooks/useToast'
 
 interface Message {
   id: number
@@ -59,6 +60,7 @@ interface ConversationSimProps {
 export default function ConversationSim({ onComplete, onXpEarned }: ConversationSimProps) {
   const learnerProfile = useProgressStore(s => s.learnerProfile)
   const currentModule = learnerProfile?.currentModule ?? 2
+  const toast = useToast()
 
   const scenario = getScenario(currentModule)
 
@@ -161,6 +163,7 @@ export default function ConversationSim({ onComplete, onXpEarned }: Conversation
       const fallback = 'I understand. Please tell me more.'
       pushAi(fallback)
       setApiHistory(prev => [...prev, { role: 'assistant', content: fallback }])
+      toast.warning('AI response timed out — continuing with a placeholder reply.')
     }
   }
 

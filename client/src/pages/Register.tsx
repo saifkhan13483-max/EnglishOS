@@ -4,6 +4,7 @@ import { motion } from 'framer-motion'
 import Button from '@/components/ui/Button'
 import { useAuthStore } from '@/stores/authStore'
 import { ApiError } from '@/services/api'
+import { useToast } from '@/hooks/useToast'
 
 function getPasswordStrength(password: string): { score: number; label: string; color: string } {
   if (password.length === 0) return { score: 0, label: '', color: '' }
@@ -23,6 +24,7 @@ function getPasswordStrength(password: string): { score: number; label: string; 
 export default function Register() {
   const navigate  = useNavigate()
   const register  = useAuthStore((s) => s.register)
+  const toast     = useToast()
 
   const [name, setName]         = useState('')
   const [email, setEmail]       = useState('')
@@ -36,7 +38,9 @@ export default function Register() {
     e.preventDefault()
     setError(null)
     if (password.length < 8) {
-      setError('Password must be at least 8 characters.')
+      const msg = 'Password must be at least 8 characters.'
+      setError(msg)
+      toast.warning(msg)
       return
     }
     setLoading(true)
@@ -44,11 +48,11 @@ export default function Register() {
       await register(email, password, name)
       navigate('/onboarding', { replace: true })
     } catch (err) {
-      if (err instanceof ApiError) {
-        setError(err.message)
-      } else {
-        setError('Something went wrong. Please try again.')
-      }
+      const message = err instanceof ApiError
+        ? err.message
+        : 'Something went wrong. Please try again.'
+      setError(message)
+      toast.error(message)
     } finally {
       setLoading(false)
     }

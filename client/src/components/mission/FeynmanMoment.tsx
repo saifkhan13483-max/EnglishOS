@@ -5,6 +5,7 @@ import Badge from '@/components/ui/Badge'
 import { useMissionStore, FeynmanResult } from '@/stores/missionStore'
 import { useProgressStore } from '@/stores/progressStore'
 import { getFeynmanPrompt } from '@/constants/scenarios'
+import { useToast } from '@/hooks/useToast'
 
 type InputTab = 'text' | 'voice'
 
@@ -68,6 +69,7 @@ export default function FeynmanMoment({ onComplete }: FeynmanMomentProps) {
   const feynmanResult = useMissionStore((s) => s.feynmanResult)
   const isLoading = useMissionStore((s) => s.isLoading)
   const currentModule = useProgressStore((s) => s.learnerProfile?.currentModule ?? 2)
+  const toast = useToast()
 
   const { concept, prompt } = getFeynmanPrompt(currentModule)
 
@@ -88,7 +90,11 @@ export default function FeynmanMoment({ onComplete }: FeynmanMomentProps) {
 
   async function handleEvaluate() {
     if (!text.trim()) return
-    await submitFeynmanResponse(text)
+    try {
+      await submitFeynmanResponse(text)
+    } catch {
+      toast.error('Could not evaluate your response. Please try again.')
+    }
   }
 
   async function handleComplete() {
@@ -96,7 +102,7 @@ export default function FeynmanMoment({ onComplete }: FeynmanMomentProps) {
     try {
       await completeMission({ feynmanScore: result?.scores.overall })
     } catch {
-      // Ignore errors — navigate anyway so learner isn't stuck
+      toast.warning('Mission results could not be saved, but your progress is safe.')
     } finally {
       setCompleting(false)
       onComplete()
