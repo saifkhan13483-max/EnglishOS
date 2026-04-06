@@ -3,9 +3,9 @@ import { PrismaClient, ContentType } from '@prisma/client';
 const prisma = new PrismaClient();
 
 async function main() {
-  console.log('Seeding ContentItems for Level 1...');
+  console.log('Seeding ContentItems for Levels 1 and 2...');
 
-  await prisma.contentItem.deleteMany({ where: { level: 1 } });
+  await prisma.contentItem.deleteMany({ where: { level: { in: [1, 2] } } });
 
   const items: {
     level: number;
@@ -438,15 +438,293 @@ async function main() {
     });
   });
 
+  // ════════════════════════════════════════════════════════════════════════
+  // LEVEL 2 — ELEMENTARY (Days 31–75)
+  // ════════════════════════════════════════════════════════════════════════
+
+  // ── LEVEL 2, MODULE 1: Present Tense ────────────────────────────────────
+
+  const presentTenseGrammar = [
+    {
+      english: 'Present Simple Formula',
+      urduRoman: 'I/You/We/They + Verb | He/She/It + Verb+s/es',
+      exampleSentence: 'I eat breakfast. He eats breakfast.',
+      isPowerPack: true,
+    },
+    {
+      english: 'Present Continuous Formula',
+      urduRoman: 'Subject + am/is/are + Verb+ing',
+      exampleSentence: 'I am eating. She is reading.',
+      isPowerPack: true,
+    },
+    {
+      english: 'do / does (Question & Negative)',
+      urduRoman: 'I/You/We/They → do | He/She/It → does',
+      exampleSentence: 'Do you like tea? Does she work here?',
+      isPowerPack: true,
+    },
+    {
+      english: 'am / is / are',
+      urduRoman: 'I → am | He/She/It → is | You/We/They → are',
+      exampleSentence: 'I am happy. She is smart. We are ready.',
+      isPowerPack: true,
+    },
+  ];
+  presentTenseGrammar.forEach((g, i) => {
+    items.push({ level: 2, module: 1, groupName: 'Present Tense Grammar', type: ContentType.GRAMMAR, english: g.english, urduRoman: g.urduRoman, exampleSentence: g.exampleSentence, isPowerPack: g.isPowerPack, sortOrder: i + 1 });
+  });
+
+  const presentSimpleExamples = [
+    { english: 'I eat breakfast every morning.', urduRoman: 'Mein roz subah naashta karta hoon.' },
+    { english: 'He reads newspaper daily.', urduRoman: 'Woh roz akhbaar parhta hai.' },
+    { english: 'She teaches English at school.', urduRoman: 'Woh school mein English parhati hai.' },
+    { english: 'We play cricket on Sundays.', urduRoman: 'Hum Sunday ko cricket khelte hain.' },
+    { english: "I don't like cold weather.", urduRoman: 'Mujhe thanda mausam pasand nahi.' },
+    { english: "He doesn't eat spicy food.", urduRoman: 'Woh tez masale nahi khata.' },
+    { english: 'Do you speak English?', urduRoman: 'Kya aap English bolte hain?' },
+    { english: 'Where does she work?', urduRoman: 'Woh kahan kaam karti hai?' },
+  ];
+  presentSimpleExamples.forEach((s, i) => {
+    items.push({ level: 2, module: 1, groupName: 'Present Simple Sentences', type: ContentType.SENTENCE, english: s.english, urduRoman: s.urduRoman, exampleSentence: s.english, isPowerPack: false, sortOrder: 5 + i });
+  });
+
+  const presentTimeWords = [
+    { english: 'every day', urduRoman: 'roz', exampleSentence: 'I go to work every day.' },
+    { english: 'always', urduRoman: 'hamesha', exampleSentence: 'She always wakes up early.' },
+    { english: 'usually', urduRoman: 'aksar', exampleSentence: 'He usually drinks tea.' },
+    { english: 'often', urduRoman: 'zyadatar', exampleSentence: 'We often eat together.' },
+    { english: 'sometimes', urduRoman: 'kabhi kabhi', exampleSentence: 'I sometimes go for a walk.' },
+    { english: 'never', urduRoman: 'kabhi nahi', exampleSentence: 'He never misses class.' },
+    { english: 'right now', urduRoman: 'abhi is waqt', exampleSentence: 'What are you doing right now?' },
+    { english: 'at the moment', urduRoman: 'is lamhe', exampleSentence: 'She is sleeping at the moment.' },
+  ];
+  presentTimeWords.forEach((w, i) => {
+    items.push({ level: 2, module: 1, groupName: 'Present Time Expressions', type: ContentType.VOCAB, english: w.english, urduRoman: w.urduRoman, exampleSentence: w.exampleSentence, isPowerPack: false, sortOrder: 13 + i });
+  });
+
+  // ── LEVEL 2, MODULE 2: Past Tense ───────────────────────────────────────
+
+  const pastTenseGrammar = [
+    {
+      english: 'Past Simple Formula (Regular)',
+      urduRoman: 'Subject + Verb+ed',
+      exampleSentence: 'I worked. She played. He watched.',
+      isPowerPack: true,
+    },
+    {
+      english: 'Past Simple Formula (Irregular)',
+      urduRoman: 'Subject + Special 2nd Form (yaad karna hoga)',
+      exampleSentence: 'I went. She ate. He saw.',
+      isPowerPack: true,
+    },
+    {
+      english: 'Past Negative: did not / didn\'t',
+      urduRoman: 'I/She/He/They + did not + Verb (base)',
+      exampleSentence: "I didn't go. She didn't eat.",
+      isPowerPack: true,
+    },
+    {
+      english: 'Past Question: Did + Subject + Verb?',
+      urduRoman: 'Did + Subject + Verb (base form) + ?',
+      exampleSentence: 'Did you eat lunch? Did she call you?',
+      isPowerPack: true,
+    },
+  ];
+  pastTenseGrammar.forEach((g, i) => {
+    items.push({ level: 2, module: 2, groupName: 'Past Tense Grammar', type: ContentType.GRAMMAR, english: g.english, urduRoman: g.urduRoman, exampleSentence: g.exampleSentence, isPowerPack: g.isPowerPack, sortOrder: i + 1 });
+  });
+
+  const irregularVerbs = [
+    { english: 'go → went', urduRoman: 'jaana → gaya', exampleSentence: 'I went to the market yesterday.' },
+    { english: 'come → came', urduRoman: 'aana → aaya', exampleSentence: 'She came to visit us.' },
+    { english: 'eat → ate', urduRoman: 'khaana → khaya', exampleSentence: 'He ate biryani for dinner.' },
+    { english: 'drink → drank', urduRoman: 'peena → piya', exampleSentence: 'I drank two glasses of water.' },
+    { english: 'sleep → slept', urduRoman: 'sona → soya', exampleSentence: 'She slept early last night.' },
+    { english: 'see → saw', urduRoman: 'dekhna → dekha', exampleSentence: 'I saw a beautiful bird.' },
+    { english: 'say → said', urduRoman: 'kehna → kaha', exampleSentence: 'What did he say?' },
+    { english: 'give → gave', urduRoman: 'dena → diya', exampleSentence: 'She gave me a gift.' },
+    { english: 'take → took', urduRoman: 'lena → liya', exampleSentence: 'He took my pen.' },
+    { english: 'make → made', urduRoman: 'banana → banaya', exampleSentence: 'They made a plan.' },
+    { english: 'do → did', urduRoman: 'karna → kiya', exampleSentence: 'What did you do today?' },
+    { english: 'have → had', urduRoman: 'rakhna → rakha/tha', exampleSentence: 'I had a good time.' },
+    { english: 'know → knew', urduRoman: 'jaanna → jaanta tha', exampleSentence: 'She knew the answer.' },
+    { english: 'think → thought', urduRoman: 'sochna → socha', exampleSentence: 'I thought you were busy.' },
+    { english: 'buy → bought', urduRoman: 'khareedna → khareeda', exampleSentence: 'He bought a new phone.' },
+    { english: 'write → wrote', urduRoman: 'likhna → likha', exampleSentence: 'She wrote a letter to him.' },
+    { english: 'read → read', urduRoman: 'parhna → parha (same)', exampleSentence: 'I read the book last week.' },
+    { english: 'run → ran', urduRoman: 'bhaagna → bhaaga', exampleSentence: 'He ran to catch the bus.' },
+    { english: 'speak → spoke', urduRoman: 'bolna → bola', exampleSentence: 'She spoke very clearly.' },
+    { english: 'find → found', urduRoman: 'dhundhna → mila', exampleSentence: 'I found my keys.' },
+    { english: 'meet → met', urduRoman: 'milna → mila', exampleSentence: 'We met at the office.' },
+    { english: 'leave → left', urduRoman: 'jaana/chhodna → gaya', exampleSentence: 'He left early.' },
+    { english: 'send → sent', urduRoman: 'bhejna → bheja', exampleSentence: 'I sent you a message.' },
+    { english: 'pay → paid', urduRoman: 'ada karna → ada kiya', exampleSentence: 'She paid the bill.' },
+  ];
+  irregularVerbs.forEach((v, i) => {
+    items.push({ level: 2, module: 2, groupName: 'Irregular Verbs (Core 20%)', type: ContentType.VOCAB, english: v.english, urduRoman: v.urduRoman, exampleSentence: v.exampleSentence, isPowerPack: true, sortOrder: 5 + i });
+  });
+
+  const pastTimeWords = [
+    { english: 'yesterday', urduRoman: 'kal', exampleSentence: 'I went to school yesterday.' },
+    { english: 'last night', urduRoman: 'kal raat', exampleSentence: 'We watched a movie last night.' },
+    { english: 'last week', urduRoman: 'pichle hafte', exampleSentence: 'She called me last week.' },
+    { english: 'last year', urduRoman: 'pichle saal', exampleSentence: 'He started the job last year.' },
+    { english: 'ago', urduRoman: 'pehle', exampleSentence: 'I came here two days ago.' },
+    { english: 'when I was young', urduRoman: 'jab mein chota tha', exampleSentence: 'When I was young, I loved cricket.' },
+  ];
+  pastTimeWords.forEach((w, i) => {
+    items.push({ level: 2, module: 2, groupName: 'Past Time Expressions', type: ContentType.VOCAB, english: w.english, urduRoman: w.urduRoman, exampleSentence: w.exampleSentence, isPowerPack: false, sortOrder: 29 + i });
+  });
+
+  // ── LEVEL 2, MODULE 3: Future Tense + Articles + Plurals ────────────────
+
+  const futureTenseGrammar = [
+    {
+      english: 'Future with Will: Subject + will + Verb',
+      urduRoman: 'Subject + will + Verb (base form)',
+      exampleSentence: 'I will study hard. She will call you.',
+      isPowerPack: true,
+    },
+    {
+      english: 'Future Negative: will not / won\'t',
+      urduRoman: 'Subject + will not (won\'t) + Verb',
+      exampleSentence: "I won't eat junk food. She won't be late.",
+      isPowerPack: true,
+    },
+    {
+      english: 'Future Question: Will + Subject + Verb?',
+      urduRoman: 'Will + Subject + Verb (base) + ?',
+      exampleSentence: 'Will you come tomorrow? Will she pass?',
+      isPowerPack: true,
+    },
+    {
+      english: 'Going to: Subject + am/is/are + going to + Verb',
+      urduRoman: 'Pehle se bana hua plan batane ke liye',
+      exampleSentence: 'I am going to study tonight. She is going to visit.',
+      isPowerPack: true,
+    },
+    {
+      english: 'Article "a" — first mention, consonant sound',
+      urduRoman: 'Pehli baar kisi cheez ka zikr (consonant sound)',
+      exampleSentence: 'I saw a dog. She bought a book.',
+      isPowerPack: true,
+    },
+    {
+      english: 'Article "an" — first mention, vowel sound',
+      urduRoman: 'Pehli baar kisi cheez ka zikr (vowel sound: A E I O U)',
+      exampleSentence: 'He ate an apple. She is an engineer.',
+      isPowerPack: true,
+    },
+    {
+      english: 'Article "the" — specific / known thing',
+      urduRoman: 'Kisi khaas cheez ya jagah ke liye',
+      exampleSentence: 'Please close the door. The sun is bright.',
+      isPowerPack: true,
+    },
+    {
+      english: 'Plural Rule 1: + s (most words)',
+      urduRoman: 'Zyaadatar words mein sirf "s" lagao',
+      exampleSentence: 'book → books, car → cars, pen → pens',
+      isPowerPack: false,
+    },
+    {
+      english: 'Plural Rule 2: + es (words ending in s, sh, ch, x)',
+      urduRoman: 's, sh, ch, x se khatam hon to "es" lagao',
+      exampleSentence: 'bus → buses, dish → dishes, watch → watches',
+      isPowerPack: false,
+    },
+    {
+      english: 'Irregular Plurals (Yaad karo)',
+      urduRoman: 'man→men, woman→women, child→children, tooth→teeth',
+      exampleSentence: 'The children are playing. The men are working.',
+      isPowerPack: false,
+    },
+  ];
+  futureTenseGrammar.forEach((g, i) => {
+    items.push({ level: 2, module: 3, groupName: 'Future Tense & Grammar', type: ContentType.GRAMMAR, english: g.english, urduRoman: g.urduRoman, exampleSentence: g.exampleSentence, isPowerPack: g.isPowerPack, sortOrder: i + 1 });
+  });
+
+  const futureTimeWords = [
+    { english: 'tomorrow', urduRoman: 'kal (aane wala)', exampleSentence: 'I will call you tomorrow.' },
+    { english: 'next week', urduRoman: 'agli hafte', exampleSentence: 'She will come next week.' },
+    { english: 'next year', urduRoman: 'agli saal', exampleSentence: 'He will graduate next year.' },
+    { english: 'soon', urduRoman: 'jald', exampleSentence: 'I will be there soon.' },
+    { english: 'tonight', urduRoman: 'aaj raat', exampleSentence: 'Are you going to study tonight?' },
+    { english: 'in an hour', urduRoman: 'ek ghante mein', exampleSentence: 'The meeting will start in an hour.' },
+  ];
+  futureTimeWords.forEach((w, i) => {
+    items.push({ level: 2, module: 3, groupName: 'Future Time Expressions', type: ContentType.VOCAB, english: w.english, urduRoman: w.urduRoman, exampleSentence: w.exampleSentence, isPowerPack: false, sortOrder: 11 + i });
+  });
+
+  // ── LEVEL 2, MODULE 4: Daily Conversation Topics ────────────────────────
+
+  const shoppingPhrases = [
+    { english: 'How much does this cost?', urduRoman: 'Iska kitna daam hai?', exampleSentence: 'Excuse me, how much does this shirt cost?' },
+    { english: 'That is too expensive.', urduRoman: 'Yeh bahut mehenga hai.', exampleSentence: 'That is too expensive. Can you reduce the price?' },
+    { english: 'Can you give me a discount?', urduRoman: 'Kya aap discount de sakte hain?', exampleSentence: 'Can you give me a discount on this?' },
+    { english: 'Do you have it in another color?', urduRoman: 'Kya yeh doosre rang mein hai?', exampleSentence: 'Do you have this shirt in blue?' },
+    { english: "I'll take it.", urduRoman: 'Mein yeh le leta hoon.', exampleSentence: "Okay, I'll take it. Here is the money." },
+    { english: 'Do you accept cards?', urduRoman: 'Kya aap card lete hain?', exampleSentence: 'Do you accept credit cards here?' },
+    { english: 'Where is the fitting room?', urduRoman: 'Fitting room kahan hai?', exampleSentence: 'Excuse me, where is the fitting room?' },
+    { english: 'I am just looking, thank you.', urduRoman: 'Mein bas dekh raha hoon, shukriya.', exampleSentence: 'I am just looking, thank you.' },
+  ];
+  shoppingPhrases.forEach((p, i) => {
+    items.push({ level: 2, module: 4, groupName: 'Shopping Conversations', type: ContentType.PHRASE, english: p.english, urduRoman: p.urduRoman, exampleSentence: p.exampleSentence, isPowerPack: true, sortOrder: i + 1 });
+  });
+
+  const restaurantPhrases = [
+    { english: 'A table for two, please.', urduRoman: 'Do logon ke liye mez chahiye.', exampleSentence: 'Good evening. A table for two, please.' },
+    { english: 'Can I see the menu?', urduRoman: 'Kya mein menu dekh sakta hoon?', exampleSentence: 'Excuse me, can I see the menu please?' },
+    { english: 'I would like to order...', urduRoman: 'Mein ... order karna chahta hoon.', exampleSentence: 'I would like to order biryani and naan.' },
+    { english: 'What do you recommend?', urduRoman: 'Aap kya suggest karenge?', exampleSentence: 'What do you recommend here? What is popular?' },
+    { english: 'The food is delicious.', urduRoman: 'Khaana bahut mazedaar hai.', exampleSentence: 'The food is absolutely delicious. Thank you!' },
+    { english: 'Can I have the bill please?', urduRoman: 'Bill de dijiye please.', exampleSentence: 'Excuse me, can I have the bill please?' },
+    { english: 'Is this dish spicy?', urduRoman: 'Kya yeh dish tez masale wali hai?', exampleSentence: 'Is this curry spicy? I prefer mild food.' },
+  ];
+  restaurantPhrases.forEach((p, i) => {
+    items.push({ level: 2, module: 4, groupName: 'Restaurant Conversations', type: ContentType.PHRASE, english: p.english, urduRoman: p.urduRoman, exampleSentence: p.exampleSentence, isPowerPack: true, sortOrder: 9 + i });
+  });
+
+  const introductionPhrases = [
+    { english: 'My name is ___.', urduRoman: 'Mera naam ___ hai.', exampleSentence: 'Hello! My name is Ali. What is your name?' },
+    { english: 'I am ___ years old.', urduRoman: 'Meri umar ___ saal hai.', exampleSentence: 'I am 25 years old and I work in an office.' },
+    { english: 'I am from Lahore.', urduRoman: 'Mein Lahore se hoon.', exampleSentence: 'I am from Lahore, Pakistan. Where are you from?' },
+    { english: 'I work as a ___.', urduRoman: 'Mein ___ ke tor par kaam karta hoon.', exampleSentence: 'I work as a teacher at a local school.' },
+    { english: 'My hobby is ___.', urduRoman: 'Mera shauk ___ hai.', exampleSentence: 'My hobby is reading books and watching cricket.' },
+    { english: 'I am learning English.', urduRoman: 'Mein English seekh raha hoon.', exampleSentence: 'I am learning English to improve my career.' },
+    { english: 'It is nice to meet you.', urduRoman: 'Aap se milkar khushi hui.', exampleSentence: 'It is very nice to meet you. Let us talk more.' },
+  ];
+  introductionPhrases.forEach((p, i) => {
+    items.push({ level: 2, module: 4, groupName: 'Self Introduction', type: ContentType.PHRASE, english: p.english, urduRoman: p.urduRoman, exampleSentence: p.exampleSentence, isPowerPack: true, sortOrder: 16 + i });
+  });
+
+  const directionPhrases = [
+    { english: 'Excuse me, where is ___?', urduRoman: 'Maaf kijiye, ___ kahan hai?', exampleSentence: 'Excuse me, where is the nearest hospital?' },
+    { english: 'Go straight.', urduRoman: 'Seedha jaaiye.', exampleSentence: 'Go straight for two blocks, then turn left.' },
+    { english: 'Turn left / Turn right.', urduRoman: 'Baayan / Seedhi taraf muriye.', exampleSentence: 'Turn right at the traffic signal.' },
+    { english: 'It is near / far from here.', urduRoman: 'Yeh yahan se qareeb / door hai.', exampleSentence: 'The mosque is near here, just five minutes by walk.' },
+    { english: 'How far is it?', urduRoman: 'Yeh kitni door hai?', exampleSentence: 'How far is the bus station from here?' },
+    { english: 'You cannot miss it.', urduRoman: 'Aap bilkul miss nahi kar sakte.', exampleSentence: 'The building is on the corner. You cannot miss it.' },
+  ];
+  directionPhrases.forEach((p, i) => {
+    items.push({ level: 2, module: 4, groupName: 'Directions & Places', type: ContentType.PHRASE, english: p.english, urduRoman: p.urduRoman, exampleSentence: p.exampleSentence, isPowerPack: false, sortOrder: 23 + i });
+  });
+
   // ── INSERT ALL ────────────────────────────────────────────────────────────
 
   const result = await prisma.contentItem.createMany({ data: items });
 
   console.log(`Seeded ${result.count} ContentItems.`);
+  console.log('LEVEL 1:');
   console.log(`  Module 1 (Alphabets):        ${5 + 21} items (5 vowels + 21 consonants)`);
   console.log(`  Module 2 (Core Words):      ${12 + 5 + 50 + 28 + 22 + 18} items (A:12 B:5 C:50 D:28 E:22 F:18)`);
   console.log(`  Module 3 (Basic Sentences): ${1 + 8 + 7 + 7} items (SVO:1 Positive:8 Negative:7 Questions:7)`);
   console.log(`  Module 4 (Daily Patterns):  ${8 + 8 + 10} items (Greetings:8 Requests:8 Numbers:10)`);
+  console.log('LEVEL 2:');
+  console.log('  Module 1 (Present Tense):   grammar rules + example sentences + time expressions');
+  console.log('  Module 2 (Past Tense):      grammar + 24 irregular verbs + time expressions');
+  console.log('  Module 3 (Future Tense):    will/going-to + articles + plurals');
+  console.log('  Module 4 (Daily Convos):    shopping + restaurant + introductions + directions');
 }
 
 main()
