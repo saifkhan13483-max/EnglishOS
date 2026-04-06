@@ -136,6 +136,9 @@ async function runEveningReminders(): Promise<void> {
   logger.info('[scheduler] Evening reminder job complete')
 }
 
+// ── Manual trigger exports (for debug/test endpoints) ─────────────────────────
+export { runMissedDayCheck, runMorningReminders, runEveningReminders }
+
 // ── Mount all cron jobs ───────────────────────────────────────────────────────
 export function startScheduler(): void {
   cron.schedule('59 18 * * *', () => {

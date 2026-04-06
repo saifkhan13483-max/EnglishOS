@@ -171,7 +171,17 @@ export async function completeMission(req: AuthRequest, res: Response): Promise<
   }
 
   // ── 2. Look up current learner state ────────────────────────────────────
-  const learner = await prisma.learner.findUnique({ where: { id: learnerId } })
+  const learner = await prisma.learner.findUnique({
+    where: { id: learnerId },
+    select: {
+      streak: true,
+      batmanModeActive: true,
+      batmanSkipUsedThisWeek: true,
+      xp: true,
+      rank: true,
+      brainCompoundPct: true,
+    },
+  })
   if (!learner) {
     res.status(404).json({ success: false, error: 'Learner not found' })
     return

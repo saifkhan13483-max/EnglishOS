@@ -48,7 +48,10 @@ export async function sendConversationMessage(req: AuthRequest, res: Response): 
   }
 
   // Step 1: Get learner's current level and build vocabulary allowlist
-  const learner = await prisma.learner.findUnique({ where: { id: learnerId } })
+  const learner = await prisma.learner.findUnique({
+    where: { id: learnerId },
+    select: { levelCurrent: true },
+  })
   if (!learner) {
     res.status(404).json({ success: false, error: 'Learner not found' })
     return

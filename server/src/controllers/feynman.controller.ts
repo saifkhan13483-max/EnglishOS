@@ -33,7 +33,10 @@ export async function evaluateFeynman(req: AuthRequest, res: Response): Promise<
 
   const [mission, learner] = await Promise.all([
     prisma.missionSession.findUnique({ where: { id: missionId } }),
-    prisma.learner.findUnique({ where: { id: learnerId } }),
+    prisma.learner.findUnique({
+      where: { id: learnerId },
+      select: { levelCurrent: true, brainCompoundPct: true },
+    }),
   ])
 
   if (!mission || mission.learnerId !== learnerId) {

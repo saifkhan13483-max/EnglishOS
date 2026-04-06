@@ -18,6 +18,7 @@ import conversationRoutes from './routes/conversation.routes'
 import progressRoutes from './routes/progress.routes'
 import leaderboardRoutes from './routes/leaderboard.routes'
 import logRoutes from './routes/log.routes'
+import debugRoutes from './routes/debug.routes'
 
 const app = express()
 const IS_PRODUCTION = process.env.NODE_ENV === 'production'
@@ -144,6 +145,7 @@ app.use(`${API}/conversation`, conversationRoutes)
 app.use(`${API}/progress`, progressRoutes)
 app.use(`${API}/leaderboard`, leaderboardRoutes)
 app.use(`${API}/log`, logRoutes)
+app.use(`${API}/debug`, debugRoutes)
 
 // ── Production: serve React client build and enable client-side routing ───────
 if (IS_PRODUCTION) {
