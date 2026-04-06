@@ -1,4 +1,5 @@
 import { getResend } from '../lib/resend'
+import { logger } from '../lib/logger'
 
 const APP_URL = process.env.CLIENT_URL || 'https://englishos.app'
 const FROM_EMAIL = 'EnglishOS <noreply@englishos.app>'
@@ -17,7 +18,7 @@ export async function sendMissedDaysAlert(
 ): Promise<void> {
   const resend = getResend()
   if (!resend) {
-    console.warn('[emailService] RESEND_API_KEY not set — skipping missed-days alert')
+    logger.warn('[emailService] RESEND_API_KEY not set — skipping missed-days alert')
     return
   }
 
@@ -106,7 +107,7 @@ export async function sendDailyReminder(
 ): Promise<void> {
   const resend = getResend()
   if (!resend) {
-    console.warn('[emailService] RESEND_API_KEY not set — skipping daily reminder')
+    logger.warn('[emailService] RESEND_API_KEY not set — skipping daily reminder')
     return
   }
 

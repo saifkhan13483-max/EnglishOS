@@ -4,6 +4,7 @@ import { useSRStore } from './srStore'
 import { useProgressStore } from './progressStore'
 import { useBadgeStore } from './badgeStore'
 import { getFeynmanPrompt } from '@/constants/scenarios'
+import { trackEvent } from '@/utils/analytics'
 
 export type MissionType = 'MORNING' | 'EVENING'
 
@@ -122,6 +123,7 @@ export const useMissionStore = create<MissionStore>((set, get) => ({
         currentMission: type,
         isLoading: false,
       })
+      trackEvent('mission_started', { mission_type: type })
     } catch (err: unknown) {
       const message = err instanceof Error ? err.message : 'Failed to start mission'
       set({ isLoading: false, error: message })
@@ -214,6 +216,12 @@ export const useMissionStore = create<MissionStore>((set, get) => ({
         newRank: newRank ?? null,
         batmanModeActivated: batmanModeActivated ?? false,
         batmanSkipProtected: batmanSkipProtected ?? false,
+      })
+      trackEvent('mission_completed', {
+        mission_type: get().currentMission,
+        session_xp: sessionXp,
+        rank_up: rankUp ?? false,
+        feynman_score: opts?.feynmanScore,
       })
     } catch (err: unknown) {
       // 409 means the mission was already completed (double-tap / retry) — treat as success

@@ -1,5 +1,6 @@
 import { Request, Response, NextFunction } from 'express'
 import { Prisma } from '@prisma/client'
+import { logger } from '../lib/logger'
 
 export interface AppError extends Error {
   statusCode?: number
@@ -36,10 +37,12 @@ function isMalformedJsonError(err: AppError): boolean {
 
 export function errorHandler(
   err: AppError,
-  _req: Request,
+  req: Request,
   res: Response,
   _next: NextFunction,
 ): void {
+  const route = `${req.method} ${req.path}`
+
   // ── Malformed JSON ─────────────────────────────────────────────────────────
   if (isMalformedJsonError(err)) {
     res.status(400).json({
@@ -52,7 +55,7 @@ export function errorHandler(
 
   // ── OpenAI API failures ────────────────────────────────────────────────────
   if (isOpenAIError(err)) {
-    console.error('[OpenAI Error]', err)
+    logger.error({ err, route }, '[OpenAI Error]')
     res.status(503).json({
       success: false,
       statusCode: 503,
@@ -63,7 +66,7 @@ export function errorHandler(
 
   // ── Database connection failures ───────────────────────────────────────────
   if (isPrismaConnectionError(err)) {
-    console.error('[DB Connection Error]', err)
+    logger.error({ err, route }, '[DB Connection Error]')
     res.status(503).json({
       success: false,
       statusCode: 503,
@@ -108,7 +111,7 @@ export function errorHandler(
       : err.message || 'An unexpected error occurred'
 
   if (statusCode === 500) {
-    console.error('[Error]', err)
+    logger.error({ err, route, stack: err.stack }, '[Error] Unhandled server error')
   }
 
   res.status(statusCode).json({

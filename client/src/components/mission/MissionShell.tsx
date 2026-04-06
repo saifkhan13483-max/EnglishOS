@@ -1,6 +1,7 @@
 import { useState, useEffect, useRef } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { motion, AnimatePresence } from 'framer-motion'
+import { trackEvent } from '@/utils/analytics'
 
 import WarmupFlash      from './WarmupFlash'
 import CoreDrop         from './CoreDrop'
@@ -57,6 +58,16 @@ export default function MissionShell({ type = 'morning' }: MissionShellProps) {
   const isEvening = type === 'evening'
   const PHASES    = isEvening ? EVENING_PHASES : MORNING_PHASES
   const TOTAL     = PHASES.length
+
+  // Track phase transitions
+  useEffect(() => {
+    trackEvent('phase_entered', {
+      mission_type: type,
+      phase_number: phase,
+      phase_name: PHASES[phase - 1] ?? 'unknown',
+    })
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [phase])
 
   // Persist current phase to localStorage whenever it changes (Edge Cases 2, 4)
   useEffect(() => {

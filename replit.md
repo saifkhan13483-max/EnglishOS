@@ -367,7 +367,28 @@ pnpm start          # node dist/server.js
 
 ### Analytics (`client/src/utils/analytics.ts`)
 
-PostHog wrapper. `trackEvent(eventName, properties?)` only activates in production (detected via `VITE_API_BASE_URL` containing the production domain). Events: `mission_started`, `mission_completed`, `feynman_evaluated`, `level_gate_attempted`, `level_gate_passed`, `leaderboard_submitted`.
+PostHog wrapper. `trackEvent(eventName, properties?)` only activates in production (detected via `VITE_API_BASE_URL` containing the production domain). Events: `mission_started`, `mission_completed`, `feynman_evaluated`, `feynman_skipped`, `level_gate_attempted`, `level_gate_passed`, `level_gate_failed`, `leaderboard_submitted`, `phase_entered`, `time_to_first_mission`.
+
+- `mission_started` / `mission_completed` fired in `missionStore.ts` (startMission / completeMission)
+- `phase_entered` fired on every phase transition in `MissionShell.tsx`
+- `feynman_skipped` fired when the "Skip for now" button is pressed in `FeynmanMoment.tsx`
+- `level_gate_attempted` / `level_gate_passed` / `level_gate_failed` fired at quiz completion in `LevelGate.tsx`
+
+### Server Logging (`server/src/lib/logger.ts`)
+
+Structured JSON logging via **pino** (v9). All `console.log/warn/error` calls replaced with `logger.*`. Request duration is logged by `server/src/middleware/requestLogger.ts`.
+
+### Client Error Reporting (`client/src/utils/logError.ts`)
+
+Posts error details to `POST /api/v1/log/client-error`. Integrated into `ErrorBoundary.tsx` via `componentDidCatch`. Uses `fetch` with `keepalive: true` so the report fires even if the page unloads.
+
+### Process Reliability (`server/src/server.ts`)
+
+`unhandledRejection` and `uncaughtException` handlers log with pino and shut down gracefully. SIGTERM/SIGINT handlers close the HTTP server and disconnect Prisma before exiting (10-second forced-kill timeout).
+
+### Uptime Monitoring
+
+Documentation at `server/docs/uptime-monitoring.md`. Recommended: UptimeRobot free tier pinging `/health` every 5 minutes with keyword check for `"status":"ok"`.
 
 ### Client Build Configuration (`client/vite.config.ts`)
 

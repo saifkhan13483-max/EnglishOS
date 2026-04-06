@@ -1,12 +1,12 @@
 import express, { Request, Response, NextFunction } from 'express'
 import cors from 'cors'
 import helmet from 'helmet'
-import morgan from 'morgan'
 import rateLimit from 'express-rate-limit'
 import compression from 'compression'
 import path from 'path'
 
 import { errorHandler } from './middleware/errorHandler'
+import { requestLogger } from './middleware/requestLogger'
 import { prisma } from './lib/prisma'
 
 import authRoutes from './routes/auth.routes'
@@ -17,6 +17,7 @@ import feynmanRoutes from './routes/feynman.routes'
 import conversationRoutes from './routes/conversation.routes'
 import progressRoutes from './routes/progress.routes'
 import leaderboardRoutes from './routes/leaderboard.routes'
+import logRoutes from './routes/log.routes'
 
 const app = express()
 const IS_PRODUCTION = process.env.NODE_ENV === 'production'
@@ -70,12 +71,10 @@ app.use(
   })
 )
 
-if (!IS_PRODUCTION) {
-  app.use(morgan('dev'))
-}
-
 app.use(express.json({ limit: '10mb' }))
 app.use(express.urlencoded({ extended: true, limit: '10mb' }))
+
+app.use(requestLogger)
 
 // ── Static audio file serving with long-lived cache headers ──────────────────
 app.use(
@@ -122,6 +121,7 @@ app.use(`${API}/feynman`, feynmanRoutes)
 app.use(`${API}/conversation`, conversationRoutes)
 app.use(`${API}/progress`, progressRoutes)
 app.use(`${API}/leaderboard`, leaderboardRoutes)
+app.use(`${API}/log`, logRoutes)
 
 // ── Production: serve React client build and enable client-side routing ───────
 if (IS_PRODUCTION) {
@@ -135,7 +135,6 @@ if (IS_PRODUCTION) {
     })
   )
 
-  // Serve index.html for all non-API routes so React Router handles routing
   app.get(/^(?!\/(api|health))/, (_req: Request, res: Response) => {
     res.sendFile(path.join(clientDist, 'index.html'))
   })

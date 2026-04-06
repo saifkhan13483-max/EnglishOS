@@ -1,20 +1,16 @@
 import cron from 'node-cron'
 import { prisma } from '../lib/prisma'
 import { sendMissedDaysAlert, sendDailyReminder } from './emailService'
+import { logger } from '../lib/logger'
 
 // ── Date helpers ──────────────────────────────────────────────────────────────
 
-/** Returns the UTC date range covering today's calendar day (UTC midnight to midnight). */
 function todayUTCRange(): { gte: Date; lt: Date } {
   const now = new Date()
   const start = new Date(Date.UTC(now.getUTCFullYear(), now.getUTCMonth(), now.getUTCDate()))
   return { gte: start, lt: new Date(start.getTime() + 24 * 60 * 60 * 1000) }
 }
 
-/**
- * Returns the UTC date range for the calendar day that was exactly `n` days ago.
- * e.g. nDaysAgoRange(3) covers from 3-days-ago midnight to 2-days-ago midnight (UTC).
- */
 function nDaysAgoRange(n: number): { gte: Date; lt: Date } {
   const MS_PER_DAY = 24 * 60 * 60 * 1000
   const { gte: todayStart } = todayUTCRange()
@@ -25,14 +21,8 @@ function nDaysAgoRange(n: number): { gte: Date; lt: Date } {
 }
 
 // ── Job 1: Missed-day accountability check ────────────────────────────────────
-//
-// Fires at 11:59 PM PKT (18:59 UTC).
-// Finds every learner whose lastActiveDt falls exactly 3 days ago (meaning they
-// missed today, yesterday, and the day before) and who has an accountability
-// partner set. Sends one alert email per matching learner.
-//
 async function runMissedDayCheck(): Promise<void> {
-  console.log('[scheduler] Running missed-day accountability check…')
+  logger.info('[scheduler] Running missed-day accountability check…')
 
   const threeDaysAgo = nDaysAgoRange(3)
 
@@ -50,7 +40,7 @@ async function runMissedDayCheck(): Promise<void> {
     },
   })
 
-  console.log(`[scheduler] Missed-day check: ${learners.length} learner(s) to notify`)
+  logger.info({ count: learners.length }, '[scheduler] Missed-day check: learner(s) to notify')
 
   await Promise.allSettled(
     learners.map((learner) =>
@@ -61,29 +51,23 @@ async function runMissedDayCheck(): Promise<void> {
         3,
         learner.whyMotivation ?? undefined,
       ).catch((err: unknown) =>
-        console.error(
-          `[scheduler] Failed to send missed-day alert to ${learner.accountabilityEmail}:`,
-          err,
+        logger.error(
+          { err, accountabilityEmail: learner.accountabilityEmail },
+          '[scheduler] Failed to send missed-day alert'
         )
       )
     )
   )
 
-  console.log('[scheduler] Missed-day check complete')
+  logger.info('[scheduler] Missed-day check complete')
 }
 
 // ── Job 2: Morning session reminder ──────────────────────────────────────────
-//
-// Fires at 8:00 AM PKT (03:00 UTC).
-// Finds all onboarded learners who have NOT yet completed their morning
-// mission today and sends them a reminder email.
-//
 async function runMorningReminders(): Promise<void> {
-  console.log('[scheduler] Running morning reminder job…')
+  logger.info('[scheduler] Running morning reminder job…')
 
   const today = todayUTCRange()
 
-  // Collect IDs of learners who already completed their morning session today
   const completedSessions = await prisma.missionSession.findMany({
     where: { sessionDate: today, type: 'MORNING', status: 'COMPLETE' },
     select: { learnerId: true },
@@ -96,7 +80,7 @@ async function runMorningReminders(): Promise<void> {
   })
 
   const toNotify = learners.filter((l) => !completedIds.has(l.id))
-  console.log(`[scheduler] Morning reminders: ${toNotify.length} learner(s) to notify`)
+  logger.info({ count: toNotify.length }, '[scheduler] Morning reminders: learner(s) to notify')
 
   await Promise.allSettled(
     toNotify.map((learner) =>
@@ -107,22 +91,17 @@ async function runMorningReminders(): Promise<void> {
         learner.morningSessionTime ?? '8:00 AM',
         learner.streak,
       ).catch((err: unknown) =>
-        console.error(`[scheduler] Failed to send morning reminder to ${learner.email}:`, err)
+        logger.error({ err, email: learner.email }, '[scheduler] Failed to send morning reminder')
       )
     )
   )
 
-  console.log('[scheduler] Morning reminder job complete')
+  logger.info('[scheduler] Morning reminder job complete')
 }
 
 // ── Job 3: Evening session reminder ──────────────────────────────────────────
-//
-// Fires at 8:00 PM PKT (15:00 UTC).
-// Finds all onboarded learners who have NOT yet completed their evening
-// mission today and sends them a reminder email.
-//
 async function runEveningReminders(): Promise<void> {
-  console.log('[scheduler] Running evening reminder job…')
+  logger.info('[scheduler] Running evening reminder job…')
 
   const today = todayUTCRange()
 
@@ -138,7 +117,7 @@ async function runEveningReminders(): Promise<void> {
   })
 
   const toNotify = learners.filter((l) => !completedIds.has(l.id))
-  console.log(`[scheduler] Evening reminders: ${toNotify.length} learner(s) to notify`)
+  logger.info({ count: toNotify.length }, '[scheduler] Evening reminders: learner(s) to notify')
 
   await Promise.allSettled(
     toNotify.map((learner) =>
@@ -149,48 +128,35 @@ async function runEveningReminders(): Promise<void> {
         learner.eveningSessionTime ?? '8:00 PM',
         learner.streak,
       ).catch((err: unknown) =>
-        console.error(`[scheduler] Failed to send evening reminder to ${learner.email}:`, err)
+        logger.error({ err, email: learner.email }, '[scheduler] Failed to send evening reminder')
       )
     )
   )
 
-  console.log('[scheduler] Evening reminder job complete')
+  logger.info('[scheduler] Evening reminder job complete')
 }
 
 // ── Mount all cron jobs ───────────────────────────────────────────────────────
-//
-// All times are expressed in UTC, which is PKT − 5 hours:
-//
-//   11:59 PM PKT = 18:59 UTC  →  missed-day check
-//    8:00 AM PKT = 03:00 UTC  →  morning reminders
-//    8:00 PM PKT = 15:00 UTC  →  evening reminders
-//
 export function startScheduler(): void {
-  // 11:59 PM PKT daily — accountability missed-day check
   cron.schedule('59 18 * * *', () => {
     runMissedDayCheck().catch((err: unknown) =>
-      console.error('[scheduler] Unhandled error in missed-day check:', err)
+      logger.error({ err }, '[scheduler] Unhandled error in missed-day check')
     )
   })
 
-  // 8:00 AM PKT daily — morning session reminders
   cron.schedule('0 3 * * *', () => {
     runMorningReminders().catch((err: unknown) =>
-      console.error('[scheduler] Unhandled error in morning reminders:', err)
+      logger.error({ err }, '[scheduler] Unhandled error in morning reminders')
     )
   })
 
-  // 8:00 PM PKT daily — evening session reminders
   cron.schedule('0 15 * * *', () => {
     runEveningReminders().catch((err: unknown) =>
-      console.error('[scheduler] Unhandled error in evening reminders:', err)
+      logger.error({ err }, '[scheduler] Unhandled error in evening reminders')
     )
   })
 
-  console.log(
-    '[scheduler] Cron jobs registered:',
-    '11:59 PM PKT (missed-day),',
-    '8:00 AM PKT (morning reminder),',
-    '8:00 PM PKT (evening reminder)',
+  logger.info(
+    '[scheduler] Cron jobs registered: 11:59 PM PKT (missed-day), 8:00 AM PKT (morning reminder), 8:00 PM PKT (evening reminder)'
   )
 }

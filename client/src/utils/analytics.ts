@@ -25,9 +25,13 @@ export type AnalyticsEvent =
   | 'mission_started'
   | 'mission_completed'
   | 'feynman_evaluated'
+  | 'feynman_skipped'
   | 'level_gate_attempted'
   | 'level_gate_passed'
+  | 'level_gate_failed'
   | 'leaderboard_submitted'
+  | 'phase_entered'
+  | 'time_to_first_mission'
 
 export function trackEvent(
   eventName: AnalyticsEvent,

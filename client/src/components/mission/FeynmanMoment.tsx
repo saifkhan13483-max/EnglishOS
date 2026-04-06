@@ -6,6 +6,7 @@ import { useMissionStore, FeynmanResult } from '@/stores/missionStore'
 import { useProgressStore } from '@/stores/progressStore'
 import { getFeynmanPrompt } from '@/constants/scenarios'
 import { useToast } from '@/hooks/useToast'
+import { trackEvent } from '@/utils/analytics'
 
 type InputTab = 'text' | 'voice'
 
@@ -97,7 +98,10 @@ export default function FeynmanMoment({ onComplete }: FeynmanMomentProps) {
     }
   }
 
-  async function handleComplete() {
+  async function handleComplete(skipped = false) {
+    if (skipped) {
+      trackEvent('feynman_skipped', { module: currentModule })
+    }
     setCompleting(true)
     try {
       await completeMission({ feynmanScore: result?.scores.overall })
@@ -179,7 +183,7 @@ export default function FeynmanMoment({ onComplete }: FeynmanMomentProps) {
             size="md"
             className="w-full text-text-muted"
             disabled={isLoading}
-            onClick={handleComplete}
+            onClick={() => handleComplete(true)}
           >
             Skip for now
           </Button>

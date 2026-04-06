@@ -4,6 +4,7 @@ import { motion, AnimatePresence } from 'framer-motion'
 import Button from '@/components/ui/Button'
 import LevelWrapCeremony from '@/components/mission/LevelWrapCeremony'
 import { useProgressStore } from '@/stores/progressStore'
+import { trackEvent } from '@/utils/analytics'
 
 // ── Question types & data ─────────────────────────────────────────────────────
 
@@ -405,6 +406,17 @@ export default function LevelGate() {
     if (!correct) setWrongIds(prev => [...prev, current.id])
 
     if (currentIdx + 1 >= total) {
+      const finalCorrect = newAnswers.filter(Boolean).length
+      const pctFinal = Math.round((finalCorrect / total) * 100)
+      const passed = pctFinal >= PASS_THRESHOLD
+
+      trackEvent('level_gate_attempted', { score_pct: pctFinal, correct: finalCorrect, total })
+      if (passed) {
+        trackEvent('level_gate_passed', { score_pct: pctFinal })
+      } else {
+        trackEvent('level_gate_failed', { score_pct: pctFinal, wrong_count: total - finalCorrect })
+      }
+
       setDone(true)
     } else {
       setCurrentIdx(i => i + 1)
