@@ -29,6 +29,12 @@ app.use(compression())
 app.use(
   helmet({
     crossOriginEmbedderPolicy: false,
+    // X-Frame-Options: DENY — prevents clickjacking in all framing contexts
+    frameguard: { action: 'deny' },
+    // Strict-Transport-Security — applied in production where HTTPS is guaranteed
+    hsts: IS_PRODUCTION
+      ? { maxAge: 31536000, includeSubDomains: true, preload: true }
+      : false,
     contentSecurityPolicy: IS_PRODUCTION
       ? {
           directives: {
@@ -86,6 +92,7 @@ app.use(
   express.static(path.join(__dirname, '../public/audio'))
 )
 
+// ── Global rate limiter — covers all routes (100 req / 15 min) ───────────────
 const limiter = rateLimit({
   windowMs: 15 * 60 * 1000,
   max: 100,
@@ -100,6 +107,21 @@ const limiter = rateLimit({
 
 app.use(limiter)
 
+// ── Stricter limiter for auth endpoints (10 req / 15 min per IP) ──────────────
+// Prevents brute-force and credential-stuffing attacks on login/register.
+const authLimiter = rateLimit({
+  windowMs: 15 * 60 * 1000,
+  max: 10,
+  standardHeaders: true,
+  legacyHeaders: false,
+  skipSuccessfulRequests: true,
+  message: {
+    success: false,
+    statusCode: 429,
+    message: 'Too many authentication attempts. Please wait 15 minutes before trying again.',
+  },
+})
+
 app.get('/health', async (_req: Request, res: Response) => {
   let database: 'connected' | 'error' = 'error'
   try {
@@ -113,7 +135,7 @@ app.get('/health', async (_req: Request, res: Response) => {
 
 const API = '/api/v1'
 
-app.use(`${API}/auth`, authRoutes)
+app.use(`${API}/auth`, authLimiter, authRoutes)
 app.use(`${API}/learner`, learnerRoutes)
 app.use(`${API}/content`, contentRoutes)
 app.use(`${API}/mission`, missionRoutes)

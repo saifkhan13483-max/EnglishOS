@@ -1,34 +1,24 @@
-import { useRef, useState } from 'react'
+import { useRef, useState, useEffect } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { motion } from 'framer-motion'
+import { useShallow } from 'zustand/react/shallow'
 import Modal from '@/components/ui/Modal'
 import Button from '@/components/ui/Button'
 import ProgressBar from '@/components/ui/ProgressBar'
 import ProfileCard from '@/components/gamification/ProfileCard'
+import { useAuthStore } from '@/stores/authStore'
+import { useProgressStore } from '@/stores/progressStore'
+import { useToast } from '@/hooks/useToast'
 
-// ── Static mock data ──────────────────────────────────────────────────────────
-
-const USER = {
-  name: 'Bilal Ahmed',
-  email: 'bilal@example.com',
-  dayNumber: 42,
-  level: 1,
-  rank: 'Conversationalist',
-  streak: 7,
-  xp: 4250,
-  brainCompoundPct: 42,
-  completedModules: 2,
-  totalModules: 4,
-  earnedBadgeTypes: ['STREAK_7', 'FEYNMAN_FIRST', 'MODULE_COMPLETE_L1_M1', 'MODULE_COMPLETE_L1_M2'],
-  why: 'Speaking English confidently in job interviews and at work.',
-  stake: 'I have committed this to my cousin Asad. He will ask me every Sunday for my progress update.',
-  notificationMorning: '07:00',
-  notificationEvening: '19:30',
-  romanUrduDefault: true,
-  joinedDate: 'March 24, 2026',
+function formatJoinedDate(iso: string | undefined): string {
+  if (!iso) return '—'
+  return new Date(iso).toLocaleDateString('en-US', {
+    year: 'numeric',
+    month: 'long',
+    day: 'numeric',
+  })
 }
 
-// ── Section wrapper ───────────────────────────────────────────────────────────
 function Section({ title, children, delay = 0 }: {
   title: string; children: React.ReactNode; delay?: number
 }) {
@@ -77,22 +67,76 @@ function FieldRow({ label, value, readOnly = false, toggle = false, checked = fa
   )
 }
 
-// ── Page ──────────────────────────────────────────────────────────────────────
 export default function Profile() {
-  const navigate   = useNavigate()
-  const cardRef    = useRef<HTMLDivElement>(null)
+  const navigate = useNavigate()
+  const toast    = useToast()
+  const cardRef  = useRef<HTMLDivElement>(null)
   const [exporting, setExporting] = useState(false)
 
-  const [romanUrdu, setRomanUrdu] = useState(USER.romanUrduDefault)
-  const [editingWhy, setEditingWhy] = useState(false)
-  const [why, setWhy] = useState(USER.why)
-  const [whyDraft, setWhyDraft] = useState(USER.why)
+  const { user } = useAuthStore()
 
+  const {
+    totalXP,
+    streak,
+    brainCompoundPct,
+    myWhy,
+    serverBadges,
+    learnerProfile,
+    loadDashboard,
+    loadStats,
+  } = useProgressStore(
+    useShallow((s) => ({
+      totalXP:         s.totalXP,
+      streak:          s.streak,
+      brainCompoundPct: s.brainCompoundPct,
+      myWhy:           s.myWhy,
+      serverBadges:    s.serverBadges,
+      learnerProfile:  s.learnerProfile,
+      loadDashboard:   s.loadDashboard,
+      loadStats:       s.loadStats,
+    }))
+  )
+
+  useEffect(() => {
+    loadDashboard()
+    loadStats()
+  }, [loadDashboard, loadStats])
+
+  const displayName      = user?.name ?? '—'
+  const displayEmail     = user?.email ?? '—'
+  const dayNumber        = learnerProfile?.dayNumber ?? 0
+  const level            = user?.levelCurrent ?? 1
+  const rank             = user?.rank ?? 'Learner'
+  const xp               = totalXP || user?.xp || 0
+  const pct              = brainCompoundPct || user?.brainCompoundPct || 0
+  const earnedBadgeTypes = serverBadges.map((b) => b.badgeType)
+  const completedModules = serverBadges.filter((b) => b.badgeType.startsWith('MODULE_COMPLETE')).length
+  const joinedDate       = formatJoinedDate(user?.createdAt)
+  const morning          = user?.morningSessionTime ?? '—'
+  const evening          = user?.eveningSessionTime ?? '—'
+
+  const initialWhy   = myWhy ?? user?.whyMotivation ?? ''
+  const initialStake = user?.stakesStatement ?? ''
+
+  const [romanUrdu,      setRomanUrdu]      = useState(true)
+  const [editingWhy,     setEditingWhy]     = useState(false)
+  const [why,            setWhy]            = useState(initialWhy)
+  const [whyDraft,       setWhyDraft]       = useState(initialWhy)
   const [showStakeModal, setShowStakeModal] = useState(false)
-  const [stakeDraft, setStakeDraft] = useState(USER.stake)
-
+  const [stakeDraft,     setStakeDraft]     = useState(initialStake)
   const [showDeleteModal, setShowDeleteModal] = useState(false)
-  const [deleteConfirm, setDeleteConfirm] = useState('')
+  const [deleteConfirm,  setDeleteConfirm]  = useState('')
+
+  // Sync why/stake once store loads (covers cold-start where store is empty initially)
+  useEffect(() => {
+    const resolved = myWhy ?? user?.whyMotivation ?? ''
+    setWhy(resolved)
+    setWhyDraft(resolved)
+  }, [myWhy, user?.whyMotivation])
+
+  useEffect(() => {
+    setStakeDraft(user?.stakesStatement ?? '')
+  }, [user?.stakesStatement])
 
   async function handleExport() {
     if (!cardRef.current || exporting) return
@@ -109,10 +153,10 @@ export default function Profile() {
       const url  = canvas.toDataURL('image/png')
       const link = document.createElement('a')
       link.href     = url
-      link.download = `${USER.name.replace(/\s+/g, '-')}-polymath-profile.png`
+      link.download = `${displayName.replace(/\s+/g, '-')}-polymath-profile.png`
       link.click()
-    } catch (err) {
-      console.error('Export failed', err)
+    } catch {
+      toast.error('Could not export profile card. Please try again.')
     } finally {
       setExporting(false)
     }
@@ -151,16 +195,16 @@ export default function Profile() {
           <div className="overflow-x-auto rounded-2xl">
             <ProfileCard
               ref={cardRef}
-              name={USER.name}
-              rank={USER.rank}
-              level={USER.level}
-              dayNumber={USER.dayNumber}
-              streak={USER.streak}
-              xp={USER.xp}
-              brainCompoundPct={USER.brainCompoundPct}
-              completedModules={USER.completedModules}
-              totalModules={USER.totalModules}
-              earnedBadgeTypes={USER.earnedBadgeTypes}
+              name={displayName}
+              rank={rank}
+              level={level}
+              dayNumber={dayNumber}
+              streak={streak || user?.streak || 0}
+              xp={xp}
+              brainCompoundPct={pct}
+              completedModules={completedModules}
+              totalModules={4}
+              earnedBadgeTypes={earnedBadgeTypes}
               whyMotivation={why}
             />
           </div>
@@ -187,26 +231,27 @@ export default function Profile() {
             <div>
               <div className="flex justify-between text-xs font-mono text-text-muted mb-1.5">
                 <span>Total XP</span>
-                <span className="text-brand-gold">{USER.xp.toLocaleString()} XP</span>
+                <span className="text-brand-gold">{xp.toLocaleString()} XP</span>
               </div>
-              <ProgressBar value={Math.min(100, (USER.xp / 20000) * 100)} color="#F5B014" animated={false} />
+              <ProgressBar value={Math.min(100, (xp / 20000) * 100)} color="#F5B014" animated={false} />
             </div>
             <div>
               <div className="flex justify-between text-xs font-mono text-text-muted mb-1.5">
                 <span>Brain Compound</span>
-                <span className="text-brand-green">{USER.brainCompoundPct}%</span>
+                <span className="text-brand-green">{Math.round(pct)}%</span>
               </div>
-              <ProgressBar value={USER.brainCompoundPct} color="#2ECC71" animated={false} />
+              <ProgressBar value={pct} color="#2ECC71" animated={false} />
             </div>
           </div>
         </motion.div>
 
         {/* ── Account Settings ─────────────────────────────────────────── */}
         <Section title="Account Settings" delay={0.12}>
-          <FieldRow label="Name"  value={USER.name}  />
-          <FieldRow label="Email" value={USER.email} readOnly />
-          <FieldRow label="Morning reminder" value={USER.notificationMorning} />
-          <FieldRow label="Evening reminder" value={USER.notificationEvening} />
+          <FieldRow label="Name"  value={displayName} />
+          <FieldRow label="Email" value={displayEmail} readOnly />
+          <FieldRow label="Joined" value={joinedDate} readOnly />
+          <FieldRow label="Morning reminder" value={morning} />
+          <FieldRow label="Evening reminder" value={evening} />
           <FieldRow
             label="Roman Urdu tooltips"
             toggle
@@ -235,7 +280,9 @@ export default function Profile() {
               <div className="flex items-start justify-between gap-3">
                 <div className="flex items-start gap-2.5">
                   <span className="text-lg shrink-0">💛</span>
-                  <p className="text-sm font-body text-text-secondary leading-relaxed">{why}</p>
+                  <p className="text-sm font-body text-text-secondary leading-relaxed">
+                    {why || <span className="text-text-muted italic">No why set yet.</span>}
+                  </p>
                 </div>
                 <button
                   onClick={() => { setWhyDraft(why); setEditingWhy(true) }}
@@ -252,7 +299,9 @@ export default function Profile() {
         <Section title="My Stake" delay={0.26}>
           <div className="px-4 py-4 flex flex-col gap-3">
             <div className="bg-bg-tertiary border border-border-subtle rounded-xl px-3 py-3">
-              <p className="text-sm font-body text-text-secondary leading-relaxed">{USER.stake}</p>
+              <p className="text-sm font-body text-text-secondary leading-relaxed">
+                {stakeDraft || <span className="text-text-muted italic">No stake set yet.</span>}
+              </p>
             </div>
             <Button variant="secondary" size="sm" onClick={() => setShowStakeModal(true)}>
               Update Stake
@@ -326,8 +375,10 @@ export default function Profile() {
         <div className="flex flex-col gap-4">
           <div className="bg-brand-red/5 border border-brand-red/30 rounded-xl px-4 py-3">
             <p className="text-sm font-body text-brand-red leading-relaxed">
-              This will permanently delete your account, all {USER.dayNumber} days of progress,
-              your {USER.xp.toLocaleString()} XP, and your {USER.earnedBadgeTypes.length} badges. This cannot be undone.
+              This will permanently delete your account
+              {dayNumber > 0 ? `, all ${dayNumber} days of progress` : ''},
+              your {xp.toLocaleString()} XP, and your {earnedBadgeTypes.length} badges.
+              This cannot be undone.
             </p>
           </div>
           <div>

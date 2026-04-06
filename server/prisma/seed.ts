@@ -287,13 +287,166 @@ async function main() {
     });
   });
 
+  // ── MODULE 3: BASIC SENTENCES ────────────────────────────────────────────
+  // Din 13–20 — SVO Formula, Positive / Negative / Question sentences
+
+  // The master SVO formula — isPowerPack: true (the 20% that unlocks everything)
+  const svoFormula = [
+    {
+      english: 'Subject + Verb + Object',
+      urduRoman: 'Kaam karne wala + Kaam + Jis par kaam ho',
+      exampleSentence: 'I eat food. (I=subject, eat=verb, food=object)',
+    },
+  ];
+
+  svoFormula.forEach((s, i) => {
+    items.push({
+      level: 1, module: 3, groupName: 'SVO Formula',
+      type: ContentType.GRAMMAR,
+      english: s.english, urduRoman: s.urduRoman, exampleSentence: s.exampleSentence,
+      isPowerPack: true, sortOrder: 1 + i,
+    });
+  });
+
+  // Positive sentences — isPowerPack: true
+  const positiveSentences = [
+    { english: 'I am happy.',            urduRoman: 'Mein khush hoon.',          exampleSentence: 'I am happy today.' },
+    { english: 'She is a doctor.',        urduRoman: 'Woh doctor hai.',            exampleSentence: 'She is a good doctor.' },
+    { english: 'He works every day.',     urduRoman: 'Woh roz kaam karta hai.',    exampleSentence: 'He works every day from 9 to 5.' },
+    { english: 'We eat dinner at 8.',     urduRoman: 'Hum raat 8 baje khana khate hain.', exampleSentence: 'We eat dinner together at 8.' },
+    { english: 'They live in Lahore.',    urduRoman: 'Woh Lahore mein rehte hain.', exampleSentence: 'They have lived in Lahore for years.' },
+    { english: 'I like tea.',             urduRoman: 'Mujhe chai pasand hai.',      exampleSentence: 'I like tea more than coffee.' },
+    { english: 'She reads books.',        urduRoman: 'Woh kitaabein parhti hai.',   exampleSentence: 'She reads books every evening.' },
+    { english: 'We are friends.',         urduRoman: 'Hum dost hain.',             exampleSentence: 'We are friends since childhood.' },
+  ];
+
+  positiveSentences.forEach((s, i) => {
+    items.push({
+      level: 1, module: 3, groupName: 'Positive Sentences',
+      type: ContentType.SENTENCE,
+      english: s.english, urduRoman: s.urduRoman, exampleSentence: s.exampleSentence,
+      isPowerPack: true, sortOrder: 2 + i,
+    });
+  });
+
+  // Negative sentences — isPowerPack: true
+  const negativeSentences = [
+    { english: "I do not eat meat.",        urduRoman: 'Mein gosht nahi khata.',          exampleSentence: "I do not eat meat for health reasons." },
+    { english: "She does not go out.",      urduRoman: 'Woh bahar nahi jaati.',            exampleSentence: "She does not go out at night." },
+    { english: "He is not here today.",     urduRoman: 'Woh aaj yahan nahi hai.',          exampleSentence: "He is not here today, he is sick." },
+    { english: "We are not ready yet.",     urduRoman: 'Hum abhi tayyar nahi hain.',       exampleSentence: "We are not ready yet, give us 5 minutes." },
+    { english: "They don't study at night.",urduRoman: 'Woh raat ko nahi parhte.',         exampleSentence: "They don't study at night, only in the morning." },
+    { english: "I am not tired.",           urduRoman: 'Mein thaka hua nahi hoon.',        exampleSentence: "I am not tired, I can keep working." },
+    { english: "She does not know English.",urduRoman: 'Woh English nahi jaanti.',         exampleSentence: "She does not know English yet but she is learning." },
+  ];
+
+  negativeSentences.forEach((s, i) => {
+    items.push({
+      level: 1, module: 3, groupName: 'Negative Sentences',
+      type: ContentType.SENTENCE,
+      english: s.english, urduRoman: s.urduRoman, exampleSentence: s.exampleSentence,
+      isPowerPack: true, sortOrder: 10 + i,
+    });
+  });
+
+  // Questions — isPowerPack: true
+  const questionSentences = [
+    { english: 'Do you like tea?',         urduRoman: 'Kya tum chai pasand karte ho?',    exampleSentence: 'Do you like tea or coffee?' },
+    { english: 'Does she eat rice?',        urduRoman: 'Kya woh chawal khati hai?',        exampleSentence: 'Does she eat rice every day?' },
+    { english: 'Is he your brother?',       urduRoman: 'Kya woh tumhara bhai hai?',        exampleSentence: 'Is he your older or younger brother?' },
+    { english: 'Are you ready?',            urduRoman: 'Kya tum tayyar ho?',               exampleSentence: 'Are you ready to start the lesson?' },
+    { english: 'Where do you live?',        urduRoman: 'Tum kahan rehte ho?',              exampleSentence: 'Where do you live in this city?' },
+    { english: 'What is your name?',        urduRoman: 'Tumhara naam kya hai?',            exampleSentence: 'What is your name, please?' },
+    { english: 'Can you help me?',          urduRoman: 'Kya tum meri madad kar sakte ho?', exampleSentence: 'Can you help me with this problem?' },
+  ];
+
+  questionSentences.forEach((s, i) => {
+    items.push({
+      level: 1, module: 3, groupName: 'Questions',
+      type: ContentType.SENTENCE,
+      english: s.english, urduRoman: s.urduRoman, exampleSentence: s.exampleSentence,
+      isPowerPack: true, sortOrder: 17 + i,
+    });
+  });
+
+  // ── MODULE 4: DAILY SPEAKING PATTERNS ────────────────────────────────────
+  // Din 21–30 — Essential greetings, requests, and conversational responses
+  // These are the 20% of phrases used in 80% of daily English interactions.
+
+  // Greetings — isPowerPack: true
+  const greetings = [
+    { english: 'Good morning.',          urduRoman: 'Subah bakhair.',              exampleSentence: 'Good morning! How are you today?' },
+    { english: 'Good afternoon.',        urduRoman: 'Dopahar bakhair.',            exampleSentence: 'Good afternoon, nice to see you.' },
+    { english: 'Good evening.',          urduRoman: 'Shaam bakhair.',              exampleSentence: 'Good evening! How was your day?' },
+    { english: 'How are you?',           urduRoman: 'Aap kaise hain?',             exampleSentence: 'How are you today, sir?' },
+    { english: 'I am fine, thank you.',  urduRoman: 'Mein theek hoon, shukriya.', exampleSentence: 'I am fine, thank you. And you?' },
+    { english: 'Nice to meet you.',      urduRoman: 'Aap se milkar khushi hui.',   exampleSentence: 'Nice to meet you for the first time.' },
+    { english: 'See you later.',         urduRoman: 'Phir milenge.',               exampleSentence: 'See you later, take care.' },
+    { english: 'Goodbye.',               urduRoman: 'Khuda hafiz.',                exampleSentence: 'Goodbye, have a safe journey.' },
+  ];
+
+  greetings.forEach((s, i) => {
+    items.push({
+      level: 1, module: 4, groupName: 'Greetings',
+      type: ContentType.PHRASE,
+      english: s.english, urduRoman: s.urduRoman, exampleSentence: s.exampleSentence,
+      isPowerPack: true, sortOrder: 1 + i,
+    });
+  });
+
+  // Polite requests — isPowerPack: true
+  const politeRequests = [
+    { english: 'Please.',               urduRoman: 'Meherbani kar ke.',         exampleSentence: 'Please help me with this.' },
+    { english: 'Thank you.',            urduRoman: 'Shukriya.',                  exampleSentence: 'Thank you very much for your help.' },
+    { english: 'You are welcome.',      urduRoman: 'Koi baat nahi.',             exampleSentence: 'You are welcome, it was my pleasure.' },
+    { english: 'Sorry.',                urduRoman: 'Maafi.',                     exampleSentence: 'Sorry, I did not understand you.' },
+    { english: 'Excuse me.',            urduRoman: 'Maaf kijiye.',               exampleSentence: 'Excuse me, can you help me please?' },
+    { english: 'Could you repeat that?',urduRoman: 'Kya aap dobara keh sakte hain?', exampleSentence: 'Could you repeat that more slowly?' },
+    { english: 'I do not understand.',  urduRoman: 'Mujhe samajh nahi aaya.',   exampleSentence: 'I do not understand. Can you explain?' },
+    { english: 'Can you speak slowly?', urduRoman: 'Kya aap aahista bol sakte hain?', exampleSentence: 'Can you speak slowly? My English is basic.' },
+  ];
+
+  politeRequests.forEach((s, i) => {
+    items.push({
+      level: 1, module: 4, groupName: 'Polite Requests',
+      type: ContentType.PHRASE,
+      english: s.english, urduRoman: s.urduRoman, exampleSentence: s.exampleSentence,
+      isPowerPack: true, sortOrder: 9 + i,
+    });
+  });
+
+  // Numbers 1–10 — isPowerPack: true (needed for time, age, and counting)
+  const numbers = [
+    { english: 'One',   urduRoman: 'Ek',  exampleSentence: 'I have one brother.' },
+    { english: 'Two',   urduRoman: 'Do',  exampleSentence: 'I have two sisters.' },
+    { english: 'Three', urduRoman: 'Teen',exampleSentence: 'We need three chairs.' },
+    { english: 'Four',  urduRoman: 'Char',exampleSentence: 'There are four rooms.' },
+    { english: 'Five',  urduRoman: 'Paanch', exampleSentence: 'I study for five hours.' },
+    { english: 'Six',   urduRoman: 'Chhe', exampleSentence: 'The meeting is at six.' },
+    { english: 'Seven', urduRoman: 'Saat', exampleSentence: 'Seven days in a week.' },
+    { english: 'Eight', urduRoman: 'Aath', exampleSentence: 'I wake up at eight.' },
+    { english: 'Nine',  urduRoman: 'Nau',  exampleSentence: 'Nine months of the year.' },
+    { english: 'Ten',   urduRoman: 'Das',  exampleSentence: 'I scored ten out of ten.' },
+  ];
+
+  numbers.forEach((s, i) => {
+    items.push({
+      level: 1, module: 4, groupName: 'Numbers 1–10',
+      type: ContentType.VOCAB,
+      english: s.english, urduRoman: s.urduRoman, exampleSentence: s.exampleSentence,
+      isPowerPack: true, sortOrder: 17 + i,
+    });
+  });
+
   // ── INSERT ALL ────────────────────────────────────────────────────────────
 
   const result = await prisma.contentItem.createMany({ data: items });
 
   console.log(`Seeded ${result.count} ContentItems.`);
-  console.log(`  Module 1 (Alphabets):   ${5 + 21} items (5 vowels + 21 consonants)`);
-  console.log(`  Module 2 (Core Words): ${12 + 5 + 50 + 28 + 22 + 18} items (A:12 B:5 C:50 D:28 E:22 F:18)`);
+  console.log(`  Module 1 (Alphabets):        ${5 + 21} items (5 vowels + 21 consonants)`);
+  console.log(`  Module 2 (Core Words):      ${12 + 5 + 50 + 28 + 22 + 18} items (A:12 B:5 C:50 D:28 E:22 F:18)`);
+  console.log(`  Module 3 (Basic Sentences): ${1 + 8 + 7 + 7} items (SVO:1 Positive:8 Negative:7 Questions:7)`);
+  console.log(`  Module 4 (Daily Patterns):  ${8 + 8 + 10} items (Greetings:8 Requests:8 Numbers:10)`);
 }
 
 main()
