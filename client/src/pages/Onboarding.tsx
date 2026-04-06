@@ -573,7 +573,7 @@ function Step5({ onDone, onBack }: { onDone: () => void; onBack: () => void }) {
           : onboardingData.why ?? 'Not specified'
 
       const result = await api.post<{ success: boolean; data: import('@/stores/authStore').SafeLearner }>(
-        '/learner/onboarding',
+        '/api/v1/learner/onboarding',
         {
           placementLevel:    onboardingData.chosenLevel,
           whyMotivation:     whyText,
