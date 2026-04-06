@@ -26,7 +26,7 @@ outputType = "webview"
 
 [[workflows.workflow.tasks]]
 task = "shell.exec"
-args = "node server/dist/server.js"
+args = "fuser -k 5000/tcp 2>/dev/null || true; sleep 1; node server/dist/server.js"
 waitForPort = 5000
 
 [[ports]]
