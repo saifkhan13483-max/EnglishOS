@@ -138,7 +138,7 @@ interface SentenceBuilderProps {
 
 export default function SentenceBuilder({ onComplete, onXpEarned }: SentenceBuilderProps) {
   const learnerProfile = useProgressStore(s => s.learnerProfile)
-  const currentModule = learnerProfile?.currentModule ?? 2
+  const currentModule = learnerProfile?.currentModule ?? 1
   const { dailyQueue, markReviewed } = useSRStore()
 
   const exercises = getSentences(currentModule)

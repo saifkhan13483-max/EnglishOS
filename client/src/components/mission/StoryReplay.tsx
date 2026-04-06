@@ -77,7 +77,7 @@ export default function StoryReplay({ onComplete }: StoryReplayProps) {
   const vocab = useVocabMap()
 
   const level = learnerProfile?.currentLevel ?? 1
-  const module = learnerProfile?.currentModule ?? 2
+  const module = learnerProfile?.currentModule ?? 1
   const story = getStory(level, module)
 
   const [idx, setIdx] = useState(0)

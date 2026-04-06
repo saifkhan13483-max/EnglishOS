@@ -241,7 +241,7 @@ export const useMissionStore = create<MissionStore>((set, get) => ({
 
     set({ isLoading: true, error: null })
     try {
-      const module = useProgressStore.getState().learnerProfile?.currentModule ?? 2
+      const module = useProgressStore.getState().learnerProfile?.currentModule ?? 1
       const { prompt } = getFeynmanPrompt(module)
 
       const res = await api.post<{

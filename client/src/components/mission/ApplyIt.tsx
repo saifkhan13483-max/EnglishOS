@@ -9,7 +9,7 @@ interface ApplyItProps {
 }
 
 export default function ApplyIt({ onComplete }: ApplyItProps) {
-  const currentModule = useProgressStore((s) => s.learnerProfile?.currentModule ?? 2)
+  const currentModule = useProgressStore((s) => s.learnerProfile?.currentModule ?? 1)
   const scenario = getScenario(currentModule)
 
   const [response, setResponse] = useState('')

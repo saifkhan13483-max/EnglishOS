@@ -69,7 +69,7 @@ export default function FeynmanMoment({ onComplete }: FeynmanMomentProps) {
   const completeMission = useMissionStore((s) => s.completeMission)
   const feynmanResult = useMissionStore((s) => s.feynmanResult)
   const isLoading = useMissionStore((s) => s.isLoading)
-  const currentModule = useProgressStore((s) => s.learnerProfile?.currentModule ?? 2)
+  const currentModule = useProgressStore((s) => s.learnerProfile?.currentModule ?? 1)
   const toast = useToast()
 
   const { concept, prompt } = getFeynmanPrompt(currentModule)
