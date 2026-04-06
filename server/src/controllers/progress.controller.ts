@@ -2,6 +2,7 @@ import { Response } from 'express'
 import { ModuleStatus, SessionType, SessionStatus } from '@prisma/client'
 import { AuthRequest } from '../middleware/auth'
 import { prisma } from '../lib/prisma'
+import { calculateRank } from '../services/rankService'
 
 // ── Course structure constants ─────────────────────────────────────────────────
 
@@ -16,16 +17,6 @@ const LEVEL_META = [
 
 // Gate records are stored as module = 0
 const GATE_MODULE = 0
-
-function calcRank(xp: number): string {
-  if (xp >= 20_000) return 'Polymath'
-  if (xp >= 12_000) return 'Professional'
-  if (xp >= 6_000)  return 'Fluent'
-  if (xp >= 3_000)  return 'Conversationalist'
-  if (xp >= 1_500)  return 'Communicator'
-  if (xp >= 500)    return 'Speaker'
-  return 'Rookie'
-}
 
 function todayRange(): { gte: Date; lt: Date } {
   const now = new Date()
@@ -198,7 +189,7 @@ export async function submitGate(req: AuthRequest, res: Response): Promise<void>
 
   const learner = await prisma.learner.findUnique({
     where: { id: learnerId },
-    select: { levelCurrent: true, xp: true },
+    select: { levelCurrent: true, xp: true, rank: true },
   })
 
   if (!learner) {
@@ -214,6 +205,13 @@ export async function submitGate(req: AuthRequest, res: Response): Promise<void>
   // Calculate score
   const correctCount = answers.filter((a) => a.isCorrect).length
   const score = (correctCount / answers.length) * 100
+
+  // Check current gateAttempts BEFORE incrementing to determine XP award
+  const existingGateRecord = await prisma.levelProgress.findUnique({
+    where: { learnerId_level_module: { learnerId, level, module: GATE_MODULE } },
+    select: { gateAttempts: true },
+  })
+  const isFirstAttempt = !existingGateRecord || existingGateRecord.gateAttempts === 0
 
   // Increment gateAttempts on the gate record (module 0)
   await prisma.levelProgress.upsert({
@@ -311,9 +309,12 @@ export async function submitGate(req: AuthRequest, res: Response): Promise<void>
       })
     : []
 
-  // Award 500 XP and increment levelCurrent
-  const newXp = learner.xp + 500
-  const newRank = calcRank(newXp)
+  // XP award: 500 XP on first attempt, 250 XP on subsequent attempts
+  const gateXp = isFirstAttempt ? 500 : 250
+  const oldRank = learner.rank
+  const newXp   = learner.xp + gateXp
+  const newRank = calculateRank(newXp)
+  const rankUp  = newRank !== oldRank
 
   const learnerUpdate = prisma.learner.update({
     where: { id: learnerId },
@@ -331,8 +332,9 @@ export async function submitGate(req: AuthRequest, res: Response): Promise<void>
     data: {
       passed: true,
       score: Math.round(score * 100) / 100,
-      xpAwarded: 500,
+      xpAwarded: gateXp,
       ...(nextLevel && { nextLevel }),
+      ...(rankUp && { rankUp: true, newRank }),
     },
   })
 }

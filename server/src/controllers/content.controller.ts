@@ -119,6 +119,7 @@ export async function getTomorrowQueue(req: AuthRequest, res: Response): Promise
 
 // PATCH /api/v1/content/sr-queue/:id — mark a queue item as reviewed
 // SM-2 simplified: correct → extend interval; incorrect → reset to 1 day + flag gap
+// SR XP: +10 per correct review, daily cap of 10 correct reviews (100 XP max)
 export async function reviewQueueItem(req: AuthRequest, res: Response): Promise<void> {
   const learnerId = req.learnerId as string
   const { id } = req.params
@@ -167,5 +168,29 @@ export async function reviewQueueItem(req: AuthRequest, res: Response): Promise<
     },
   })
 
-  res.json({ success: true, data: updated })
+  // ── SR XP award (+10 per correct review, capped at 10 reviews / 100 XP per day)
+  let srXpAwarded = 0
+  if (correct) {
+    const todayStart = new Date(Date.UTC(now.getUTCFullYear(), now.getUTCMonth(), now.getUTCDate()))
+
+    // Count correct SR reviews today (including the one we just recorded)
+    const todayCorrectCount = await prisma.sRQueueItem.count({
+      where: {
+        learnerId,
+        lastReviewedAt: { gte: todayStart },
+        isKnowledgeGap: false,
+      },
+    })
+
+    // Award XP if still within the daily cap (10 correct reviews max)
+    if (todayCorrectCount <= 10) {
+      srXpAwarded = 10
+      await prisma.learner.update({
+        where: { id: learnerId },
+        data: { xp: { increment: srXpAwarded } },
+      })
+    }
+  }
+
+  res.json({ success: true, data: updated, srXpAwarded })
 }

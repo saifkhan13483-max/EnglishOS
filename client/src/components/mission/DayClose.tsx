@@ -65,7 +65,7 @@ export default function DayClose({ onComplete }: DayCloseProps) {
   const canvasRef = useRef<HTMLCanvasElement>(null)
   const completionCalled = useRef(false)
 
-  const { xpEarned, completeMission, isComplete } = useMissionStore()
+  const { xpEarned, completeMission, isComplete, rankUp, newRank } = useMissionStore()
   const { streak, brainCompoundPct, learnerProfile } = useProgressStore()
 
   const [tomorrow, setTomorrow] = useState<TomorrowData>({ count: 0, words: [] })
@@ -188,6 +188,37 @@ export default function DayClose({ onComplete }: DayCloseProps) {
               />
             ))}
           </div>
+        )}
+
+        {/* Rank-up celebration card */}
+        {rankUp && newRank && (
+          <motion.div
+            initial={{ opacity: 0, scale: 0.85, y: 20 }}
+            animate={{ opacity: 1, scale: 1, y: 0 }}
+            transition={{ delay: 0.6, type: 'spring', stiffness: 320, damping: 20 }}
+            className="bg-brand-gold/10 border-2 border-brand-gold/60 rounded-2xl p-5 flex items-center gap-4"
+          >
+            <motion.span
+              initial={{ rotate: -20, scale: 0.5 }}
+              animate={{ rotate: 0, scale: 1 }}
+              transition={{ delay: 0.75, type: 'spring', stiffness: 400, damping: 15 }}
+              className="text-4xl shrink-0"
+            >
+              🏅
+            </motion.span>
+            <div>
+              <p className="text-xs font-mono text-brand-gold uppercase tracking-widest mb-0.5">
+                Rank Up!
+              </p>
+              <p className="font-display text-lg font-bold text-text-primary">
+                You are now a{' '}
+                <span className="text-brand-gold">{newRank}</span>!
+              </p>
+              <p className="text-xs text-text-muted font-body mt-0.5">
+                Your consistent practice is paying off. Keep going.
+              </p>
+            </div>
+          </motion.div>
         )}
 
         {/* Brain Compound Meter bar */}

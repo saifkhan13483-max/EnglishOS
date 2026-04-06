@@ -42,6 +42,12 @@ export interface FeynmanResult {
   feynmanResponseId: string
 }
 
+export interface CompleteMissionOpts {
+  feynmanScore?: number
+  warmupPerfect?: boolean
+  srCorrectToday?: number
+}
+
 interface MissionStore {
   missionId: string | null
   currentMission: MissionType | null
@@ -52,11 +58,13 @@ interface MissionStore {
   isComplete: boolean
   isLoading: boolean
   error: string | null
+  rankUp: boolean
+  newRank: string | null
 
   startMission: (type: MissionType) => Promise<void>
   loadDailyQueue: () => Promise<void>
   loadModuleContent: (level: number, module: number) => Promise<void>
-  completeMission: (feynmanScore?: number) => Promise<void>
+  completeMission: (opts?: CompleteMissionOpts) => Promise<void>
   submitFeynmanResponse: (text: string) => Promise<void>
   setPhase: (phase: MissionPhase) => void
   addXp: (amount: number) => void
@@ -73,6 +81,8 @@ export const useMissionStore = create<MissionStore>((set, get) => ({
   isComplete: false,
   isLoading: false,
   error: null,
+  rankUp: false,
+  newRank: null,
 
   setPhase: (phase) => set({ currentPhase: phase }),
 
@@ -89,6 +99,8 @@ export const useMissionStore = create<MissionStore>((set, get) => ({
       isComplete: false,
       isLoading: false,
       error: null,
+      rankUp: false,
+      newRank: null,
     }),
 
   startMission: async (type) => {
@@ -137,8 +149,8 @@ export const useMissionStore = create<MissionStore>((set, get) => ({
     }
   },
 
-  completeMission: async (feynmanScore?: number) => {
-    const { missionId, xpEarned } = get()
+  completeMission: async (opts?: CompleteMissionOpts) => {
+    const { missionId } = get()
     if (!missionId) return
 
     set({ isLoading: true, error: null })
@@ -152,13 +164,19 @@ export const useMissionStore = create<MissionStore>((set, get) => ({
             streak: number
             brainCompoundPct: number
           }
+          sessionXp: number
+          rankUp?: boolean
+          newRank?: string
         }
       }>(`/api/v1/mission/${missionId}/complete`, {
-        xpEarned,
-        ...(feynmanScore !== undefined && { feynmanScore }),
+        ...(opts?.feynmanScore !== undefined && { feynmanScore: opts.feynmanScore }),
+        ...(opts?.warmupPerfect !== undefined && { warmupPerfect: opts.warmupPerfect }),
+        ...(opts?.srCorrectToday !== undefined && { srCorrectToday: opts.srCorrectToday }),
       })
 
-      const { learner } = res.data
+      const { learner, sessionXp, rankUp, newRank } = res.data
+
+      // Sync progress store with authoritative server values
       const profile = useProgressStore.getState().learnerProfile
       useProgressStore.setState({
         totalXP: learner.xp,
@@ -167,7 +185,14 @@ export const useMissionStore = create<MissionStore>((set, get) => ({
         ...(profile ? { learnerProfile: { ...profile } } : {}),
       })
 
-      set({ isComplete: true, isLoading: false })
+      set({
+        isComplete: true,
+        isLoading: false,
+        // Use server-calculated sessionXp for display in DayClose
+        xpEarned: sessionXp,
+        rankUp: rankUp ?? false,
+        newRank: newRank ?? null,
+      })
     } catch (err: unknown) {
       const message = err instanceof Error ? err.message : 'Failed to complete mission'
       set({ isLoading: false, error: message })

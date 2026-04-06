@@ -2,6 +2,7 @@ import { Response } from 'express'
 import { SessionType, SessionStatus } from '@prisma/client'
 import { AuthRequest } from '../middleware/auth'
 import { prisma } from '../lib/prisma'
+import { calculateRank } from '../services/rankService'
 
 // ── Helpers ───────────────────────────────────────────────────────────────────
 
@@ -18,16 +19,6 @@ function yesterdayRange(): { gte: Date; lt: Date } {
     gte: new Date(today.gte.getTime() - 24 * 60 * 60 * 1000),
     lt: today.gte,
   }
-}
-
-function calcRank(xp: number): string {
-  if (xp >= 20_000) return 'Polymath'
-  if (xp >= 12_000) return 'Professional'
-  if (xp >= 6_000)  return 'Fluent'
-  if (xp >= 3_000)  return 'Conversationalist'
-  if (xp >= 1_500)  return 'Communicator'
-  if (xp >= 500)    return 'Speaker'
-  return 'Rookie'
 }
 
 // ── POST /api/v1/mission/start ────────────────────────────────────────────────
@@ -74,18 +65,26 @@ export async function startMission(req: AuthRequest, res: Response): Promise<voi
 }
 
 // ── PUT /api/v1/mission/:id/complete ─────────────────────────────────────────
+//
+// XP awards (server-authoritative):
+//   Morning Mission complete : +50 XP
+//   Evening Mission complete : +100 XP
+//   Feynman Moment (text)    : +30 XP  (feynmanScore > 0)
+//   Perfect Warm-up Flash    : +25 XP  (warmupPerfect === true)
+//   SR correct reviews today : +10 XP each, capped at 10 cards (100 XP max)
+//   7-day streak achieved    : +200 XP (awarded exactly when streak hits 7)
 
 export async function completeMission(req: AuthRequest, res: Response): Promise<void> {
   const learnerId = req.learnerId as string
   const { id } = req.params
-  const { xpEarned, feynmanScore } = req.body as {
-    xpEarned: number
+  const {
+    feynmanScore,
+    warmupPerfect,
+    srCorrectToday,
+  } = req.body as {
     feynmanScore?: number
-  }
-
-  if (typeof xpEarned !== 'number' || xpEarned < 0) {
-    res.status(400).json({ success: false, error: 'xpEarned must be a non-negative number' })
-    return
+    warmupPerfect?: boolean
+    srCorrectToday?: number
   }
 
   const mission = await prisma.missionSession.findUnique({ where: { id } })
@@ -100,27 +99,40 @@ export async function completeMission(req: AuthRequest, res: Response): Promise<
     return
   }
 
-  const now = new Date()
+  // ── 1. Calculate session XP server-side ─────────────────────────────────
+  let sessionXp = 0
 
-  const updatedMission = await prisma.missionSession.update({
-    where: { id },
-    data: {
-      status: SessionStatus.COMPLETE,
-      completedAt: now,
-      xpEarned,
-      ...(feynmanScore !== undefined && { feynmanScore }),
-    },
-  })
+  // Base award from mission type
+  if (mission.type === SessionType.MORNING) {
+    sessionXp += 50
+  } else {
+    sessionXp += 100
+  }
 
+  // Feynman bonus (+30 if a Feynman response was submitted)
+  if (typeof feynmanScore === 'number' && feynmanScore > 0) {
+    sessionXp += 30
+  }
+
+  // Perfect warm-up flash bonus (+25 if 5/5 correct)
+  if (warmupPerfect === true) {
+    sessionXp += 25
+  }
+
+  // SR correct reviews bonus (+10 each, capped at 10 cards = 100 XP max)
+  if (typeof srCorrectToday === 'number' && srCorrectToday > 0) {
+    const cappedSrCount = Math.min(srCorrectToday, 10)
+    sessionXp += cappedSrCount * 10
+  }
+
+  // ── 2. Look up current learner state ────────────────────────────────────
   const learner = await prisma.learner.findUnique({ where: { id: learnerId } })
   if (!learner) {
     res.status(404).json({ success: false, error: 'Learner not found' })
     return
   }
 
-  const newXp = learner.xp + xpEarned
-  const newRank = calcRank(newXp)
-
+  // ── 3. Calculate streak ─────────────────────────────────────────────────
   const yesterdayRange_ = yesterdayRange()
   const completedYesterday = await prisma.missionSession.findFirst({
     where: {
@@ -131,33 +143,65 @@ export async function completeMission(req: AuthRequest, res: Response): Promise<
   })
 
   const newStreak = completedYesterday ? learner.streak + 1 : 1
+
+  // 7-day streak achievement bonus (+200 XP, triggered the moment streak hits 7)
+  if (newStreak === 7) {
+    sessionXp += 200
+  }
+
+  // ── 4. Rank calculation with rank-up detection ───────────────────────────
+  const oldRank = learner.rank
+  const newXp   = learner.xp + sessionXp
+  const newRank = calculateRank(newXp)
+  const rankUp  = newRank !== oldRank
+
+  // ── 5. Persist ──────────────────────────────────────────────────────────
+  const now = new Date()
   const newBatmanMode = newStreak >= 7
 
-  const updatedLearner = await prisma.learner.update({
-    where: { id: learnerId },
-    data: {
-      xp: newXp,
-      rank: newRank,
-      streak: newStreak,
-      batmanModeActive: newBatmanMode,
-      lastActiveDt: now,
-    },
-    select: {
-      id: true,
-      xp: true,
-      rank: true,
-      streak: true,
-      batmanModeActive: true,
-      lastActiveDt: true,
-      brainCompoundPct: true,
-    },
-  })
+  // Build a simple brainCompoundPct update: increment by 0.5% per completed session,
+  // capped at 100. The full compound model can live in a separate analytics job.
+  const newBrainPct = Math.min(100, learner.brainCompoundPct + 0.5)
+
+  const [updatedMission, updatedLearner] = await Promise.all([
+    prisma.missionSession.update({
+      where: { id },
+      data: {
+        status: SessionStatus.COMPLETE,
+        completedAt: now,
+        xpEarned: sessionXp,
+        ...(feynmanScore !== undefined && { feynmanScore }),
+      },
+    }),
+    prisma.learner.update({
+      where: { id: learnerId },
+      data: {
+        xp: newXp,
+        rank: newRank,
+        streak: newStreak,
+        batmanModeActive: newBatmanMode,
+        brainCompoundPct: newBrainPct,
+        lastActiveDt: now,
+      },
+      select: {
+        id: true,
+        xp: true,
+        rank: true,
+        streak: true,
+        batmanModeActive: true,
+        lastActiveDt: true,
+        brainCompoundPct: true,
+      },
+    }),
+  ])
 
   res.json({
     success: true,
     data: {
       mission: updatedMission,
       learner: updatedLearner,
+      sessionXp,
+      ...(rankUp && { rankUp: true, newRank }),
     },
   })
 }
