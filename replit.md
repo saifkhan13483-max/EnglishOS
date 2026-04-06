@@ -325,6 +325,53 @@ Class component that wraps the entire app (in `App.tsx`). On uncaught render err
 - **FeynmanArchive**: "Your Feynman journey starts here. Complete your first morning mission to capture your very first explanation."
 - **Leaderboard**: "No submissions this week yet. Be the first to share your explanation and claim the top spot!"
 
+## Production Deployment
+
+### Files Added / Changed
+
+| File | Purpose |
+|---|---|
+| `Procfile` | Deployment entry point — `web: node server/dist/server.js` |
+| `server/tsconfig.prod.json` | Production TypeScript build config — outputs to `dist/`, strips source maps, excludes test files |
+| `.env.production.template` | Reference listing all required variables + SECRET/PUBLIC classification |
+
+### Server Build
+
+```bash
+# From /server
+pnpm build          # tsc -p tsconfig.prod.json → outputs to server/dist/
+pnpm start          # node dist/server.js
+```
+
+### Production Startup Sequence (`server/src/server.ts`)
+
+1. Runs `prisma migrate deploy` (deploy-only, never interactive) before binding the HTTP server
+2. Starts Express and the cron scheduler
+3. Listens for `SIGTERM` / `SIGINT` — closes the HTTP server, disconnects Prisma, then exits; forced kill after 10 s
+
+### Connection Pooling (`server/src/lib/prisma.ts`)
+
+`buildDatasourceUrl()` appends `?connection_limit=10` to `DATABASE_URL` when `NODE_ENV=production` (only if not already present).
+
+### Analytics (`client/src/utils/analytics.ts`)
+
+PostHog wrapper. `trackEvent(eventName, properties?)` only activates in production (detected via `VITE_API_BASE_URL` containing the production domain). Events: `mission_started`, `mission_completed`, `feynman_evaluated`, `level_gate_attempted`, `level_gate_passed`, `leaderboard_submitted`.
+
+### Client Build Configuration (`client/vite.config.ts`)
+
+- `base: '/'` — correct asset paths after deployment
+- `minify: 'esbuild'` — fast, small bundle
+- `chunkSizeWarningLimit: 1000` — suppresses warnings for chart/animation chunks
+- Manual chunk splitting: `react-vendor`, `framer`, `charts`, `dnd`, `zustand`
+
+### Mobile Viewport (`client/index.html`)
+
+`maximum-scale=1.0` added to prevent auto-zoom on input focus on iOS Safari.
+
+### Security Audit
+
+Full regex scan of `server/src` and `client/src` confirmed **zero hardcoded secrets** (API keys, JWT secrets, DB passwords). All sensitive values are read exclusively from `process.env` / `import.meta.env`.
+
 ## Notes
 
 - Vite runs on port **5000** (adjusted from 5173 for Replit preview pane compatibility); the dev server proxies `/api/*` to Express on port **3000**
