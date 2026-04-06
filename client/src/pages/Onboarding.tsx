@@ -448,7 +448,9 @@ function Step3({ onNext, onBack }: { onNext: () => void; onBack: () => void }) {
 ══════════════════════════════════════ */
 function Step4({ onNext, onBack }: { onNext: () => void; onBack: () => void }) {
   const { onboardingData, setOnboardingData } = useUIStore()
-  const canAdvance = onboardingData.commitmentStatement.trim().length > 0
+  const charCount = onboardingData.commitmentStatement.trim().length
+  const MIN_CHARS = 20
+  const canAdvance = charCount >= MIN_CHARS
 
   return (
     <div className="py-8 flex flex-col gap-6">
@@ -481,9 +483,20 @@ function Step4({ onNext, onBack }: { onNext: () => void; onBack: () => void }) {
           value={onboardingData.commitmentStatement}
           onChange={(e) => setOnboardingData({ commitmentStatement: e.target.value })}
         />
-        {onboardingData.commitmentStatement.trim().length === 0 && (
-          <p className="text-xs text-brand-red font-mono">You must write a commitment statement to continue.</p>
-        )}
+        <div className="flex items-center justify-between">
+          {charCount < MIN_CHARS ? (
+            <p className="text-xs text-brand-red font-mono">
+              {charCount === 0
+                ? 'You must write a commitment statement to continue.'
+                : `${MIN_CHARS - charCount} more character${MIN_CHARS - charCount === 1 ? '' : 's'} needed.`}
+            </p>
+          ) : (
+            <p className="text-xs text-green-400 font-mono">✓ Commitment saved</p>
+          )}
+          <p className={`text-xs font-mono ${charCount < MIN_CHARS ? 'text-text-muted' : 'text-green-400'}`}>
+            {charCount} / {MIN_CHARS}+
+          </p>
+        </div>
       </div>
 
       {/* Partner email */}
@@ -572,15 +585,17 @@ function Step5({ onDone, onBack }: { onDone: () => void; onBack: () => void }) {
           ? onboardingData.whyOther
           : onboardingData.why ?? 'Not specified'
 
+      const toHHMM = (t: string) => (t && t.length >= 5 ? t.slice(0, 5) : t)
+
       const result = await api.post<{ success: boolean; data: import('@/stores/authStore').SafeLearner }>(
         '/api/v1/learner/onboarding',
         {
           placementLevel:    onboardingData.chosenLevel,
           whyMotivation:     whyText,
-          stakesStatement:   onboardingData.commitmentStatement,
+          stakesStatement:   onboardingData.commitmentStatement.trim(),
           accountabilityEmail: onboardingData.partnerEmail || undefined,
-          morningSessionTime: onboardingData.morningTime,
-          eveningSessionTime: onboardingData.eveningTime,
+          morningSessionTime: toHHMM(onboardingData.morningTime),
+          eveningSessionTime: toHHMM(onboardingData.eveningTime),
         }
       )
       setUser(result.data)

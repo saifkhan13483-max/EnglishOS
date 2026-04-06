@@ -59,12 +59,22 @@ async function parseResponse<T>(response: Response): Promise<T> {
   const body = isJson ? await response.json() : await response.text()
 
   if (!response.ok) {
-    const message =
-      typeof body === 'object' && body !== null && 'error' in body
-        ? (body as { error: string }).error
-        : typeof body === 'object' && body !== null && 'message' in body
-        ? (body as { message: string }).message
-        : String(body) || response.statusText
+    let message: string
+    if (typeof body === 'object' && body !== null) {
+      const b = body as Record<string, unknown>
+      const failures = Array.isArray(b.failures) ? (b.failures as { field: string; message: string }[]) : []
+      if (failures.length > 0 && failures[0].message) {
+        message = failures[0].message
+      } else if (typeof b.error === 'string') {
+        message = b.error
+      } else if (typeof b.message === 'string') {
+        message = b.message
+      } else {
+        message = response.statusText
+      }
+    } else {
+      message = String(body) || response.statusText
+    }
     throw new ApiError(response.status, message)
   }
 
