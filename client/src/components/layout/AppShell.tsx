@@ -93,8 +93,8 @@ function TopBar() {
           <span className="font-display font-bold text-xs text-text-primary">{streak}</span>
         </div>
 
-        {/* Brain Compound mini bar */}
-        <div className="hidden sm:block">
+        {/* Brain Compound mini bar — fixed-width container prevents CLS when value loads */}
+        <div className="hidden sm:block w-[140px]">
           <BrainCompoundMeter size="mini" value={brainCompoundPct} />
         </div>
 
@@ -174,11 +174,24 @@ function DesktopSidebar() {
 }
 
 /* ── Mobile Bottom Nav ───────────────────────────────────────────────── */
+/*
+  position: fixed + bottom: env(safe-area-inset-bottom) prevents the nav
+  from jumping or repainting when the soft keyboard opens on Android/iOS.
+  The keyboard shrinks the visual viewport but a fixed element stays
+  anchored to the layout viewport, so it never moves.
+  The content area receives matching bottom padding so nothing is obscured.
+*/
 function MobileBottomNav() {
   const { pathname } = useLocation()
 
   return (
-    <nav className="md:hidden shrink-0 h-16 flex items-center justify-around border-t border-border-subtle bg-bg-secondary px-2">
+    <nav
+      className="md:hidden fixed left-0 right-0 bottom-0 z-30 flex items-center justify-around border-t border-border-subtle bg-bg-secondary px-2"
+      style={{
+        height: 'calc(64px + env(safe-area-inset-bottom, 0px))',
+        paddingBottom: 'env(safe-area-inset-bottom, 0px)',
+      }}
+    >
       {NAV_ITEMS.map((item) => {
         const active = isNavItemActive(item, pathname)
         return (
@@ -222,10 +235,13 @@ export default function AppShell({ children }: AppShellProps) {
         {/* Top bar — hidden on map */}
         {!isMapPage && <TopBar />}
 
-        {/* Page content */}
+        {/* Page content
+            On mobile (non-map), we add bottom padding equal to the fixed nav
+            height so content is never obscured behind it. */}
         <div className={[
           'flex-1 min-h-0',
           isMapPage ? 'overflow-hidden' : 'overflow-y-auto',
+          !isMapPage ? 'md:pb-0 pb-16' : '',
         ].join(' ')}>
           {children}
         </div>

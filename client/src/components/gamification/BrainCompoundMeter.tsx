@@ -13,16 +13,22 @@ export default function BrainCompoundMeter({ value, size }: BrainCompoundMeterPr
     return (
       <div className="flex items-center gap-2">
         <span className="text-sm leading-none">🧠</span>
+        {/*
+          Fixed height so the bar container never causes layout shift
+          when the value loads from the API.
+          Uses scaleX instead of animating width so the fill runs on the
+          compositor thread (no layout recalculation).
+        */}
         <div className="relative w-20 h-1.5 bg-bg-secondary rounded-full overflow-hidden border border-border-subtle">
           <motion.div
-            className="h-full rounded-full"
+            className="absolute inset-0 rounded-full origin-left"
             style={{
               background: isFull
                 ? 'linear-gradient(90deg, #F5B014, #FBBF24)'
                 : 'linear-gradient(90deg, #2ECC71, #4A9EFF)',
             }}
-            initial={{ width: 0 }}
-            animate={{ width: `${clamped}%` }}
+            initial={{ scaleX: 0 }}
+            animate={{ scaleX: clamped / 100 }}
             transition={{ duration: 0.8, ease: 'easeOut' }}
           />
           {isFull && (
@@ -80,8 +86,8 @@ export default function BrainCompoundMeter({ value, size }: BrainCompoundMeterPr
         )}
       </AnimatePresence>
 
-      {/* Label row */}
-      <div className="flex items-center justify-between">
+      {/* Label row — fixed min-height prevents CLS when value loads */}
+      <div className="flex items-center justify-between min-h-[48px]">
         <div>
           <p className="text-xs font-mono text-text-muted uppercase tracking-wider">
             Brain Compound Meter
@@ -102,17 +108,21 @@ export default function BrainCompoundMeter({ value, size }: BrainCompoundMeterPr
         </motion.span>
       </div>
 
-      {/* Bar */}
+      {/*
+        Bar — fixed h-3 height prevents CLS.
+        Uses scaleX instead of width so the fill animation runs on the
+        GPU compositor thread (opacity + transform = no layout recalculation).
+      */}
       <div className="relative h-3 bg-bg-tertiary rounded-full overflow-hidden border border-border-subtle">
         <motion.div
-          className="h-full rounded-full"
+          className="absolute inset-0 rounded-full origin-left"
           style={{
             background: isFull
               ? 'linear-gradient(90deg, #F5B014, #FBBF24)'
               : 'linear-gradient(90deg, #2ECC71, #4A9EFF)',
           }}
-          initial={{ width: 0 }}
-          animate={{ width: `${clamped}%` }}
+          initial={{ scaleX: 0 }}
+          animate={{ scaleX: clamped / 100 }}
           transition={{ duration: 1.2, ease: [0.34, 1.56, 0.64, 1] }}
         />
         {isFull && (
