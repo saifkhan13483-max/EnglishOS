@@ -6,15 +6,8 @@ import {
 } from 'recharts'
 import ProgressBar from '@/components/ui/ProgressBar'
 import Badge from '@/components/ui/Badge'
-
-// ── Static mock data ──────────────────────────────────────────────────────────
-
-const STATS = [
-  { icon: '📅', label: 'Days Active',     value: 42,    suffix: ' days', color: '#4A9EFF' },
-  { icon: '🔥', label: 'Current Streak',  value: 7,     suffix: 'd',     color: '#E94560' },
-  { icon: '⭐', label: 'Total XP',        value: 4250,  suffix: ' XP',   color: '#F5B014' },
-  { icon: '🧠', label: 'Brain Compound',  value: 42,    suffix: '%',     color: '#2ECC71' },
-]
+import BrainCompoundMeter from '@/components/gamification/BrainCompoundMeter'
+import { useProgressStore } from '@/stores/progressStore'
 
 const LEVELS = [
   {
@@ -92,6 +85,16 @@ function StatCard({ icon, label, value, suffix, color, delay }: {
 export default function Progress() {
   const navigate = useNavigate()
   const [expandedLevel, setExpandedLevel] = useState<number | null>(1)
+  const { streak, totalXP, brainCompoundPct, learnerProfile } = useProgressStore()
+
+  const daysActive = learnerProfile?.dayNumber ?? 0
+
+  const STATS = [
+    { icon: '📅', label: 'Days Active',    value: daysActive,                         suffix: ' days', color: '#4A9EFF' },
+    { icon: '🔥', label: 'Current Streak', value: streak,                             suffix: 'd',     color: '#E94560' },
+    { icon: '⭐', label: 'Total XP',       value: totalXP,                            suffix: ' XP',   color: '#F5B014' },
+    { icon: '🧠', label: 'Brain Compound', value: Math.round(brainCompoundPct),       suffix: '%',     color: '#2ECC71' },
+  ]
 
   return (
     <div className="min-h-screen bg-bg-primary font-body">
@@ -121,6 +124,16 @@ export default function Progress() {
             ))}
           </div>
         </section>
+
+        {/* ── Brain Compound Meter (full) ── */}
+        <motion.section
+          initial={{ opacity: 0, y: 16 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ delay: 0.25, duration: 0.35 }}
+          className="bg-bg-secondary border border-border-subtle rounded-2xl p-5"
+        >
+          <BrainCompoundMeter size="full" value={brainCompoundPct} />
+        </motion.section>
 
         {/* ── Mastery Map thumbnail ── */}
         <motion.section

@@ -7,6 +7,7 @@ import { useMissionStore } from '@/stores/missionStore'
 import { useProgressStore } from '@/stores/progressStore'
 import { api } from '@/services/api'
 import { BatmanModeActivation } from '@/components/gamification/BatmanMode'
+import BrainCompoundMeter from '@/components/gamification/BrainCompoundMeter'
 
 interface TomorrowData {
   count: number
@@ -268,35 +269,14 @@ export default function DayClose({ onComplete }: DayCloseProps) {
           </motion.div>
         )}
 
-        {/* Brain Compound Meter bar */}
+        {/* Brain Compound Meter (full variant) */}
         <motion.div
           initial={{ opacity: 0, y: 16 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ delay: 0.55, duration: 0.4 }}
           className="bg-bg-secondary border border-border-subtle rounded-2xl p-5"
         >
-          <div className="flex items-center justify-between mb-3">
-            <div>
-              <p className="text-xs font-mono text-text-muted uppercase tracking-wider">
-                Brain Compound Meter
-              </p>
-              <p className="text-sm text-text-secondary font-body mt-0.5">
-                Retention building up daily
-              </p>
-            </div>
-            <span className="font-display font-bold text-brand-green text-xl">
-              {displayBrain}%
-            </span>
-          </div>
-          <div className="h-3 bg-bg-tertiary rounded-full overflow-hidden border border-border-subtle">
-            <motion.div
-              className="h-full rounded-full"
-              style={{ background: 'linear-gradient(90deg, #2ECC71, #4A9EFF)' }}
-              initial={{ width: 0 }}
-              animate={{ width: `${displayBrain}%` }}
-              transition={{ delay: 0.7, duration: 1.2, ease: [0.34, 1.56, 0.64, 1] }}
-            />
-          </div>
+          <BrainCompoundMeter size="full" value={displayBrain} />
         </motion.div>
 
         {/* Tomorrow's review */}

@@ -1,5 +1,6 @@
 import { create } from 'zustand'
 import { api } from '@/services/api'
+import { useProgressStore } from './progressStore'
 
 // ── Types ──────────────────────────────────────────────────────────────────────
 
@@ -121,6 +122,15 @@ export const useSRStore = create<SRStore>((set, get) => ({
 
       const { newBrainCompoundPct, deepMissionUnlocked } = res.data
       set({ brainCompoundPct: newBrainCompoundPct, _pendingReviews: [] })
+
+      // Keep progressStore in sync so the TopBar mini meter reflects the new value
+      const ps = useProgressStore.getState()
+      useProgressStore.setState({
+        brainCompoundPct: newBrainCompoundPct,
+        totalXP: ps.totalXP,
+        streak: ps.streak,
+      })
+
       return { newBrainCompoundPct, deepMissionUnlocked }
     } catch {
       // Fail silently — reviews stay buffered, will retry on next sync
