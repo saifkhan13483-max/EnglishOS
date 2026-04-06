@@ -82,7 +82,7 @@ async function doRefresh(): Promise<string> {
     throw new ApiError(401, 'No refresh token available')
   }
 
-  const response = await fetch(`${BASE_URL}/auth/refresh`, {
+  const response = await fetch(`${BASE_URL}/api/v1/auth/refresh`, {
     method: 'POST',
     headers: { 'Content-Type': 'application/json' },
     body: JSON.stringify({ refreshToken }),

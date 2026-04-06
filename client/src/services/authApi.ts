@@ -73,7 +73,7 @@ export async function apiLogin(
   email: string,
   password: string
 ): Promise<{ learner: SafeLearner; accessToken: string; refreshToken: string }> {
-  const data = await rawPost<AuthResponse>('/auth/login', { email, password })
+  const data = await rawPost<AuthResponse>('/api/v1/auth/login', { email, password })
   return data.data
 }
 
@@ -82,7 +82,7 @@ export async function apiRegister(
   password: string,
   name: string
 ): Promise<{ learner: SafeLearner; accessToken: string; refreshToken: string }> {
-  const data = await rawPost<AuthResponse>('/auth/register', { email, password, name })
+  const data = await rawPost<AuthResponse>('/api/v1/auth/register', { email, password, name })
   return data.data
 }
 
@@ -96,7 +96,7 @@ export async function apiRefresh(): Promise<{ learner: SafeLearner; accessToken:
   if (!refreshToken) return null
 
   try {
-    const data = await rawPost<RefreshTokenResponse>('/auth/refresh', { refreshToken })
+    const data = await rawPost<RefreshTokenResponse>('/api/v1/auth/refresh', { refreshToken })
     const { accessToken, refreshToken: newRefresh } = data.data
 
     // Update the in-memory access token so the profile fetch can use it
@@ -104,7 +104,7 @@ export async function apiRefresh(): Promise<{ learner: SafeLearner; accessToken:
     setRefreshToken(newRefresh)
 
     // Fetch the learner profile with the new token
-    const profile = await api.get<ProfileResponse>('/learner/profile')
+    const profile = await api.get<ProfileResponse>('/api/v1/learner/profile')
     return { learner: profile.data, accessToken, refreshToken: newRefresh }
   } catch {
     clearTokens()
@@ -115,7 +115,7 @@ export async function apiRefresh(): Promise<{ learner: SafeLearner; accessToken:
 export async function apiLogout(accessToken: string): Promise<void> {
   try {
     const refreshToken = getRefreshToken()
-    await fetch(`${BASE_URL}/auth/logout`, {
+    await fetch(`${BASE_URL}/api/v1/auth/logout`, {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
