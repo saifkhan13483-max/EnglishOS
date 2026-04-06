@@ -26,7 +26,7 @@ outputType = "webview"
 
 [[workflows.workflow.tasks]]
 task = "shell.exec"
-args = "pnpm build && node server/dist/server.js"
+args = "node server/dist/server.js"
 waitForPort = 5000
 
 [[ports]]
@@ -43,3 +43,5 @@ externalPort = 80
 NODE_ENV = "production"
 PORT = "5000"
 CLIENT_URL = "https://97335385-df1b-43c0-abad-2a5e52a1ec9f-00-1r1yeihrc3gpe.riker.replit.dev"
+JWT_SECRET = "95963de6a35009f920f822d3e4d4851164a2316d9d44beb8cc69adf49bb0fd839ab6525513603ab44d3602ccddcdf4ece238e2fff3106deab5600a42e48d08be"
+JWT_REFRESH_SECRET = "32a750657374822350e581373537f7e47fd9511a73ed8f251195e491e12dabed5d0bae6318449813f83b9ae12e1be5c44afa52d73c27c02e9d77db720c983f65"
