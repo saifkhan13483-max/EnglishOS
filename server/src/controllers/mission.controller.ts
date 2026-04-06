@@ -22,6 +22,29 @@ function yesterdayRange(): { gte: Date; lt: Date } {
   }
 }
 
+function twoDaysAgoRange(): { gte: Date; lt: Date } {
+  const today = todayRange()
+  return {
+    gte: new Date(today.gte.getTime() - 48 * 60 * 60 * 1000),
+    lt: new Date(today.gte.getTime() - 24 * 60 * 60 * 1000),
+  }
+}
+
+/** Returns the UTC start of the current Monday (ISO week starts Monday). */
+function currentMondayStart(): Date {
+  const now = new Date()
+  const dayOfWeek = now.getUTCDay() // 0 = Sunday, 1 = Monday, ...
+  const daysFromMonday = dayOfWeek === 0 ? 6 : dayOfWeek - 1
+  const monday = new Date(Date.UTC(now.getUTCFullYear(), now.getUTCMonth(), now.getUTCDate()))
+  monday.setUTCDate(monday.getUTCDate() - daysFromMonday)
+  return monday
+}
+
+/** Returns true if today is Monday (UTC). */
+function isTodayMonday(): boolean {
+  return new Date().getUTCDay() === 1
+}
+
 // ── POST /api/v1/mission/start ────────────────────────────────────────────────
 
 export async function startMission(req: AuthRequest, res: Response): Promise<void> {
@@ -35,6 +58,31 @@ export async function startMission(req: AuthRequest, res: Response): Promise<voi
 
   const sessionType = type as SessionType
   const range = todayRange()
+
+  // ── Batman skip weekly reset: if today is Monday and a new week has started
+  //    since batmanModeWeekStart, reset batmanSkipUsedThisWeek.
+  if (isTodayMonday()) {
+    const learner = await prisma.learner.findUnique({
+      where: { id: learnerId },
+      select: { batmanSkipUsedThisWeek: true, batmanModeWeekStart: true, batmanModeActive: true },
+    })
+
+    if (learner?.batmanModeActive && learner.batmanSkipUsedThisWeek) {
+      const monday = currentMondayStart()
+      const weekStart = learner.batmanModeWeekStart
+
+      // If weekStart is null or falls before the current Monday, it's a new cycle
+      if (!weekStart || weekStart.getTime() < monday.getTime()) {
+        await prisma.learner.update({
+          where: { id: learnerId },
+          data: {
+            batmanSkipUsedThisWeek: false,
+            batmanModeWeekStart: monday,
+          },
+        })
+      }
+    }
+  }
 
   const existing = await prisma.missionSession.findFirst({
     where: {
@@ -103,24 +151,20 @@ export async function completeMission(req: AuthRequest, res: Response): Promise<
   // ── 1. Calculate session XP server-side ─────────────────────────────────
   let sessionXp = 0
 
-  // Base award from mission type
   if (mission.type === SessionType.MORNING) {
     sessionXp += 50
   } else {
     sessionXp += 100
   }
 
-  // Feynman bonus (+30 if a Feynman response was submitted)
   if (typeof feynmanScore === 'number' && feynmanScore > 0) {
     sessionXp += 30
   }
 
-  // Perfect warm-up flash bonus (+25 if 5/5 correct)
   if (warmupPerfect === true) {
     sessionXp += 25
   }
 
-  // SR correct reviews bonus (+10 each, capped at 10 cards = 100 XP max)
   if (typeof srCorrectToday === 'number' && srCorrectToday > 0) {
     const cappedSrCount = Math.min(srCorrectToday, 10)
     sessionXp += cappedSrCount * 10
@@ -133,7 +177,7 @@ export async function completeMission(req: AuthRequest, res: Response): Promise<
     return
   }
 
-  // ── 3. Calculate streak ─────────────────────────────────────────────────
+  // ── 3. Calculate streak (with Batman skip protection) ───────────────────
   const yesterdayRange_ = yesterdayRange()
   const completedYesterday = await prisma.missionSession.findFirst({
     where: {
@@ -143,26 +187,59 @@ export async function completeMission(req: AuthRequest, res: Response): Promise<
     },
   })
 
-  const newStreak = completedYesterday ? learner.streak + 1 : 1
+  let newStreak: number
+  let batmanSkipProtected = false
+
+  if (completedYesterday) {
+    newStreak = learner.streak + 1
+  } else if (learner.batmanSkipUsedThisWeek) {
+    // Batman skip active: check if they completed a session 2 days ago
+    const twoDaysAgo_ = twoDaysAgoRange()
+    const completedTwoDaysAgo = await prisma.missionSession.findFirst({
+      where: {
+        learnerId,
+        status: SessionStatus.COMPLETE,
+        sessionDate: twoDaysAgo_,
+      },
+    })
+    if (completedTwoDaysAgo) {
+      newStreak = learner.streak + 1
+      batmanSkipProtected = true
+    } else {
+      newStreak = 1
+    }
+  } else {
+    newStreak = 1
+  }
 
   // 7-day streak achievement bonus (+200 XP, triggered the moment streak hits 7)
   if (newStreak === 7) {
     sessionXp += 200
   }
 
-  // ── 4. Rank calculation with rank-up detection ───────────────────────────
+  // ── 4. Detect Batman Mode activation ────────────────────────────────────
+  //    Activates when streak reaches 7 or any multiple of 7, AND was not
+  //    already active. Once active, it stays active permanently.
+  const wasBatmanActive = learner.batmanModeActive
+  const batmanModeActivated =
+    !wasBatmanActive && newStreak % 7 === 0 && newStreak > 0
+
+  const newBatmanMode = wasBatmanActive || batmanModeActivated
+
+  // ── 5. Rank calculation with rank-up detection ───────────────────────────
   const oldRank = learner.rank
   const newXp   = learner.xp + sessionXp
   const newRank = calculateRank(newXp)
   const rankUp  = newRank !== oldRank
 
-  // ── 5. Persist ──────────────────────────────────────────────────────────
+  // ── 6. Persist ──────────────────────────────────────────────────────────
   const now = new Date()
-  const newBatmanMode = newStreak >= 7
-
-  // Build a simple brainCompoundPct update: increment by 0.5% per completed session,
-  // capped at 100. The full compound model can live in a separate analytics job.
   const newBrainPct = Math.min(100, learner.brainCompoundPct + 0.5)
+
+  // Determine batmanModeWeekStart: set it to the current Monday when first activating
+  const batmanWeekStartUpdate = batmanModeActivated
+    ? { batmanModeWeekStart: currentMondayStart() }
+    : {}
 
   const [updatedMission, updatedLearner] = await Promise.all([
     prisma.missionSession.update({
@@ -183,6 +260,7 @@ export async function completeMission(req: AuthRequest, res: Response): Promise<
         batmanModeActive: newBatmanMode,
         brainCompoundPct: newBrainPct,
         lastActiveDt: now,
+        ...batmanWeekStartUpdate,
       },
       select: {
         id: true,
@@ -190,17 +268,18 @@ export async function completeMission(req: AuthRequest, res: Response): Promise<
         rank: true,
         streak: true,
         batmanModeActive: true,
+        batmanSkipUsedThisWeek: true,
         lastActiveDt: true,
         brainCompoundPct: true,
       },
     }),
   ])
 
-  // ── 6. Award any badges triggered by this mission ────────────────────────
+  // ── 7. Award any badges triggered by this mission ────────────────────────
   const newBadges = await checkAndAwardBadges(learnerId, {
     type: 'MISSION_COMPLETE',
     streak: newStreak,
-    batmanMode: newBatmanMode,
+    batmanMode: batmanModeActivated,
   })
 
   res.json({
@@ -211,6 +290,8 @@ export async function completeMission(req: AuthRequest, res: Response): Promise<
       sessionXp,
       ...(rankUp && { rankUp: true, newRank }),
       ...(newBadges.length && { badges: newBadges }),
+      ...(batmanModeActivated && { batmanModeActivated: true }),
+      ...(batmanSkipProtected && { batmanSkipProtected: true }),
     },
   })
 }

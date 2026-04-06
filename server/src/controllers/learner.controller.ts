@@ -29,6 +29,8 @@ const SAFE_SELECT = {
   eveningSessionTime: true,
   streak: true,
   batmanModeActive: true,
+  batmanSkipUsedThisWeek: true,
+  batmanModeWeekStart: true,
   xp: true,
   rank: true,
   brainCompoundPct: true,
@@ -258,6 +260,48 @@ export async function updateStakes(req: AuthRequest, res: Response): Promise<voi
   })
 
   res.json({ success: true, data: learner })
+}
+
+// ── POST /api/v1/learner/batman-skip ──────────────────────────────────────────
+
+export async function useBatmanSkip(req: AuthRequest, res: Response): Promise<void> {
+  const learnerId = req.userId as string
+
+  const learner = await prisma.learner.findUnique({
+    where: { id: learnerId },
+    select: { batmanModeActive: true, batmanSkipUsedThisWeek: true },
+  })
+
+  if (!learner) {
+    res.status(404).json({ success: false, error: 'Learner not found' })
+    return
+  }
+
+  if (!learner.batmanModeActive) {
+    res.status(403).json({
+      success: false,
+      error: 'Batman Mode is not active. Reach a 7-day streak to unlock Batman Mode.',
+    })
+    return
+  }
+
+  if (learner.batmanSkipUsedThisWeek) {
+    res.status(409).json({
+      success: false,
+      error: 'Skip already used this week. It resets every Monday.',
+    })
+    return
+  }
+
+  await prisma.learner.update({
+    where: { id: learnerId },
+    data: { batmanSkipUsedThisWeek: true },
+  })
+
+  res.json({
+    success: true,
+    data: { skipUsed: true, streakProtected: true },
+  })
 }
 
 // ── DELETE /api/v1/learner/account ────────────────────────────────────────────

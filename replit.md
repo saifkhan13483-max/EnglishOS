@@ -176,7 +176,7 @@ Migration `20260405143747_init` applied. All tables live in the `heliumdb` Postg
 ### Tables
 | Table | Key Fields | Notes |
 |---|---|---|
-| `Learner` | id, email (unique), passwordHash, name, levelCurrent, xp, streak, rank, brainCompoundPct | Core user record |
+| `Learner` | id, email (unique), passwordHash, name, levelCurrent, xp, streak, rank, brainCompoundPct, batmanModeActive, batmanSkipUsedThisWeek, batmanModeWeekStart | Core user record |
 | `ContentItem` | id, level, module, groupName, type, english, urduRoman, exampleSentence, isPowerPack, sortOrder | Course content |
 | `SRQueueItem` | learnerId + itemId (unique), intervalDays, nextReviewDate, easeFactor, correctCount, incorrectCount, isKnowledgeGap | Spaced repetition queue |
 | `MissionSession` | learnerId, sessionDate, type, status, xpEarned, feynmanScore, feynmanText | Daily mission tracking |
@@ -201,6 +201,7 @@ All FK relations use `CASCADE` delete. Prisma migration file: `server/prisma/mig
 | `POST` | `/api/v1/feynman/evaluate` | AI-evaluate a Feynman response; saves to DB, queues gaps |
 | `GET` | `/api/v1/feynman/archive` | All FeynmanResponse records for the learner (desc), joined with MissionSession |
 | `POST` | `/api/v1/conversation/message` | Stateless conversation turn — send full `messageHistory`; empty array = opening message |
+| `POST` | `/api/v1/learner/batman-skip` | Use the weekly skip day (requires batmanModeActive=true, batmanSkipUsedThisWeek=false) |
 
 ## Constants
 
@@ -212,6 +213,18 @@ All FK relations use `CASCADE` delete. Prisma migration file: `server/prisma/mig
 - **CoreDrop**: calls `missionStore.loadModuleContent(level, module)` → reads `missionStore.moduleContent`; Roman Urdu toggle persisted in `uiStore.romanUrduEnabled`
 - **ApplyIt**: reads scenario from `getScenario(currentModule)` (static map)
 - **FeynmanMoment**: calls `missionStore.submitFeynmanResponse(text)` → `POST /api/v1/feynman/evaluate`; displays real scores/feedback/gaps; calls `completeMission()` → `PUT /api/v1/mission/:id/complete`
+
+## Batman Mode
+
+A reward system for learners who maintain long streaks:
+
+- **Activation**: triggered when `streak % 7 === 0` (7, 14, 21... days) on mission completion. Once active, stays active permanently.
+- **Skip Day**: one streak-protecting skip per week. If `batmanSkipUsedThisWeek=true` and no yesterday completion but there IS a 2-days-ago completion, streak increments instead of resetting to 1.
+- **Weekly Reset**: on Monday, `batmanSkipUsedThisWeek` resets to `false` and `batmanModeWeekStart` updates.
+- **Cinematic**: full-screen `BatmanMode.tsx` animation fires on first activation (triggered in `DayClose.tsx`).
+- **Dashboard**: `MasteryMap.tsx` DashboardPanel shows 🦇 badge + skip button when `batmanModeActive=true` in `progressStore`.
+- **Client state**: `progressStore` holds `batmanModeActive` and `batmanSkipUsedThisWeek`; `setBatmanState` action updates both.
+- **Color**: `brand-purple` = `#A855F7` in Tailwind config.
 
 ## Notes
 

@@ -1,11 +1,12 @@
 import { useEffect, useRef, useState, useCallback } from 'react'
-import { motion } from 'framer-motion'
+import { motion, AnimatePresence } from 'framer-motion'
 import confetti from 'canvas-confetti'
 import { useNavigate } from 'react-router-dom'
 import Button from '@/components/ui/Button'
 import { useMissionStore } from '@/stores/missionStore'
 import { useProgressStore } from '@/stores/progressStore'
 import { api } from '@/services/api'
+import { BatmanModeActivation } from '@/components/gamification/BatmanMode'
 
 interface TomorrowData {
   count: number
@@ -65,8 +66,9 @@ export default function DayClose({ onComplete }: DayCloseProps) {
   const canvasRef = useRef<HTMLCanvasElement>(null)
   const completionCalled = useRef(false)
 
-  const { xpEarned, completeMission, isComplete, rankUp, newRank } = useMissionStore()
+  const { xpEarned, completeMission, isComplete, rankUp, newRank, batmanModeActivated, batmanSkipProtected } = useMissionStore()
   const { streak, brainCompoundPct, learnerProfile } = useProgressStore()
+  const [showBatmanAnimation, setShowBatmanAnimation] = useState(false)
 
   const [tomorrow, setTomorrow] = useState<TomorrowData>({ count: 0, words: [] })
   const [completionError, setCompletionError] = useState<string | null>(null)
@@ -98,6 +100,14 @@ export default function DayClose({ onComplete }: DayCloseProps) {
 
     finalize()
   }, [completeMission])
+
+  // Show batman activation overlay when mode first activates
+  useEffect(() => {
+    if (!isLoading && batmanModeActivated) {
+      const t = setTimeout(() => setShowBatmanAnimation(true), 1200)
+      return () => clearTimeout(t)
+    }
+  }, [isLoading, batmanModeActivated])
 
   // Fire confetti burst on mount
   useEffect(() => {
@@ -142,6 +152,13 @@ export default function DayClose({ onComplete }: DayCloseProps) {
 
   return (
     <div className="relative min-h-screen bg-bg-primary flex flex-col items-center">
+      {/* Batman Mode Activation overlay */}
+      <AnimatePresence>
+        {showBatmanAnimation && (
+          <BatmanModeActivation onDismiss={() => setShowBatmanAnimation(false)} />
+        )}
+      </AnimatePresence>
+
       {/* Confetti canvas */}
       <canvas ref={canvasRef} className="pointer-events-none fixed inset-0 z-50 w-full h-full" />
 
@@ -216,6 +233,36 @@ export default function DayClose({ onComplete }: DayCloseProps) {
               </p>
               <p className="text-xs text-text-muted font-body mt-0.5">
                 Your consistent practice is paying off. Keep going.
+              </p>
+            </div>
+          </motion.div>
+        )}
+
+        {/* Batman skip protection message */}
+        {batmanSkipProtected && (
+          <motion.div
+            initial={{ opacity: 0, scale: 0.9, y: 16 }}
+            animate={{ opacity: 1, scale: 1, y: 0 }}
+            transition={{ delay: 0.65, type: 'spring', stiffness: 280, damping: 20 }}
+            className="rounded-2xl p-5 flex items-center gap-4 border-2"
+            style={{
+              background: 'rgba(168,85,247,0.08)',
+              borderColor: 'rgba(168,85,247,0.4)',
+            }}
+          >
+            <motion.span
+              className="text-3xl shrink-0"
+              animate={{ filter: ['drop-shadow(0 0 0px #A855F7)', 'drop-shadow(0 0 12px #A855F7)', 'drop-shadow(0 0 0px #A855F7)'] }}
+              transition={{ duration: 2, repeat: Infinity }}
+            >
+              🦇
+            </motion.span>
+            <div>
+              <p className="text-xs font-mono uppercase tracking-widest mb-0.5" style={{ color: '#A855F7' }}>
+                Batman Skip Used
+              </p>
+              <p className="font-display text-sm font-bold text-text-primary">
+                You planned ahead. That's what separates Batman from everyone else.
               </p>
             </div>
           </motion.div>

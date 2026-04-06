@@ -34,8 +34,11 @@ interface ProgressStore {
   streak: number
   brainCompoundPct: number
   badges: Badge[]
+  batmanModeActive: boolean
+  batmanSkipUsedThisWeek: boolean
   setLearnerProfile: (profile: LearnerProfile) => void
   setStats: (stats: { xp: number; streak: number; brainCompoundPct: number }) => void
+  setBatmanState: (state: { batmanModeActive: boolean; batmanSkipUsedThisWeek: boolean }) => void
 }
 
 export const useProgressStore = create<ProgressStore>((set) => ({
@@ -45,9 +48,14 @@ export const useProgressStore = create<ProgressStore>((set) => ({
   streak: 0,
   brainCompoundPct: 0,
   badges: [],
+  batmanModeActive: false,
+  batmanSkipUsedThisWeek: false,
 
   setLearnerProfile: (profile) => set({ learnerProfile: profile }),
 
   setStats: ({ xp, streak, brainCompoundPct }) =>
     set({ totalXP: xp, streak, brainCompoundPct }),
+
+  setBatmanState: ({ batmanModeActive, batmanSkipUsedThisWeek }) =>
+    set({ batmanModeActive, batmanSkipUsedThisWeek }),
 }))

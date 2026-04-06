@@ -6,6 +6,8 @@ import PathLine,  { type PathStatus }  from '@/components/map/PathLine'
 import Button from '@/components/ui/Button'
 import Badge  from '@/components/ui/Badge'
 import ProgressBar from '@/components/ui/ProgressBar'
+import { useProgressStore } from '@/stores/progressStore'
+import { api } from '@/services/api'
 
 /* ─────────────────────────────────────────
    Static placeholder data
@@ -270,6 +272,22 @@ function MobileMap({ levels, onSelect }: { levels: Level[]; onSelect: (l: Level)
 ───────────────────────────────────────── */
 function DashboardPanel({ onStartMission }: { onStartMission: () => void }) {
   const { streak, brainCompound, morningDone, eveningDone, why } = DASHBOARD
+  const { batmanModeActive, batmanSkipUsedThisWeek, setBatmanState } = useProgressStore()
+  const [skipLoading, setSkipLoading] = useState(false)
+  const [skipError, setSkipError] = useState<string | null>(null)
+
+  async function handleBatmanSkip() {
+    setSkipLoading(true)
+    setSkipError(null)
+    try {
+      await api.post('/api/v1/learner/batman-skip')
+      setBatmanState({ batmanModeActive: true, batmanSkipUsedThisWeek: true })
+    } catch (err: unknown) {
+      setSkipError(err instanceof Error ? err.message : 'Could not use skip')
+    } finally {
+      setSkipLoading(false)
+    }
+  }
 
   return (
     <div className="
@@ -293,6 +311,69 @@ function DashboardPanel({ onStartMission }: { onStartMission: () => void }) {
         </div>
         <Badge variant="red" size="sm">Active</Badge>
       </div>
+
+      {/* Batman Mode badge + skip controls */}
+      {batmanModeActive && (
+        <motion.div
+          initial={{ opacity: 0, y: -8 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.4, ease: [0.22, 1, 0.36, 1] }}
+          className="flex flex-col gap-2"
+        >
+          {/* Badge */}
+          <div
+            className="flex items-center gap-2 px-3 py-2 rounded-xl border"
+            style={{
+              background: 'rgba(168,85,247,0.08)',
+              borderColor: 'rgba(168,85,247,0.35)',
+            }}
+          >
+            <motion.span
+              className="text-base shrink-0"
+              animate={{ filter: ['drop-shadow(0 0 0px #A855F7)', 'drop-shadow(0 0 8px #A855F7)', 'drop-shadow(0 0 0px #A855F7)'] }}
+              transition={{ duration: 2.5, repeat: Infinity }}
+            >
+              🦇
+            </motion.span>
+            {/* Shield icon */}
+            <svg width="12" height="12" viewBox="0 0 24 24" fill="none" className="shrink-0" style={{ color: '#A855F7' }}>
+              <path d="M12 2L3 7v5c0 5.25 3.75 10.15 9 11.35C17.25 22.15 21 17.25 21 12V7L12 2z" fill="currentColor" opacity="0.7" />
+            </svg>
+            <span className="text-xs font-mono font-semibold" style={{ color: '#A855F7' }}>
+              Batman Mode Active
+            </span>
+          </div>
+
+          {/* Skip day control */}
+          {batmanSkipUsedThisWeek ? (
+            <div className="flex items-center gap-2 px-3 py-2 rounded-xl border border-border-subtle bg-bg-tertiary">
+              <svg width="12" height="12" viewBox="0 0 24 24" fill="none" className="shrink-0 text-text-muted">
+                <path d="M12 2L3 7v5c0 5.25 3.75 10.15 9 11.35C17.25 22.15 21 17.25 21 12V7L12 2z" fill="currentColor" />
+              </svg>
+              <span className="text-xs font-body text-text-muted">Skip Used This Week</span>
+            </div>
+          ) : (
+            <button
+              onClick={handleBatmanSkip}
+              disabled={skipLoading}
+              className="flex items-center justify-center gap-2 px-3 py-2 rounded-xl border text-xs font-body font-medium transition-all duration-150 hover:brightness-110 active:scale-95 disabled:opacity-50"
+              style={{
+                background: 'rgba(168,85,247,0.12)',
+                borderColor: 'rgba(168,85,247,0.4)',
+                color: '#A855F7',
+              }}
+            >
+              <svg width="11" height="11" viewBox="0 0 24 24" fill="none" className="shrink-0">
+                <path d="M12 2L3 7v5c0 5.25 3.75 10.15 9 11.35C17.25 22.15 21 17.25 21 12V7L12 2z" fill="currentColor" />
+              </svg>
+              {skipLoading ? 'Using...' : 'Use Your Skip Day'}
+            </button>
+          )}
+          {skipError && (
+            <p className="text-xs text-brand-red font-mono">{skipError}</p>
+          )}
+        </motion.div>
+      )}
 
       {/* Brain Compound Meter */}
       <div>

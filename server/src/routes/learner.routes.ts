@@ -5,6 +5,7 @@ import {
   updateProfile,
   completeOnboarding,
   updateStakes,
+  useBatmanSkip,
   deleteAccount,
 } from '../controllers/learner.controller'
 
@@ -16,6 +17,7 @@ router.get('/profile', getProfile)
 router.put('/profile', updateProfile)
 router.post('/onboarding', completeOnboarding)
 router.put('/stakes', updateStakes)
+router.post('/batman-skip', useBatmanSkip)
 router.delete('/account', deleteAccount)
 
 export default router

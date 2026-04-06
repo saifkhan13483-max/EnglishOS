@@ -61,6 +61,8 @@ interface MissionStore {
   error: string | null
   rankUp: boolean
   newRank: string | null
+  batmanModeActivated: boolean
+  batmanSkipProtected: boolean
 
   startMission: (type: MissionType) => Promise<void>
   loadDailyQueue: () => Promise<void>
@@ -84,6 +86,8 @@ export const useMissionStore = create<MissionStore>((set, get) => ({
   error: null,
   rankUp: false,
   newRank: null,
+  batmanModeActivated: false,
+  batmanSkipProtected: false,
 
   setPhase: (phase) => set({ currentPhase: phase }),
 
@@ -102,6 +106,8 @@ export const useMissionStore = create<MissionStore>((set, get) => ({
       error: null,
       rankUp: false,
       newRank: null,
+      batmanModeActivated: false,
+      batmanSkipProtected: false,
     }),
 
   startMission: async (type) => {
@@ -164,11 +170,15 @@ export const useMissionStore = create<MissionStore>((set, get) => ({
             rank: string
             streak: number
             brainCompoundPct: number
+            batmanModeActive: boolean
+            batmanSkipUsedThisWeek: boolean
           }
           sessionXp: number
           rankUp?: boolean
           newRank?: string
           badges?: Array<{ id: string; badgeType: string; earnedAt: string }>
+          batmanModeActivated?: boolean
+          batmanSkipProtected?: boolean
         }
       }>(`/api/v1/mission/${missionId}/complete`, {
         ...(opts?.feynmanScore !== undefined && { feynmanScore: opts.feynmanScore }),
@@ -176,7 +186,7 @@ export const useMissionStore = create<MissionStore>((set, get) => ({
         ...(opts?.srCorrectToday !== undefined && { srCorrectToday: opts.srCorrectToday }),
       })
 
-      const { learner, sessionXp, rankUp, newRank, badges } = res.data
+      const { learner, sessionXp, rankUp, newRank, badges, batmanModeActivated, batmanSkipProtected } = res.data
 
       if (badges?.length) {
         useBadgeStore.getState().addBadges(badges)
@@ -188,16 +198,19 @@ export const useMissionStore = create<MissionStore>((set, get) => ({
         totalXP: learner.xp,
         streak: learner.streak,
         brainCompoundPct: learner.brainCompoundPct,
+        batmanModeActive: learner.batmanModeActive,
+        batmanSkipUsedThisWeek: learner.batmanSkipUsedThisWeek,
         ...(profile ? { learnerProfile: { ...profile } } : {}),
       })
 
       set({
         isComplete: true,
         isLoading: false,
-        // Use server-calculated sessionXp for display in DayClose
         xpEarned: sessionXp,
         rankUp: rankUp ?? false,
         newRank: newRank ?? null,
+        batmanModeActivated: batmanModeActivated ?? false,
+        batmanSkipProtected: batmanSkipProtected ?? false,
       })
     } catch (err: unknown) {
       const message = err instanceof Error ? err.message : 'Failed to complete mission'

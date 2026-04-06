@@ -17,6 +17,7 @@ const config: Config = {
         'brand-blue': '#4A9EFF',
         'brand-gold': '#F5B014',
         'brand-green': '#2ECC71',
+        'brand-purple': '#A855F7',
         'text-primary': '#FFFFFF',
         'text-secondary': '#C8C8E0',
         'text-muted': '#6A6A8A',
