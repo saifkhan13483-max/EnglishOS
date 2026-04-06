@@ -26,7 +26,7 @@ outputType = "webview"
 
 [[workflows.workflow.tasks]]
 task = "shell.exec"
-args = "pnpm start"
+args = "pnpm build && node server/dist/server.js"
 waitForPort = 5000
 
 [[ports]]
