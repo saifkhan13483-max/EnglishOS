@@ -24,6 +24,7 @@
     "concurrently": "^8.2.2"
   },
   "dependencies": {
+    "@google/generative-ai": "^0.24.1",
     "react-helmet-async": "^3.0.0"
   }
 }

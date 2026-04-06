@@ -1,7 +1,7 @@
 import { Response } from 'express'
 import { AuthRequest } from '../middleware/auth'
 import { prisma } from '../lib/prisma'
-import { getOpenAI } from '../lib/openai'
+import { getGemini } from '../lib/gemini'
 
 interface MessageHistoryItem {
   role: 'user' | 'assistant'
@@ -14,8 +14,6 @@ interface ConversationBody {
   messageHistory: MessageHistoryItem[]
 }
 
-// Opening messages keyed by scenario keywords — used when the history is empty
-// and OpenAI is unavailable (or for a faster first-turn cold-start).
 const SCENARIO_OPENERS: Record<string, string> = {
   default: 'Hello! I am happy to talk with you today. How are you?',
   shop: 'Welcome to the shop! What do you want to buy today?',
@@ -26,7 +24,7 @@ const SCENARIO_OPENERS: Record<string, string> = {
   restaurant: 'Welcome! Please sit down. What do you want to eat?',
   hotel: 'Welcome to the hotel! How can I help you today?',
   transport: 'Hello! Where do you want to go today?',
-  phone: 'Hello! This is the phone. Who do you want to talk to?',
+  phone: 'Hello! Who do you want to talk to?',
 }
 
 function getOpenerForScenario(scenario: string): string {
@@ -47,7 +45,6 @@ export async function sendConversationMessage(req: AuthRequest, res: Response): 
     return
   }
 
-  // Step 1: Get learner's current level and build vocabulary allowlist
   const learner = await prisma.learner.findUnique({
     where: { id: learnerId },
     select: { levelCurrent: true },
@@ -66,18 +63,9 @@ export async function sendConversationMessage(req: AuthRequest, res: Response): 
     },
     select: { english: true },
   })
-
   const allowlist = coveredItems.map((ci) => ci.english).join(', ')
 
-  // Step 4: First message — generate the AI's opening line
-  if (messageHistory.length === 0) {
-    const openaiClient = getOpenAI()
-    if (!openaiClient) {
-      res.json({ success: true, data: { message: getOpenerForScenario(scenario) } })
-      return
-    }
-
-    const openingSystemPrompt = `You are a friendly English conversation partner for a South Asian learner at Level ${learner.levelCurrent}.
+  const systemInstruction = `You are a friendly English conversation partner for a South Asian learner at Level ${learner.levelCurrent}.
 
 STRICT RULES:
 - Only use vocabulary from this approved list: ${allowlist}
@@ -85,18 +73,28 @@ STRICT RULES:
 - Use only simple present or simple past tense
 - Never use idioms, contractions, or complex sentence structures
 - Current conversation scenario: ${scenario}
+- If the user's input is unclear or off-topic, respond: I did not understand. Can you say that again in simple words?
 - Be warm, patient, and encouraging
+- Do not correct grammar explicitly — just model correct usage naturally`
 
-Generate a short, friendly opening message to start the conversation based on the scenario. Under 20 words.`
+  const genAI = getGemini()
+
+  // ── Opening message (empty history) ─────────────────────────────────────────
+  if (messageHistory.length === 0) {
+    if (!genAI) {
+      res.json({ success: true, data: { message: getOpenerForScenario(scenario) } })
+      return
+    }
 
     try {
-      const completion = await openaiClient.chat.completions.create({
-        model: 'gpt-4o',
-        messages: [{ role: 'system', content: openingSystemPrompt }],
-        temperature: 0.7,
-        max_tokens: 60,
+      const model = genAI.getGenerativeModel({
+        model: 'gemini-1.5-flash',
+        systemInstruction,
+        generationConfig: { maxOutputTokens: 60, temperature: 0.7 },
       })
-      const message = completion.choices[0]?.message?.content?.trim() ?? getOpenerForScenario(scenario)
+      const openingPrompt = `Generate a short friendly opening message to start the conversation for scenario: ${scenario}. Under 20 words.`
+      const result = await model.generateContent(openingPrompt)
+      const message = result.response.text().trim() || getOpenerForScenario(scenario)
       res.json({ success: true, data: { message } })
     } catch {
       res.json({ success: true, data: { message: getOpenerForScenario(scenario) } })
@@ -104,41 +102,33 @@ Generate a short, friendly opening message to start the conversation based on th
     return
   }
 
-  // Step 2 & 3: Continue conversation with full message history
-  const systemPrompt = `You are a friendly English conversation partner for a South Asian learner at Level ${learner.levelCurrent}.
-
-STRICT RULES:
-- Only use vocabulary from this approved list: ${allowlist}
-- Keep all responses under 20 words
-- Use only simple present or simple past tense
-- Never use idioms, contractions, or complex sentence structures
-- Current conversation scenario: ${scenario}
-- If the user's input is unclear or off-topic, respond: 'I did not understand. Can you say that again in simple words?'
-- Be warm, patient, and encouraging
-- Do not correct grammar explicitly — just model correct usage naturally`
-
-  const openaiClient = getOpenAI()
-
-  if (!openaiClient) {
-    // Graceful fallback when OPENAI_API_KEY is not configured
-    const fallback = 'I understand. Please tell me more.'
-    res.json({ success: true, data: { message: fallback } })
+  // ── Continuation (has history) ───────────────────────────────────────────────
+  if (!genAI) {
+    res.json({ success: true, data: { message: 'I understand. Please tell me more.' } })
     return
   }
 
   try {
-    const completion = await openaiClient.chat.completions.create({
-      model: 'gpt-4o',
-      messages: [
-        { role: 'system', content: systemPrompt },
-        ...messageHistory.map((m) => ({ role: m.role, content: m.content })),
-      ],
-      temperature: 0.7,
-      max_tokens: 80,
+    // Separate history from the latest user message
+    const lastItem = messageHistory[messageHistory.length - 1]
+    const priorHistory = messageHistory.slice(0, -1)
+
+    // Convert to Gemini format: assistant → model, keep user → user
+    const geminiHistory = priorHistory.map((m) => ({
+      role: m.role === 'assistant' ? 'model' : 'user',
+      parts: [{ text: m.content }],
+    }))
+
+    const model = genAI.getGenerativeModel({
+      model: 'gemini-1.5-flash',
+      systemInstruction,
+      generationConfig: { maxOutputTokens: 80, temperature: 0.7 },
     })
 
-    const message = completion.choices[0]?.message?.content?.trim()
-      ?? 'I did not understand. Can you say that again in simple words?'
+    const chat = model.startChat({ history: geminiHistory })
+    const result = await chat.sendMessage(lastItem.content)
+    const message = result.response.text().trim()
+      || 'I did not understand. Can you say that again in simple words?'
 
     res.json({ success: true, data: { message } })
   } catch {

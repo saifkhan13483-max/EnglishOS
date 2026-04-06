@@ -12,11 +12,11 @@ export interface AppError extends Error {
 // Prisma error codes that indicate a connection / initialization problem
 const PRISMA_CONNECTION_CODES = new Set(['P1000', 'P1001', 'P1002', 'P1003', 'P1008', 'P1017'])
 
-function isOpenAIError(err: AppError): boolean {
-  if (err.constructor?.name === 'APIError') return true
-  if (err.type === 'invalid_request_error' || err.type === 'api_error') return true
-  if ((err as { _type?: string })._type === 'APIError') return true
-  if (err.status !== undefined && err.message?.toLowerCase().includes('openai')) return true
+function isAIProviderError(err: AppError): boolean {
+  const msg = err.message?.toLowerCase() ?? ''
+  if (msg.includes('google') || msg.includes('gemini') || msg.includes('generative')) return true
+  if (err.constructor?.name === 'GoogleGenerativeAIError') return true
+  if ((err as { status?: number }).status === 429 && msg.includes('quota')) return true
   return false
 }
 
@@ -53,9 +53,9 @@ export function errorHandler(
     return
   }
 
-  // ── OpenAI API failures ────────────────────────────────────────────────────
-  if (isOpenAIError(err)) {
-    logger.error({ err, route }, '[OpenAI Error]')
+  // ── AI provider failures ───────────────────────────────────────────────────
+  if (isAIProviderError(err)) {
+    logger.error({ err, route }, '[AI Provider Error]')
     res.status(503).json({
       success: false,
       statusCode: 503,
