@@ -94,7 +94,7 @@ export default function FeynmanMoment({ onComplete }: FeynmanMomentProps) {
   async function handleComplete() {
     setCompleting(true)
     try {
-      await completeMission(result?.scores.overall)
+      await completeMission({ feynmanScore: result?.scores.overall })
     } catch {
       // Ignore errors — navigate anyway so learner isn't stuck
     } finally {

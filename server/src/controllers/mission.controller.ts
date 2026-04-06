@@ -3,6 +3,7 @@ import { SessionType, SessionStatus } from '@prisma/client'
 import { AuthRequest } from '../middleware/auth'
 import { prisma } from '../lib/prisma'
 import { calculateRank } from '../services/rankService'
+import { checkAndAwardBadges } from '../services/badgeService'
 
 // ── Helpers ───────────────────────────────────────────────────────────────────
 
@@ -195,6 +196,13 @@ export async function completeMission(req: AuthRequest, res: Response): Promise<
     }),
   ])
 
+  // ── 6. Award any badges triggered by this mission ────────────────────────
+  const newBadges = await checkAndAwardBadges(learnerId, {
+    type: 'MISSION_COMPLETE',
+    streak: newStreak,
+    batmanMode: newBatmanMode,
+  })
+
   res.json({
     success: true,
     data: {
@@ -202,6 +210,7 @@ export async function completeMission(req: AuthRequest, res: Response): Promise<
       learner: updatedLearner,
       sessionXp,
       ...(rankUp && { rankUp: true, newRank }),
+      ...(newBadges.length && { badges: newBadges }),
     },
   })
 }

@@ -2,6 +2,7 @@ import { useEffect } from 'react'
 import { BrowserRouter, Routes, Route, Navigate, Outlet } from 'react-router-dom'
 import { useAuthStore } from '@/stores/authStore'
 import AppShell from '@/components/layout/AppShell'
+import BadgeToast from '@/components/ui/BadgeToast'
 
 import Landing        from '@/pages/Landing'
 import Login          from '@/pages/Login'
@@ -84,6 +85,7 @@ export default function AppRouter() {
   return (
     <BrowserRouter future={{ v7_startTransition: true, v7_relativeSplatPath: true }}>
       <SessionLoader />
+      <BadgeToast />
       <Routes>
 
         {/* Public routes — redirect to /map when already logged in */}

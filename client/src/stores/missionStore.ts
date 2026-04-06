@@ -2,6 +2,7 @@ import { create } from 'zustand'
 import { api } from '@/services/api'
 import { useSRStore } from './srStore'
 import { useProgressStore } from './progressStore'
+import { useBadgeStore } from './badgeStore'
 import { getFeynmanPrompt } from '@/constants/scenarios'
 
 export type MissionType = 'MORNING' | 'EVENING'
@@ -167,6 +168,7 @@ export const useMissionStore = create<MissionStore>((set, get) => ({
           sessionXp: number
           rankUp?: boolean
           newRank?: string
+          badges?: Array<{ id: string; badgeType: string; earnedAt: string }>
         }
       }>(`/api/v1/mission/${missionId}/complete`, {
         ...(opts?.feynmanScore !== undefined && { feynmanScore: opts.feynmanScore }),
@@ -174,7 +176,11 @@ export const useMissionStore = create<MissionStore>((set, get) => ({
         ...(opts?.srCorrectToday !== undefined && { srCorrectToday: opts.srCorrectToday }),
       })
 
-      const { learner, sessionXp, rankUp, newRank } = res.data
+      const { learner, sessionXp, rankUp, newRank, badges } = res.data
+
+      if (badges?.length) {
+        useBadgeStore.getState().addBadges(badges)
+      }
 
       // Sync progress store with authoritative server values
       const profile = useProgressStore.getState().learnerProfile
@@ -209,11 +215,19 @@ export const useMissionStore = create<MissionStore>((set, get) => ({
       const module = useProgressStore.getState().learnerProfile?.currentModule ?? 2
       const { prompt } = getFeynmanPrompt(module)
 
-      const res = await api.post<{ success: boolean; data: FeynmanResult }>(
+      const res = await api.post<{
+        success: boolean
+        data: FeynmanResult & { badges?: Array<{ id: string; badgeType: string; earnedAt: string }> }
+      }>(
         '/api/v1/feynman/evaluate',
         { missionId, module, prompt, responseText: text }
       )
-      set({ feynmanResult: res.data, isLoading: false })
+
+      const { badges, ...feynmanResult } = res.data
+      if (badges?.length) {
+        useBadgeStore.getState().addBadges(badges)
+      }
+      set({ feynmanResult, isLoading: false })
     } catch (err: unknown) {
       const message = err instanceof Error ? err.message : 'Failed to evaluate response'
       set({ isLoading: false, error: message })

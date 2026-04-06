@@ -2,6 +2,7 @@ import { Response } from 'express'
 import { AuthRequest } from '../middleware/auth'
 import { prisma } from '../lib/prisma'
 import { getOpenAI } from '../lib/openai'
+import { checkAndAwardBadges } from '../services/badgeService'
 
 interface EvaluateBody {
   missionId: string
@@ -189,6 +190,12 @@ Return ONLY valid JSON with no markdown:
     data: { brainCompoundPct: newBrainPct },
   })
 
+  // Step 7: Award any badges triggered by this Feynman evaluation
+  const newBadges = await checkAndAwardBadges(learnerId, {
+    type: 'FEYNMAN_COMPLETE',
+    score: evaluation.overall_score,
+  })
+
   res.json({
     success: true,
     data: {
@@ -202,6 +209,7 @@ Return ONLY valid JSON with no markdown:
       suggestion:    evaluation.suggestion,
       knowledgeGaps: evaluation.knowledge_gaps,
       feynmanResponseId: saved.id,
+      ...(newBadges.length && { badges: newBadges }),
     },
   })
 }

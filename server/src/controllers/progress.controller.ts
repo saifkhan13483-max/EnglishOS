@@ -3,6 +3,7 @@ import { ModuleStatus, SessionType, SessionStatus } from '@prisma/client'
 import { AuthRequest } from '../middleware/auth'
 import { prisma } from '../lib/prisma'
 import { calculateRank } from '../services/rankService'
+import { checkAndAwardBadges } from '../services/badgeService'
 
 // ── Course structure constants ─────────────────────────────────────────────────
 
@@ -327,6 +328,13 @@ export async function submitGate(req: AuthRequest, res: Response): Promise<void>
 
   await Promise.all([...moduleUpserts, gateUpdate, ...nextLevelUpserts, learnerUpdate])
 
+  // Award any badges triggered by passing the gate
+  const newBadges = await checkAndAwardBadges(learnerId, {
+    type: 'GATE_PASS',
+    level,
+    isFirstAttempt,
+  })
+
   res.json({
     success: true,
     data: {
@@ -335,6 +343,87 @@ export async function submitGate(req: AuthRequest, res: Response): Promise<void>
       xpAwarded: gateXp,
       ...(nextLevel && { nextLevel }),
       ...(rankUp && { rankUp: true, newRank }),
+      ...(newBadges.length && { badges: newBadges }),
+    },
+  })
+}
+
+// ── POST /api/v1/progress/module/complete ─────────────────────────────────────
+//
+// Marks a module as COMPLETE, unlocks the next module in the same level (if any),
+// and awards module-completion badges.
+
+export async function completeModule(req: AuthRequest, res: Response): Promise<void> {
+  const learnerId = req.learnerId as string
+  const { level, module: moduleNum } = req.body as { level: number; module: number }
+
+  if (!level || !moduleNum || level < 1 || level > 6 || moduleNum < 1) {
+    res.status(400).json({ success: false, error: 'level and module are required' })
+    return
+  }
+
+  const levelMeta = LEVEL_META.find((m) => m.level === level)
+  if (!levelMeta) {
+    res.status(400).json({ success: false, error: 'Invalid level' })
+    return
+  }
+
+  if (moduleNum > levelMeta.moduleCount) {
+    res.status(400).json({ success: false, error: 'Invalid module for this level' })
+    return
+  }
+
+  const now = new Date()
+
+  // Mark this module as COMPLETE
+  const updatedModule = await prisma.levelProgress.upsert({
+    where: { learnerId_level_module: { learnerId, level, module: moduleNum } },
+    create: {
+      learnerId,
+      level,
+      module: moduleNum,
+      status: ModuleStatus.COMPLETE,
+      unlockedAt: now,
+      completedAt: now,
+    },
+    update: {
+      status: ModuleStatus.COMPLETE,
+      completedAt: now,
+    },
+  })
+
+  // Unlock the next module in the same level (if it exists and is still LOCKED)
+  const nextModule = moduleNum + 1
+  if (nextModule <= levelMeta.moduleCount) {
+    await prisma.levelProgress.upsert({
+      where: { learnerId_level_module: { learnerId, level, module: nextModule } },
+      create: {
+        learnerId,
+        level,
+        module: nextModule,
+        status: ModuleStatus.ACTIVE,
+        unlockedAt: now,
+      },
+      update: {
+        status: ModuleStatus.ACTIVE,
+        unlockedAt: now,
+      },
+    })
+  }
+
+  // Award any badges triggered by completing this module
+  const newBadges = await checkAndAwardBadges(learnerId, {
+    type: 'MODULE_COMPLETE',
+    level,
+    module: moduleNum,
+  })
+
+  res.json({
+    success: true,
+    data: {
+      module: updatedModule,
+      nextModuleUnlocked: nextModule <= levelMeta.moduleCount ? nextModule : null,
+      ...(newBadges.length && { badges: newBadges }),
     },
   })
 }
