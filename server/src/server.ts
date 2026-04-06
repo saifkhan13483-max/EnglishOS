@@ -10,7 +10,7 @@ import { startScheduler } from './services/schedulerService'
 import { prisma } from './lib/prisma'
 import { logger } from './lib/logger'
 
-const PORT = parseInt(process.env.PORT || '5000', 10)
+const PORT = parseInt(process.env.PORT || '3001', 10)
 const IS_PRODUCTION = process.env.NODE_ENV === 'production'
 
 if (IS_PRODUCTION) {
