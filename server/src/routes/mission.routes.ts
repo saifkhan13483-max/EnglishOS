@@ -5,13 +5,15 @@ import {
   completeMission,
   getTodayMissions,
 } from '../controllers/mission.controller'
+import { validate } from '../middleware/validator.middleware'
+import { startMissionSchema } from '../schemas'
 
 const router = Router()
 
 router.use(authenticate)
 
 router.get('/today', getTodayMissions)
-router.post('/start', startMission)
+router.post('/start', validate(startMissionSchema), startMission)
 router.put('/:id/complete', completeMission)
 
 export default router
