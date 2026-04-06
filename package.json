@@ -2,6 +2,9 @@
   "name": "englishos",
   "version": "1.0.0",
   "private": true,
+  "pnpm": {
+    "onlyBuiltDependencies": ["@prisma/client", "@prisma/engines", "esbuild", "prisma", "protobufjs", "core-js"]
+  },
   "scripts": {
     "dev": "concurrently \"pnpm --filter server dev\" \"pnpm --filter client dev\"",
     "dev:client": "pnpm --filter client dev",
