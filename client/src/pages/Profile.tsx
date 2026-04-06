@@ -1,10 +1,10 @@
-import { useState } from 'react'
+import { useRef, useState } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { motion } from 'framer-motion'
 import Modal from '@/components/ui/Modal'
 import Button from '@/components/ui/Button'
-import Badge from '@/components/ui/Badge'
 import ProgressBar from '@/components/ui/ProgressBar'
+import ProfileCard from '@/components/gamification/ProfileCard'
 
 // ── Static mock data ──────────────────────────────────────────────────────────
 
@@ -13,106 +13,19 @@ const USER = {
   email: 'bilal@example.com',
   dayNumber: 42,
   level: 1,
-  levelName: 'Base Camp',
+  rank: 'Conversationalist',
   streak: 7,
   xp: 4250,
-  brainCompound: 42,
+  brainCompoundPct: 42,
+  completedModules: 2,
+  totalModules: 4,
+  earnedBadgeTypes: ['STREAK_7', 'FEYNMAN_FIRST', 'MODULE_COMPLETE_L1_M1', 'MODULE_COMPLETE_L1_M2'],
   why: 'Speaking English confidently in job interviews and at work.',
   stake: 'I have committed this to my cousin Asad. He will ask me every Sunday for my progress update.',
   notificationMorning: '07:00',
   notificationEvening: '19:30',
   romanUrduDefault: true,
   joinedDate: 'March 24, 2026',
-  badges: ['First Mission', '7-Day Streak', 'Word Wizard', 'Feynman Initiate', 'Speed Run'],
-}
-
-// ── Polymath Profile Card ─────────────────────────────────────────────────────
-function PolymathProfileCard() {
-  return (
-    <div
-      className="relative rounded-2xl overflow-hidden border border-border-subtle"
-      style={{
-        background: 'linear-gradient(135deg, #0F0F1A 0%, #1A0A14 50%, #0A0F1A 100%)',
-      }}
-    >
-      {/* Top accent line */}
-      <div className="h-0.5 w-full" style={{ background: 'linear-gradient(90deg, #E94560, #4A9EFF, #F5B014)' }} />
-
-      <div className="p-6">
-        {/* Header row */}
-        <div className="flex items-start justify-between mb-5">
-          <div>
-            <div className="flex items-center gap-2 mb-1">
-              <span className="font-display font-bold text-lg text-text-primary">
-                English<span className="text-brand-red">OS</span>
-              </span>
-              <span className="text-xs font-mono text-text-muted">·</span>
-              <span className="text-xs font-mono text-text-muted">Polymath Edition</span>
-            </div>
-            <h2 className="font-display font-bold text-2xl text-text-primary">{USER.name}</h2>
-            <p className="text-xs font-mono text-text-muted mt-0.5">Member since {USER.joinedDate}</p>
-          </div>
-
-          {/* Avatar placeholder */}
-          <div
-            className="w-14 h-14 rounded-2xl flex items-center justify-center text-2xl font-display font-bold border border-border-subtle shrink-0"
-            style={{ background: 'linear-gradient(135deg, #E94560/20, #4A9EFF/20)', backgroundColor: '#1E1E2E' }}
-          >
-            {USER.name.charAt(0)}
-          </div>
-        </div>
-
-        {/* Level & day */}
-        <div className="flex gap-3 mb-4">
-          <div className="bg-bg-primary/60 border border-border-subtle rounded-xl px-3 py-2 flex-1 text-center">
-            <p className="font-display font-bold text-brand-red text-lg">L{USER.level}</p>
-            <p className="text-xs font-mono text-text-muted">{USER.levelName}</p>
-          </div>
-          <div className="bg-bg-primary/60 border border-border-subtle rounded-xl px-3 py-2 flex-1 text-center">
-            <p className="font-display font-bold text-brand-gold text-lg">Day {USER.dayNumber}</p>
-            <p className="text-xs font-mono text-text-muted">of 300</p>
-          </div>
-          <div className="bg-bg-primary/60 border border-border-subtle rounded-xl px-3 py-2 flex-1 text-center">
-            <p className="font-display font-bold text-brand-blue text-lg">{USER.streak}d</p>
-            <p className="text-xs font-mono text-text-muted">streak 🔥</p>
-          </div>
-        </div>
-
-        {/* XP & Brain Compound */}
-        <div className="flex flex-col gap-2.5 mb-4">
-          <div>
-            <div className="flex justify-between text-xs font-mono text-text-muted mb-1">
-              <span>Total XP</span>
-              <span className="text-brand-gold">{USER.xp.toLocaleString()} XP</span>
-            </div>
-            <ProgressBar value={Math.min(100, (USER.xp / 10000) * 100)} color="#F5B014" animated={false} />
-          </div>
-          <div>
-            <div className="flex justify-between text-xs font-mono text-text-muted mb-1">
-              <span>Brain Compound</span>
-              <span className="text-brand-green">{USER.brainCompound}%</span>
-            </div>
-            <ProgressBar value={USER.brainCompound} color="#2ECC71" animated={false} />
-          </div>
-        </div>
-
-        {/* Badges row */}
-        <div className="flex items-center gap-1.5 flex-wrap">
-          {USER.badges.slice(0, 4).map(b => (
-            <span
-              key={b}
-              className="px-2 py-0.5 rounded-full bg-bg-primary/60 border border-border-subtle text-[10px] font-mono text-text-muted"
-            >
-              {b}
-            </span>
-          ))}
-          {USER.badges.length > 4 && (
-            <span className="text-[10px] font-mono text-text-muted">+{USER.badges.length - 4}</span>
-          )}
-        </div>
-      </div>
-    </div>
-  )
 }
 
 // ── Section wrapper ───────────────────────────────────────────────────────────
@@ -166,7 +79,9 @@ function FieldRow({ label, value, readOnly = false, toggle = false, checked = fa
 
 // ── Page ──────────────────────────────────────────────────────────────────────
 export default function Profile() {
-  const navigate = useNavigate()
+  const navigate   = useNavigate()
+  const cardRef    = useRef<HTMLDivElement>(null)
+  const [exporting, setExporting] = useState(false)
 
   const [romanUrdu, setRomanUrdu] = useState(USER.romanUrduDefault)
   const [editingWhy, setEditingWhy] = useState(false)
@@ -178,6 +93,30 @@ export default function Profile() {
 
   const [showDeleteModal, setShowDeleteModal] = useState(false)
   const [deleteConfirm, setDeleteConfirm] = useState('')
+
+  async function handleExport() {
+    if (!cardRef.current || exporting) return
+    setExporting(true)
+    try {
+      const html2canvas = (await import('html2canvas')).default
+      const canvas = await html2canvas(cardRef.current, {
+        useCORS: true,
+        allowTaint: true,
+        scale: 2,
+        backgroundColor: null,
+        logging: false,
+      })
+      const url  = canvas.toDataURL('image/png')
+      const link = document.createElement('a')
+      link.href     = url
+      link.download = `${USER.name.replace(/\s+/g, '-')}-polymath-profile.png`
+      link.click()
+    } catch (err) {
+      console.error('Export failed', err)
+    } finally {
+      setExporting(false)
+    }
+  }
 
   return (
     <div className="min-h-screen bg-bg-primary font-body">
@@ -198,26 +137,72 @@ export default function Profile() {
 
       <div className="max-w-2xl mx-auto px-4 py-6 flex flex-col gap-7">
 
-        {/* Profile card */}
+        {/* ── Polymath Profile Card ─────────────────────────────────────── */}
         <motion.div
           initial={{ opacity: 0, y: 16 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.4 }}
         >
-          <p className="text-xs font-mono text-text-muted uppercase tracking-widest mb-3">Polymath Profile Card</p>
-          <PolymathProfileCard />
+          <p className="text-xs font-mono text-text-muted uppercase tracking-widest mb-3">
+            Polymath Profile Card
+          </p>
+
+          {/* Horizontal scroll wrapper so fixed-width card doesn't overflow on mobile */}
+          <div className="overflow-x-auto rounded-2xl">
+            <ProfileCard
+              ref={cardRef}
+              name={USER.name}
+              rank={USER.rank}
+              level={USER.level}
+              dayNumber={USER.dayNumber}
+              streak={USER.streak}
+              xp={USER.xp}
+              brainCompoundPct={USER.brainCompoundPct}
+              completedModules={USER.completedModules}
+              totalModules={USER.totalModules}
+              earnedBadgeTypes={USER.earnedBadgeTypes}
+              whyMotivation={why}
+            />
+          </div>
+
           <Button
             variant="secondary"
             size="sm"
             className="mt-3 w-full"
-            onClick={() => {}}
+            onClick={handleExport}
+            disabled={exporting}
           >
-            Export Profile Card (coming soon)
+            {exporting ? 'Exporting…' : 'Export as Image'}
           </Button>
         </motion.div>
 
-        {/* Account settings */}
-        <Section title="Account Settings" delay={0.1}>
+        {/* ── XP & Brain Compound ──────────────────────────────────────── */}
+        <motion.div
+          initial={{ opacity: 0, y: 14 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ delay: 0.07, duration: 0.35, ease: [0.22, 1, 0.36, 1] }}
+        >
+          <p className="text-xs font-mono text-text-muted uppercase tracking-widest mb-3">Progress</p>
+          <div className="bg-bg-secondary border border-border-subtle rounded-2xl p-4 flex flex-col gap-3">
+            <div>
+              <div className="flex justify-between text-xs font-mono text-text-muted mb-1.5">
+                <span>Total XP</span>
+                <span className="text-brand-gold">{USER.xp.toLocaleString()} XP</span>
+              </div>
+              <ProgressBar value={Math.min(100, (USER.xp / 20000) * 100)} color="#F5B014" animated={false} />
+            </div>
+            <div>
+              <div className="flex justify-between text-xs font-mono text-text-muted mb-1.5">
+                <span>Brain Compound</span>
+                <span className="text-brand-green">{USER.brainCompoundPct}%</span>
+              </div>
+              <ProgressBar value={USER.brainCompoundPct} color="#2ECC71" animated={false} />
+            </div>
+          </div>
+        </motion.div>
+
+        {/* ── Account Settings ─────────────────────────────────────────── */}
+        <Section title="Account Settings" delay={0.12}>
           <FieldRow label="Name"  value={USER.name}  />
           <FieldRow label="Email" value={USER.email} readOnly />
           <FieldRow label="Morning reminder" value={USER.notificationMorning} />
@@ -230,8 +215,8 @@ export default function Profile() {
           />
         </Section>
 
-        {/* My Why */}
-        <Section title="My Why" delay={0.18}>
+        {/* ── My Why ───────────────────────────────────────────────────── */}
+        <Section title="My Why" delay={0.19}>
           <div className="px-4 py-4">
             {editingWhy ? (
               <div className="flex flex-col gap-3">
@@ -263,8 +248,8 @@ export default function Profile() {
           </div>
         </Section>
 
-        {/* Stakes */}
-        <Section title="My Stake" delay={0.25}>
+        {/* ── My Stake ─────────────────────────────────────────────────── */}
+        <Section title="My Stake" delay={0.26}>
           <div className="px-4 py-4 flex flex-col gap-3">
             <div className="bg-bg-tertiary border border-border-subtle rounded-xl px-3 py-3">
               <p className="text-sm font-body text-text-secondary leading-relaxed">{USER.stake}</p>
@@ -275,8 +260,8 @@ export default function Profile() {
           </div>
         </Section>
 
-        {/* Danger zone */}
-        <Section title="Danger Zone" delay={0.32}>
+        {/* ── Danger Zone ──────────────────────────────────────────────── */}
+        <Section title="Danger Zone" delay={0.33}>
           <div className="px-4 py-4 flex items-center justify-between">
             <div>
               <p className="text-sm font-body font-medium text-brand-red">Delete Account</p>
@@ -342,7 +327,7 @@ export default function Profile() {
           <div className="bg-brand-red/5 border border-brand-red/30 rounded-xl px-4 py-3">
             <p className="text-sm font-body text-brand-red leading-relaxed">
               This will permanently delete your account, all {USER.dayNumber} days of progress,
-              your {USER.xp.toLocaleString()} XP, and your {USER.badges.length} badges. This cannot be undone.
+              your {USER.xp.toLocaleString()} XP, and your {USER.earnedBadgeTypes.length} badges. This cannot be undone.
             </p>
           </div>
           <div>
