@@ -147,7 +147,7 @@ function Step1({ onNext }: { onNext: () => void }) {
     <div className="py-8 flex flex-col gap-6">
       <div>
         <Badge variant="red" size="sm" className="mb-3">Step 1 — Diagnostic</Badge>
-        <h1 className="font-display text-3xl font-bold text-text-primary mb-2">
+        <h1 className="font-display text-2xl sm:text-3xl font-bold text-text-primary mb-2">
           Let's find your starting point
         </h1>
         <p className="text-text-muted text-sm">
@@ -251,7 +251,7 @@ function Step2({ onNext, onBack }: { onNext: () => void; onBack: () => void }) {
     <div className="py-8 flex flex-col gap-6">
       <div>
         <Badge variant="blue" size="sm" className="mb-3">Step 2 — Your Why</Badge>
-        <h1 className="font-display text-3xl font-bold text-text-primary mb-2">
+        <h1 className="font-display text-2xl sm:text-3xl font-bold text-text-primary mb-2">
           Why do you want to learn English?
         </h1>
         <p className="text-text-muted text-sm">Your "why" powers your streak on hard days. Choose one.</p>
@@ -401,7 +401,7 @@ function Step3({ onNext, onBack }: { onNext: () => void; onBack: () => void }) {
     <div className="py-8 flex flex-col gap-7">
       <div>
         <Badge variant="gold" size="sm" className="mb-3">Step 3 — Daily Commitment</Badge>
-        <h1 className="font-display text-3xl font-bold text-text-primary mb-2">
+        <h1 className="font-display text-2xl sm:text-3xl font-bold text-text-primary mb-2">
           When will you learn?
         </h1>
         <p className="text-text-muted text-sm">Consistency beats intensity. Pick times you'll actually keep.</p>
@@ -613,7 +613,7 @@ function Step5({ onDone, onBack }: { onDone: () => void; onBack: () => void }) {
         className="text-center"
       >
         <Badge variant="red" size="sm" className="mb-3">Your 300-Day Map</Badge>
-        <h1 className="font-display text-3xl md:text-4xl font-bold text-text-primary">
+        <h1 className="font-display text-2xl sm:text-3xl md:text-4xl font-bold text-text-primary">
           Your journey starts here.
         </h1>
         <p className="text-text-muted text-sm mt-2">Each level unlocks when you master the one before it.</p>

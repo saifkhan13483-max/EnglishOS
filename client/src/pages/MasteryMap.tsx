@@ -464,6 +464,8 @@ function DashboardPanel({ onStartMission }: { onStartMission: () => void }) {
       bg-bg-secondary border-t border-border-subtle
       md:border-t-0 md:border-l-0 md:h-full
       p-4 flex flex-col gap-4
+      max-h-[200px] overflow-y-auto
+      md:max-h-none md:overflow-y-auto
     ">
       <div className="hidden md:block pt-2">
         <p className="text-xs font-mono text-text-muted uppercase tracking-widest">Today's Panel</p>

@@ -9,6 +9,11 @@
     font-family: 'Inter', sans-serif;
   }
 
+  /* Remove the default blue flash on tap in iOS Safari / Android WebView */
+  * {
+    -webkit-tap-highlight-color: transparent;
+  }
+
   /* Ensure Roman Urdu diacritics render correctly on Android Chrome (Edge Case 12) */
   [lang="ur"] {
     font-family: 'Noto Sans', 'Inter', sans-serif;

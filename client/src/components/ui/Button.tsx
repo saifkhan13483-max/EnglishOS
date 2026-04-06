@@ -1,5 +1,5 @@
 import { forwardRef } from 'react'
-import { motion, HTMLMotionProps } from 'framer-motion'
+import { motion, HTMLMotionProps, useReducedMotion } from 'framer-motion'
 
 type ButtonVariant = 'primary' | 'secondary' | 'ghost' | 'danger'
 type ButtonSize = 'sm' | 'md' | 'lg'
@@ -22,10 +22,15 @@ const variantClasses: Record<ButtonVariant, string> = {
     'bg-transparent text-brand-red border border-brand-red hover:bg-brand-red hover:text-text-primary',
 }
 
+/*
+  All sizes enforce a minimum 44×44 px touch target (WCAG 2.5.5 / Apple HIG).
+  sm and md previously fell short on height; min-h-[44px] fixes this without
+  changing the visual padding on desktop.
+*/
 const sizeClasses: Record<ButtonSize, string> = {
-  sm: 'px-3 py-1.5 text-sm rounded-lg gap-1.5',
-  md: 'px-5 py-2.5 text-sm rounded-xl gap-2',
-  lg: 'px-7 py-3.5 text-base rounded-xl gap-2.5',
+  sm: 'px-3 py-1.5 text-sm rounded-lg gap-1.5 min-h-[44px]',
+  md: 'px-5 py-2.5 text-sm rounded-xl gap-2 min-h-[44px]',
+  lg: 'px-7 py-3.5 text-base rounded-xl gap-2.5 min-h-[44px]',
 }
 
 const Spinner = () => (
@@ -65,12 +70,13 @@ const Button = forwardRef<HTMLButtonElement, ButtonProps>(
     ref
   ) => {
     const isDisabled = disabled || loading
+    const shouldReduceMotion = useReducedMotion()
 
     return (
       <motion.button
         ref={ref}
-        whileHover={isDisabled ? {} : { scale: 1.02 }}
-        whileTap={isDisabled ? {} : { scale: 0.97 }}
+        whileHover={isDisabled || shouldReduceMotion ? {} : { scale: 1.02 }}
+        whileTap={isDisabled || shouldReduceMotion ? {} : { scale: 0.97 }}
         transition={{ type: 'spring', stiffness: 400, damping: 20 }}
         disabled={isDisabled}
         className={[

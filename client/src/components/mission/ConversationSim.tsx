@@ -1,4 +1,4 @@
-import { useState, useEffect, useRef, useCallback } from 'react'
+import { useState, useEffect, useRef, useCallback, memo } from 'react'
 import { motion, AnimatePresence } from 'framer-motion'
 import Button from '@/components/ui/Button'
 import { api } from '@/services/api'
@@ -40,6 +40,42 @@ function TypingDots() {
     </div>
   )
 }
+
+interface ChatBubbleProps {
+  msg: Message
+}
+
+const ChatBubble = memo(function ChatBubble({ msg }: ChatBubbleProps) {
+  if (msg.role === 'ai') {
+    return (
+      <div className="flex items-end gap-2 max-w-[80%]">
+        <div className="w-7 h-7 rounded-full bg-brand-blue/20 border border-brand-blue/40 flex items-center justify-center text-sm shrink-0 mb-1">
+          🤖
+        </div>
+        <div className={[
+          'rounded-2xl rounded-tl-none px-4 py-3',
+          msg.isNotUnderstood
+            ? 'bg-bg-secondary/60 border border-border-subtle/50'
+            : 'bg-bg-secondary border border-border-subtle',
+        ].join(' ')}>
+          <p className={[
+            'text-sm font-body leading-relaxed',
+            msg.isNotUnderstood ? 'text-text-muted' : 'text-text-primary',
+          ].join(' ')}>
+            {msg.text}
+          </p>
+        </div>
+      </div>
+    )
+  }
+  return (
+    <div className="max-w-[80%]">
+      <div className="bg-brand-red/15 border border-brand-red/30 rounded-2xl rounded-tr-none px-4 py-3">
+        <p className="text-sm text-text-primary font-body leading-relaxed">{msg.text}</p>
+      </div>
+    </div>
+  )
+})
 
 function isNotUnderstoodResponse(text: string): boolean {
   const lower = text.toLowerCase()
@@ -219,33 +255,7 @@ export default function ConversationSim({ onComplete, onXpEarned }: Conversation
               transition={{ duration: 0.22, ease: 'easeOut' }}
               className={`flex ${msg.role === 'user' ? 'justify-end' : 'justify-start'}`}
             >
-              {msg.role === 'ai' && (
-                <div className="flex items-end gap-2 max-w-[80%]">
-                  <div className="w-7 h-7 rounded-full bg-brand-blue/20 border border-brand-blue/40 flex items-center justify-center text-sm shrink-0 mb-1">
-                    🤖
-                  </div>
-                  <div className={[
-                    'rounded-2xl rounded-tl-none px-4 py-3',
-                    msg.isNotUnderstood
-                      ? 'bg-bg-secondary/60 border border-border-subtle/50'
-                      : 'bg-bg-secondary border border-border-subtle',
-                  ].join(' ')}>
-                    <p className={[
-                      'text-sm font-body leading-relaxed',
-                      msg.isNotUnderstood ? 'text-text-muted' : 'text-text-primary',
-                    ].join(' ')}>
-                      {msg.text}
-                    </p>
-                  </div>
-                </div>
-              )}
-              {msg.role === 'user' && (
-                <div className="max-w-[80%]">
-                  <div className="bg-brand-red/15 border border-brand-red/30 rounded-2xl rounded-tr-none px-4 py-3">
-                    <p className="text-sm text-text-primary font-body leading-relaxed">{msg.text}</p>
-                  </div>
-                </div>
-              )}
+              <ChatBubble msg={msg} />
             </motion.div>
           ))}
 

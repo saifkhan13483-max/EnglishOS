@@ -1,6 +1,6 @@
 import { useState, useEffect, useRef } from 'react'
 import { useNavigate } from 'react-router-dom'
-import { motion, AnimatePresence } from 'framer-motion'
+import { motion, AnimatePresence, useReducedMotion } from 'framer-motion'
 import { trackEvent } from '@/utils/analytics'
 
 import WarmupFlash      from './WarmupFlash'
@@ -51,6 +51,7 @@ export default function MissionShell({ type = 'morning' }: MissionShellProps) {
   const [phase,  setPhase]  = useState(() => getSavedPhase(type))
   const [dir,    setDir]    = useState(1)
   const [toasts, setToasts] = useState<XpToast[]>([])
+  const shouldReduceMotion   = useReducedMotion()
 
   const phaseRef = useRef(phase)
   phaseRef.current = phase
@@ -106,11 +107,17 @@ export default function MissionShell({ type = 'morning' }: MissionShellProps) {
     navigate('/dashboard')
   }
 
-  const slideVariants = {
-    enter:  (d: number) => ({ x: d > 0 ? 80 : -80, opacity: 0 }),
-    center: { x: 0, opacity: 1, transition: { duration: 0.25, ease: [0.4, 0, 0.2, 1] as number[] } },
-    exit:   (d: number) => ({ x: d > 0 ? -80 : 80, opacity: 0, transition: { duration: 0.2 } }),
-  }
+  const slideVariants = shouldReduceMotion
+    ? {
+        enter:  () => ({ opacity: 0 }),
+        center: { opacity: 1, transition: { duration: 0.15 } },
+        exit:   () => ({ opacity: 0, transition: { duration: 0.1 } }),
+      }
+    : {
+        enter:  (d: number) => ({ x: d > 0 ? 80 : -80, opacity: 0 }),
+        center: { x: 0, opacity: 1, transition: { duration: 0.25, ease: [0.4, 0, 0.2, 1] as number[] } },
+        exit:   (d: number) => ({ x: d > 0 ? -80 : 80, opacity: 0, transition: { duration: 0.2 } }),
+      }
 
   return (
     <div className="min-h-screen bg-bg-primary font-body flex flex-col">

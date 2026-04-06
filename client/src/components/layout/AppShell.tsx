@@ -198,7 +198,7 @@ function MobileBottomNav() {
           <NavLink
             key={item.to}
             to={item.to}
-            className="flex flex-col items-center gap-1 flex-1 py-1"
+            className="flex flex-col items-center justify-center gap-1 flex-1 min-h-[44px] py-1"
           >
             <span className={active ? 'text-brand-red' : 'text-text-muted'}>
               {item.icon(active)}

@@ -163,7 +163,7 @@ export default function SentenceBuilder({ onComplete, onXpEarned }: SentenceBuil
       activationConstraint: { distance: 5 },
     }),
     useSensor(TouchSensor, {
-      activationConstraint: { delay: 200, tolerance: 8 },
+      activationConstraint: { delay: 500, tolerance: 5 },
     }),
   )
 
