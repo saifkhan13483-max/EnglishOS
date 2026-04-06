@@ -118,6 +118,30 @@ export async function getTomorrowQueue(req: AuthRequest, res: Response): Promise
   })
 }
 
+// GET /api/v1/content/sr-queue/recent — 5 most recently reviewed items (refresher fallback)
+export async function getRecentQueue(req: AuthRequest, res: Response): Promise<void> {
+  const learnerId = req.learnerId as string
+
+  const recent = await prisma.sRQueueItem.findMany({
+    where: { learnerId },
+    include: { item: true },
+    orderBy: { lastReviewedAt: 'desc' },
+    take: 5,
+  })
+
+  // If the learner has no reviews yet, fall back to the most recently added queue items
+  const items = recent.length > 0
+    ? recent
+    : await prisma.sRQueueItem.findMany({
+        where: { learnerId },
+        include: { item: true },
+        orderBy: { nextReviewDate: 'asc' },
+        take: 5,
+      })
+
+  res.json({ success: true, data: items })
+}
+
 // PATCH /api/v1/content/sr-queue/:id — mark a queue item as reviewed
 // SM-2 simplified: correct → extend interval; incorrect → reset to 1 day + flag gap
 // SR XP: +10 per correct review, daily cap of 10 correct reviews (100 XP max)

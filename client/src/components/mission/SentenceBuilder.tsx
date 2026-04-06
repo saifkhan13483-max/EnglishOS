@@ -4,6 +4,10 @@ import {
   DragEndEvent,
   DragOverlay,
   DragStartEvent,
+  MouseSensor,
+  TouchSensor,
+  useSensor,
+  useSensors,
   useDraggable,
   useDroppable,
 } from '@dnd-kit/core'
@@ -19,7 +23,19 @@ function shuffle<T>(arr: T[]): T[] {
 }
 
 // ── Draggable tile ─────────────────────────────────────────────────────────
-function DraggableTile({ id, label, disabled }: { id: string; label: string; disabled?: boolean }) {
+function DraggableTile({
+  id,
+  label,
+  disabled,
+  selected,
+  onTap,
+}: {
+  id: string
+  label: string
+  disabled?: boolean
+  selected?: boolean
+  onTap?: () => void
+}) {
   const { attributes, listeners, setNodeRef, transform, isDragging } = useDraggable({ id, disabled })
   const style = { transform: CSS.Translate.toString(transform) }
   return (
@@ -28,30 +44,36 @@ function DraggableTile({ id, label, disabled }: { id: string; label: string; dis
       style={style}
       {...(disabled ? {} : attributes)}
       {...(disabled ? {} : listeners)}
+      onClick={disabled ? undefined : onTap}
+      title={label}
       className={[
-        'px-4 py-2.5 rounded-xl border font-mono text-sm font-medium transition-colors select-none',
+        'px-4 py-2.5 rounded-xl border font-mono text-sm font-medium transition-colors select-none max-w-[140px]',
         isDragging
           ? 'opacity-0'
           : disabled
             ? 'bg-bg-tertiary border-border-subtle text-text-muted cursor-not-allowed opacity-50'
-            : 'bg-bg-secondary border-border-strong text-text-primary cursor-grab active:cursor-grabbing hover:border-brand-red/60 hover:text-brand-red',
+            : selected
+              ? 'bg-brand-red/15 border-brand-red text-brand-red cursor-pointer ring-2 ring-brand-red/40'
+              : 'bg-bg-secondary border-border-strong text-text-primary cursor-grab active:cursor-grabbing hover:border-brand-red/60 hover:text-brand-red',
       ].join(' ')}
     >
-      {label}
+      <span className="block truncate">{label}</span>
     </div>
   )
 }
 
 // ── Droppable zone ─────────────────────────────────────────────────────────
 function DroppableZone({
-  zone, filledWith, onClear, shake, correct, checked,
+  zone, filledWith, onClear, onTapPlace, shake, correct, checked, hasSelectedTile,
 }: {
   zone: { id: string; label: string }
   filledWith?: string
   onClear: () => void
+  onTapPlace?: () => void
   shake?: boolean
   correct?: boolean
   checked?: boolean
+  hasSelectedTile?: boolean
 }) {
   const { isOver, setNodeRef } = useDroppable({ id: zone.id })
   return (
@@ -61,30 +83,35 @@ function DroppableZone({
         ref={setNodeRef}
         animate={shake ? { x: [0, -10, 10, -8, 8, -4, 4, 0] } : {}}
         transition={{ duration: 0.45 }}
+        onClick={!filledWith && hasSelectedTile ? onTapPlace : undefined}
         className={[
           'min-h-[48px] w-full rounded-xl border-2 border-dashed flex items-center justify-center px-2 transition-colors duration-150',
-          isOver
-            ? 'border-brand-red/70 bg-brand-red/5'
-            : checked && correct
-              ? 'border-brand-green bg-brand-green/5'
-              : checked && !correct
-                ? 'border-brand-red/70 bg-brand-red/5'
-                : filledWith
-                  ? 'border-border-strong bg-bg-secondary'
-                  : 'border-border-subtle bg-bg-tertiary',
+          !filledWith && hasSelectedTile && !checked
+            ? 'border-brand-red/70 bg-brand-red/5 cursor-pointer'
+            : isOver
+              ? 'border-brand-red/70 bg-brand-red/5'
+              : checked && correct
+                ? 'border-brand-green bg-brand-green/5'
+                : checked && !correct
+                  ? 'border-brand-red/70 bg-brand-red/5'
+                  : filledWith
+                    ? 'border-border-strong bg-bg-secondary'
+                    : 'border-border-subtle bg-bg-tertiary',
         ].join(' ')}
       >
         {filledWith ? (
           <button
             onClick={onClear}
-            title="Return to pool"
-            className="px-3 py-1.5 rounded-lg font-mono text-sm font-bold text-text-primary hover:text-brand-red transition-colors flex items-center gap-1.5"
+            title={filledWith}
+            className="px-3 py-1.5 rounded-lg font-mono text-sm font-bold text-text-primary hover:text-brand-red transition-colors flex items-center gap-1.5 max-w-full"
           >
-            {filledWith}
-            {!checked && <span className="text-text-muted text-xs">✕</span>}
+            <span className="truncate max-w-[80px]">{filledWith}</span>
+            {!checked && <span className="text-text-muted text-xs shrink-0">✕</span>}
           </button>
         ) : (
-          <span className="text-xs text-text-muted font-mono">drop here</span>
+          <span className="text-xs text-text-muted font-mono">
+            {hasSelectedTile && !checked ? 'tap to place' : 'drop here'}
+          </span>
         )}
       </motion.div>
     </div>
@@ -94,8 +121,11 @@ function DroppableZone({
 // ── Overlay tile (while dragging) ─────────────────────────────────────────
 function OverlayTile({ label }: { label: string }) {
   return (
-    <div className="px-4 py-2.5 rounded-xl border border-brand-red bg-bg-secondary font-mono text-sm font-medium text-brand-red shadow-2xl cursor-grabbing">
-      {label}
+    <div
+      title={label}
+      className="px-4 py-2.5 rounded-xl border border-brand-red bg-bg-secondary font-mono text-sm font-medium text-brand-red shadow-2xl cursor-grabbing max-w-[140px]"
+    >
+      <span className="block truncate">{label}</span>
     </div>
   )
 }
@@ -122,8 +152,20 @@ export default function SentenceBuilder({ onComplete, onXpEarned }: SentenceBuil
   const [dragging, setDragging] = useState<string | null>(null)
   const [done, setDone] = useState(false)
   const [score, setScore] = useState(0)
+  // Tap-to-select state for touch fallback (Edge Case 10)
+  const [selectedTile, setSelectedTile] = useState<string | null>(null)
 
   const ex = exercises[exIdx]
+
+  // dnd-kit sensors: mouse + touch with activation constraints
+  const sensors = useSensors(
+    useSensor(MouseSensor, {
+      activationConstraint: { distance: 5 },
+    }),
+    useSensor(TouchSensor, {
+      activationConstraint: { delay: 200, tolerance: 8 },
+    }),
+  )
 
   // Mark vocabulary words from this exercise in the SR queue
   const markVocabWords = useCallback(
@@ -142,6 +184,7 @@ export default function SentenceBuilder({ onComplete, onXpEarned }: SentenceBuil
 
   function handleDragStart(e: DragStartEvent) {
     setDragging(e.active.id as string)
+    setSelectedTile(null)
   }
 
   function handleDragEnd(e: DragEndEvent) {
@@ -178,6 +221,27 @@ export default function SentenceBuilder({ onComplete, onXpEarned }: SentenceBuil
     })
   }
 
+  // Tap-to-select: select a tile from the pool, then tap a zone to place it
+  function handleTileTap(label: string) {
+    if (checked) return
+    setSelectedTile(prev => (prev === label ? null : label))
+  }
+
+  function handleZoneTapPlace(zoneId: string) {
+    if (!selectedTile || checked) return
+    setSlots(prev => {
+      const next = { ...prev }
+      const displaced = next[zoneId]
+      next[zoneId] = selectedTile
+      setPool(p => {
+        const filtered = p.filter(t => t !== selectedTile)
+        return displaced ? [...filtered, displaced] : filtered
+      })
+      return next
+    })
+    setSelectedTile(null)
+  }
+
   function handleCheck() {
     const allFilled = ex.zones.every(z => slots[z.id])
     if (!allFilled) return
@@ -192,6 +256,7 @@ export default function SentenceBuilder({ onComplete, onXpEarned }: SentenceBuil
 
     setChecked(true)
     setIsCorrect(correct)
+    setSelectedTile(null)
 
     // Wire to SR store
     markVocabWords(correct)
@@ -217,6 +282,7 @@ export default function SentenceBuilder({ onComplete, onXpEarned }: SentenceBuil
     setChecked(false)
     setIsCorrect(false)
     setShake(false)
+    setSelectedTile(null)
   }
 
   const allFilled = ex.zones.every(z => slots[z.id])
@@ -248,7 +314,7 @@ export default function SentenceBuilder({ onComplete, onXpEarned }: SentenceBuil
   }
 
   return (
-    <DndContext onDragStart={handleDragStart} onDragEnd={handleDragEnd}>
+    <DndContext sensors={sensors} onDragStart={handleDragStart} onDragEnd={handleDragEnd}>
       <div className="flex flex-col gap-5 py-8 px-4 max-w-lg mx-auto w-full">
         {/* Header */}
         <div className="text-center">
@@ -306,9 +372,11 @@ export default function SentenceBuilder({ onComplete, onXpEarned }: SentenceBuil
                 zone={zone}
                 filledWith={slots[zone.id]}
                 onClear={() => clearSlot(zone.id)}
+                onTapPlace={() => handleZoneTapPlace(zone.id)}
                 shake={shake && !isCorrect}
                 correct={slots[zone.id]?.toLowerCase() === ex.correct[zone.id]?.toLowerCase()}
                 checked={checked}
+                hasSelectedTile={!!selectedTile}
               />
             ))}
           </div>
@@ -352,7 +420,7 @@ export default function SentenceBuilder({ onComplete, onXpEarned }: SentenceBuil
         {/* Word tile pool */}
         <div className="bg-bg-tertiary border border-border-subtle rounded-2xl p-4">
           <p className="text-xs font-mono text-text-muted mb-3 uppercase tracking-wider">
-            Word Pool — drag tiles above
+            Word Pool — drag or tap to select, then tap a slot
           </p>
           <div className="flex flex-wrap gap-2 min-h-[48px]">
             <AnimatePresence>
@@ -365,7 +433,13 @@ export default function SentenceBuilder({ onComplete, onXpEarned }: SentenceBuil
                   exit={{ opacity: 0, scale: 0.85 }}
                   transition={{ duration: 0.15 }}
                 >
-                  <DraggableTile id={label} label={label} disabled={checked} />
+                  <DraggableTile
+                    id={label}
+                    label={label}
+                    disabled={checked}
+                    selected={selectedTile === label}
+                    onTap={() => handleTileTap(label)}
+                  />
                 </motion.div>
               ))}
             </AnimatePresence>

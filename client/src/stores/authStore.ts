@@ -18,6 +18,7 @@ interface AuthStore {
   login: (email: string, password: string) => Promise<void>
   register: (email: string, password: string, name: string) => Promise<void>
   logout: () => Promise<void>
+  localLogout: () => void
   refreshSession: () => Promise<void>
   loadFromStorage: () => Promise<void>
   setUser: (user: SafeLearner) => void
@@ -52,6 +53,11 @@ export const useAuthStore = create<AuthStore>((set, get) => ({
     if (token) {
       await apiLogout(token)
     }
+    setAccessToken(null)
+    set({ user: null, accessToken: null, isAuthenticated: false })
+  },
+
+  localLogout: () => {
     setAccessToken(null)
     set({ user: null, accessToken: null, isAuthenticated: false })
   },

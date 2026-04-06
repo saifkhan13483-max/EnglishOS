@@ -151,6 +151,8 @@ async function request<T>(
       return parseResponse<T>(retryResponse)
     } catch {
       clearTokens()
+      // Notify active listeners (e.g. MissionShell) to save state before navigation
+      window.dispatchEvent(new CustomEvent('eos:session-expired'))
       window.location.href = '/login'
       throw new ApiError(401, 'Session expired. Please log in again.')
     }

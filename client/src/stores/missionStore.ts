@@ -1,5 +1,5 @@
 import { create } from 'zustand'
-import { api } from '@/services/api'
+import { api, ApiError } from '@/services/api'
 import { useSRStore } from './srStore'
 import { useProgressStore } from './progressStore'
 import { useBadgeStore } from './badgeStore'
@@ -216,6 +216,11 @@ export const useMissionStore = create<MissionStore>((set, get) => ({
         batmanSkipProtected: batmanSkipProtected ?? false,
       })
     } catch (err: unknown) {
+      // 409 means the mission was already completed (double-tap / retry) — treat as success
+      if (err instanceof ApiError && err.status === 409) {
+        set({ isComplete: true, isLoading: false })
+        return
+      }
       const message = err instanceof Error ? err.message : 'Failed to complete mission'
       set({ isLoading: false, error: message })
       throw err

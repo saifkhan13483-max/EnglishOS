@@ -10,4 +10,9 @@
     color: #C8C8E0;
     font-family: 'Inter', sans-serif;
   }
+
+  /* Ensure Roman Urdu diacritics render correctly on Android Chrome (Edge Case 12) */
+  [lang="ur"] {
+    font-family: 'Noto Sans', 'Inter', sans-serif;
+  }
 }

@@ -163,16 +163,27 @@ export default function FeynmanMoment({ onComplete }: FeynmanMomentProps) {
       )}
 
       {!result && (
-        <Button
-          variant="primary"
-          size="lg"
-          className="w-full"
-          disabled={tab === 'text' ? !text.trim() : true}
-          loading={isLoading}
-          onClick={handleEvaluate}
-        >
-          {isLoading ? 'Checking your explanation…' : 'Evaluate My Explanation'}
-        </Button>
+        <div className="flex flex-col gap-2">
+          <Button
+            variant="primary"
+            size="lg"
+            className="w-full"
+            disabled={tab === 'text' ? !text.trim() : true}
+            loading={isLoading}
+            onClick={handleEvaluate}
+          >
+            {isLoading ? 'Checking your explanation…' : 'Evaluate My Explanation'}
+          </Button>
+          <Button
+            variant="secondary"
+            size="md"
+            className="w-full text-text-muted"
+            disabled={isLoading}
+            onClick={handleComplete}
+          >
+            Skip for now
+          </Button>
+        </div>
       )}
 
       <AnimatePresence>

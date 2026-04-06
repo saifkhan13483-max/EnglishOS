@@ -2,6 +2,20 @@ import { useEffect, useState } from 'react'
 import { motion, AnimatePresence } from 'framer-motion'
 import Button from '@/components/ui/Button'
 import { useSRStore, SRCard } from '@/stores/srStore'
+import { api } from '@/services/api'
+
+interface RawQueueItem {
+  id: string
+  itemId: string
+  intervalDays: number
+  easeFactor: number
+  item: {
+    english: string
+    urduRoman: string
+    exampleSentence: string
+    isPowerPack: boolean
+  }
+}
 
 interface WarmupFlashProps {
   onComplete: () => void
@@ -16,6 +30,7 @@ export default function WarmupFlash({ onComplete, onXpEarned }: WarmupFlashProps
   const [direction, setDirection] = useState(1)
   const [initialised, setInitialised] = useState(false)
   const [loading, setLoading] = useState(false)
+  const [isRefresherMode, setIsRefresherMode] = useState(false)
 
   // Load the SR queue when mounting, then snapshot first 5 cards
   useEffect(() => {
@@ -31,12 +46,44 @@ export default function WarmupFlash({ onComplete, onXpEarned }: WarmupFlashProps
   // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [])
 
-  // Once queue is ready, snapshot the cards to keep them stable during review
+  // Once queue is ready, snapshot the cards. If empty, load recent items as refresher
   useEffect(() => {
-    if (initialised && cards.length === 0) {
-      const snapshot = useSRStore.getState().dailyQueue.slice(0, 5)
+    if (!initialised || cards.length > 0) return
+
+    const snapshot = useSRStore.getState().dailyQueue.slice(0, 5)
+    if (snapshot.length > 0) {
       setCards(snapshot)
+      return
     }
+
+    // Queue is empty — fetch the 5 most recently learned items as a refresher
+    async function loadRecent() {
+      setLoading(true)
+      try {
+        const res = await api.get<{ success: boolean; data: RawQueueItem[] }>(
+          '/api/v1/content/sr-queue/recent'
+        )
+        const recent: SRCard[] = res.data.map((raw) => ({
+          id: raw.id,
+          itemId: raw.itemId,
+          english: raw.item.english,
+          romanUrdu: raw.item.urduRoman,
+          example: raw.item.exampleSentence,
+          isPowerPack: raw.item.isPowerPack,
+          intervalDays: raw.intervalDays,
+          easeFactor: raw.easeFactor,
+        }))
+        if (recent.length > 0) {
+          setCards(recent)
+          setIsRefresherMode(true)
+        }
+      } catch {
+        // If recent load fails, proceed with no cards
+      } finally {
+        setLoading(false)
+      }
+    }
+    loadRecent()
   }, [initialised, dailyQueue, cards.length])
 
   const card = cards[cardIndex]
@@ -44,13 +91,15 @@ export default function WarmupFlash({ onComplete, onXpEarned }: WarmupFlashProps
 
   async function finishAndSync() {
     onXpEarned(20)
-    await syncReviews()
+    if (!isRefresherMode) {
+      await syncReviews()
+    }
     setTimeout(onComplete, 400)
   }
 
   function handleGotIt() {
     if (!flipped) { setFlipped(true); return }
-    if (card) markReviewed(card.itemId, true)
+    if (card && !isRefresherMode) markReviewed(card.itemId, true)
     setDirection(1)
     setFlipped(false)
     if (isLast || cardIndex >= cards.length - 1) {
@@ -61,7 +110,7 @@ export default function WarmupFlash({ onComplete, onXpEarned }: WarmupFlashProps
   }
 
   function handleReviewAgain() {
-    if (card) markReviewed(card.itemId, false)
+    if (card && !isRefresherMode) markReviewed(card.itemId, false)
     setDirection(-1)
     setFlipped(false)
     setTimeout(() => {
@@ -84,8 +133,8 @@ export default function WarmupFlash({ onComplete, onXpEarned }: WarmupFlashProps
     )
   }
 
-  // Empty queue — no items due today
-  if (initialised && cards.length === 0) {
+  // Truly empty — no SR items and no recent items
+  if (initialised && !loading && cards.length === 0) {
     return (
       <div className="flex flex-col items-center gap-8 py-16 px-4 max-w-lg mx-auto w-full">
         <div className="text-center">
@@ -104,6 +153,21 @@ export default function WarmupFlash({ onComplete, onXpEarned }: WarmupFlashProps
     )
   }
 
+  // Still loading recent items
+  if (loading && initialised) {
+    return (
+      <div className="flex flex-col items-center gap-8 py-16 px-4 max-w-lg mx-auto w-full">
+        <div className="text-center">
+          <p className="text-xs font-mono text-text-muted uppercase tracking-widest mb-1">Phase 1</p>
+          <h2 className="font-display text-2xl font-bold text-text-primary">Warm-Up — Quick Review</h2>
+        </div>
+        <div className="w-full bg-bg-secondary border border-border-subtle rounded-2xl p-12 flex items-center justify-center">
+          <p className="text-text-muted text-sm font-mono animate-pulse">Preparing refresher cards…</p>
+        </div>
+      </div>
+    )
+  }
+
   if (!card) return null
 
   return (
@@ -115,6 +179,15 @@ export default function WarmupFlash({ onComplete, onXpEarned }: WarmupFlashProps
           Card {cardIndex + 1} of {cards.length}
         </p>
       </div>
+
+      {isRefresherMode && (
+        <div className="w-full bg-brand-gold/10 border border-brand-gold/30 rounded-xl px-4 py-2.5 flex items-center gap-2">
+          <span className="text-base">🔄</span>
+          <p className="text-xs font-mono text-brand-gold">
+            Refresher Mode — No items due today. Reviewing recent words, not scored.
+          </p>
+        </div>
+      )}
 
       <div className="flex gap-2">
         {cards.map((_, i) => (
@@ -158,7 +231,7 @@ export default function WarmupFlash({ onComplete, onXpEarned }: WarmupFlashProps
               style={{ backfaceVisibility: 'hidden', transform: 'rotateY(180deg)' }}
             >
               <p className="text-xs font-mono text-text-muted uppercase tracking-widest mb-3">Roman Urdu</p>
-              <p className="font-display text-3xl font-bold text-brand-blue mb-4">{card.romanUrdu}</p>
+              <p className="font-display text-3xl font-bold text-brand-blue mb-4" lang="ur">{card.romanUrdu}</p>
               <div className="bg-bg-primary rounded-xl px-4 py-2.5 border border-border-subtle w-full text-center">
                 <p className="text-sm text-text-secondary italic">"{card.example}"</p>
               </div>
@@ -176,17 +249,35 @@ export default function WarmupFlash({ onComplete, onXpEarned }: WarmupFlashProps
             transition={{ duration: 0.2 }}
             className="flex gap-3 w-full"
           >
-            <Button variant="danger" size="md" className="flex-1" onClick={handleReviewAgain}>
-              Review Again ✗
-            </Button>
-            <Button
-              variant="primary"
-              size="md"
-              className="flex-1 !bg-brand-green !border-brand-green"
-              onClick={handleGotIt}
-            >
-              Got it ✓
-            </Button>
+            {isRefresherMode ? (
+              <>
+                <Button variant="secondary" size="md" className="flex-1" onClick={handleReviewAgain}>
+                  Next →
+                </Button>
+                <Button
+                  variant="primary"
+                  size="md"
+                  className="flex-1 !bg-brand-green !border-brand-green"
+                  onClick={handleGotIt}
+                >
+                  Got it ✓
+                </Button>
+              </>
+            ) : (
+              <>
+                <Button variant="danger" size="md" className="flex-1" onClick={handleReviewAgain}>
+                  Review Again ✗
+                </Button>
+                <Button
+                  variant="primary"
+                  size="md"
+                  className="flex-1 !bg-brand-green !border-brand-green"
+                  onClick={handleGotIt}
+                >
+                  Got it ✓
+                </Button>
+              </>
+            )}
           </motion.div>
         )}
         {!flipped && (

@@ -1,6 +1,7 @@
 import { useEffect } from 'react'
 import { BrowserRouter, Routes, Route, Navigate, Outlet } from 'react-router-dom'
 import { useAuthStore } from '@/stores/authStore'
+import { setAccessToken } from '@/services/api'
 import { useProgressStore } from '@/stores/progressStore'
 import AppShell from '@/components/layout/AppShell'
 import BadgeToast from '@/components/ui/BadgeToast'
@@ -37,10 +38,24 @@ function LoadingScreen() {
   )
 }
 
-/* ── Session bootstrap ──────────────────────────────────────────────── */
+/* ── Session bootstrap + cross-tab logout detection ────────────────── */
 function SessionLoader() {
   const loadFromStorage = useAuthStore((s) => s.loadFromStorage)
+
   useEffect(() => { loadFromStorage() }, [loadFromStorage])
+
+  useEffect(() => {
+    function handleStorageChange(e: StorageEvent) {
+      // Another tab removed the refresh token — log this tab out silently
+      if (e.key === 'eos_refresh_token' && e.newValue === null) {
+        setAccessToken(null)
+        useAuthStore.setState({ user: null, accessToken: null, isAuthenticated: false })
+      }
+    }
+    window.addEventListener('storage', handleStorageChange)
+    return () => window.removeEventListener('storage', handleStorageChange)
+  }, [])
+
   return null
 }
 

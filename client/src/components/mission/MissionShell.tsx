@@ -1,4 +1,4 @@
-import { useState } from 'react'
+import { useState, useEffect, useRef } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { motion, AnimatePresence } from 'framer-motion'
 
@@ -15,21 +15,68 @@ import DayClose         from './DayClose'
 const MORNING_PHASES = ['Warm-Up', 'Core Drop', 'Apply It', 'Feynman']
 const EVENING_PHASES = ['Story', 'Sentences', 'Conversation', 'Day Close']
 
+const RESUME_KEY = 'eos_mission_resume'
+const RESUME_MAX_AGE_MS = 24 * 60 * 60 * 1000 // 24 hours
+
+interface ResumeState {
+  missionType: 'morning' | 'evening'
+  phase: number
+  savedAt: number
+}
+
 interface XpToast { id: number; amount: number }
 
 interface MissionShellProps {
   type?: 'morning' | 'evening'
 }
 
+function getSavedPhase(type: 'morning' | 'evening'): number {
+  try {
+    const raw = localStorage.getItem(RESUME_KEY)
+    if (!raw) return 1
+    const saved = JSON.parse(raw) as ResumeState
+    const age = Date.now() - saved.savedAt
+    if (saved.missionType === type && age < RESUME_MAX_AGE_MS && saved.phase > 1) {
+      return saved.phase
+    }
+  } catch {
+    // ignore malformed data
+  }
+  return 1
+}
+
 export default function MissionShell({ type = 'morning' }: MissionShellProps) {
   const navigate = useNavigate()
-  const [phase,  setPhase]  = useState(1)
+  const [phase,  setPhase]  = useState(() => getSavedPhase(type))
   const [dir,    setDir]    = useState(1)
   const [toasts, setToasts] = useState<XpToast[]>([])
+
+  const phaseRef = useRef(phase)
+  phaseRef.current = phase
 
   const isEvening = type === 'evening'
   const PHASES    = isEvening ? EVENING_PHASES : MORNING_PHASES
   const TOTAL     = PHASES.length
+
+  // Persist current phase to localStorage whenever it changes (Edge Cases 2, 4)
+  useEffect(() => {
+    const state: ResumeState = { missionType: type, phase, savedAt: Date.now() }
+    localStorage.setItem(RESUME_KEY, JSON.stringify(state))
+  }, [phase, type])
+
+  // On session expiry mid-mission, ensure state is saved before the page navigates (Edge Case 2)
+  useEffect(() => {
+    function handleSessionExpired() {
+      const state: ResumeState = {
+        missionType: type,
+        phase: phaseRef.current,
+        savedAt: Date.now(),
+      }
+      localStorage.setItem(RESUME_KEY, JSON.stringify(state))
+    }
+    window.addEventListener('eos:session-expired', handleSessionExpired)
+    return () => window.removeEventListener('eos:session-expired', handleSessionExpired)
+  }, [type])
 
   function advance() {
     setDir(1)
@@ -43,6 +90,8 @@ export default function MissionShell({ type = 'morning' }: MissionShellProps) {
   }
 
   function handleMissionComplete() {
+    // Clear resume state on successful completion
+    localStorage.removeItem(RESUME_KEY)
     navigate('/dashboard')
   }
 
