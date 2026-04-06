@@ -196,7 +196,13 @@ The router (`client/src/router/AppRouter.tsx`) uses React Router v6 with two rou
 
 ## Database Schema
 
-Migration `20260405143747_init` applied. All tables live in the `heliumdb` PostgreSQL database.
+All 6 migrations applied. All tables live in the `heliumdb` PostgreSQL database (Replit built-in PostgreSQL, `DATABASE_URL` secret).
+
+**Seeded data:** 162 `ContentItem` records for Level 1 — Module 1 (26 alphabets: 5 vowels + 21 consonants) and Module 2 (135 core words: pronouns, be-verbs, action verbs, nouns, adjectives, connectors). Re-seed anytime with `pnpm --filter server prisma db seed`.
+
+**Indexes:** `SRQueueItem(learnerId, nextReviewDate)` and `MissionSession(learnerId, sessionDate, type)` added in migration `20260406070000_add_db_indexes`.
+
+**Backup process:** See `server/docs/database-backup.md` for the `pg_dump` export and restore procedure (v1.0 manual; automation planned for v1.1).
 
 ### Enums
 | Enum | Values |
