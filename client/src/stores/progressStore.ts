@@ -76,6 +76,7 @@ export interface LevelProgressRecord {
 }
 
 const DASHBOARD_TTL_MS = 30_000 // 30 seconds
+const PROFILE_TTL_MS = 60_000   // 60 seconds
 
 interface ProgressStore {
   learnerProfile: LearnerProfile | null
@@ -97,14 +98,29 @@ interface ProgressStore {
 
   /** Timestamp (Date.now()) of the last successful loadDashboard call */
   _dashboardLastFetched: number
+  /** Timestamp (Date.now()) of the last successful loadLearnerProfile call */
+  _profileLastFetched: number
 
   setLearnerProfile: (profile: LearnerProfile) => void
   setStats: (stats: { xp: number; streak: number; brainCompoundPct: number }) => void
   setBatmanState: (state: { batmanModeActive: boolean; batmanSkipUsedThisWeek: boolean }) => void
 
+  loadLearnerProfile: (force?: boolean) => Promise<void>
   loadDashboard: () => Promise<void>
   loadMasteryMap: () => Promise<void>
   loadStats: () => Promise<void>
+}
+
+interface RawLearnerProfile {
+  id: string
+  name: string
+  email: string
+  levelCurrent: number
+  moduleCurrent: number
+  dayNumber: number
+  createdAt: string
+  whyMotivation: string | null
+  stakesStatement: string | null
 }
 
 export const useProgressStore = create<ProgressStore>((set, get) => ({
@@ -126,6 +142,7 @@ export const useProgressStore = create<ProgressStore>((set, get) => ({
   serverBadges: [],
 
   _dashboardLastFetched: 0,
+  _profileLastFetched: 0,
 
   setLearnerProfile: (profile) => set({ learnerProfile: profile }),
 
@@ -135,26 +152,55 @@ export const useProgressStore = create<ProgressStore>((set, get) => ({
   setBatmanState: ({ batmanModeActive, batmanSkipUsedThisWeek }) =>
     set({ batmanModeActive, batmanSkipUsedThisWeek }),
 
+  loadLearnerProfile: async (force = false) => {
+    const { _profileLastFetched } = get()
+    if (!force && Date.now() - _profileLastFetched < PROFILE_TTL_MS) return
+
+    try {
+      const res = await api.get<{ success: boolean; data: RawLearnerProfile }>(
+        '/api/v1/learner/profile'
+      )
+      const d = res.data
+      const profile: LearnerProfile = {
+        id: d.id,
+        name: d.name,
+        email: d.email,
+        currentLevel: d.levelCurrent,
+        currentModule: d.moduleCurrent ?? 1,
+        dayNumber: d.dayNumber ?? 1,
+        joinedAt: d.createdAt,
+        why: d.whyMotivation ?? '',
+        stake: d.stakesStatement ?? '',
+      }
+      set({ learnerProfile: profile, _profileLastFetched: Date.now() })
+    } catch {
+      // silently fail — stale data is better than crashing
+    }
+  },
+
   loadDashboard: async () => {
     // 30-second client-side cache: skip the API call if data is still fresh
     const { _dashboardLastFetched } = get()
     if (Date.now() - _dashboardLastFetched < DASHBOARD_TTL_MS) return
 
     try {
-      const res = await api.get<{
-        success: boolean
-        data: {
-          streak: number
-          batmanModeActive: boolean
-          brainCompoundPct: number
-          xp: number
-          rank: string
-          myWhy: string | null
-          badgeCount: number
-          todayMissions: TodayMissions
-        }
-      }>('/api/v1/progress/dashboard')
-      const d = res.data
+      const [dashRes] = await Promise.all([
+        api.get<{
+          success: boolean
+          data: {
+            streak: number
+            batmanModeActive: boolean
+            brainCompoundPct: number
+            xp: number
+            rank: string
+            myWhy: string | null
+            badgeCount: number
+            todayMissions: TodayMissions
+          }
+        }>('/api/v1/progress/dashboard'),
+        get().loadLearnerProfile(),
+      ])
+      const d = dashRes.data
       set({
         streak: d.streak,
         batmanModeActive: d.batmanModeActive,
@@ -171,11 +217,14 @@ export const useProgressStore = create<ProgressStore>((set, get) => ({
 
   loadMasteryMap: async () => {
     try {
-      const res = await api.get<{
-        success: boolean
-        data: { levels: MapLevel[] }
-      }>('/api/v1/progress/map')
-      set({ mapLevels: res.data.levels })
+      const [mapRes] = await Promise.all([
+        api.get<{
+          success: boolean
+          data: { levels: MapLevel[] }
+        }>('/api/v1/progress/map'),
+        get().loadLearnerProfile(),
+      ])
+      set({ mapLevels: mapRes.data.levels })
     } catch {
       // silently fail
     }

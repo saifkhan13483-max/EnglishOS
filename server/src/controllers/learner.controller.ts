@@ -46,17 +46,40 @@ const SAFE_SELECT = {
 export async function getProfile(req: AuthRequest, res: Response): Promise<void> {
   const learnerId = req.userId as string
 
-  const learner = await prisma.learner.findUnique({
-    where: { id: learnerId },
-    select: SAFE_SELECT,
-  })
+  const [learner, activeModuleRecord] = await Promise.all([
+    prisma.learner.findUnique({
+      where: { id: learnerId },
+      select: SAFE_SELECT,
+    }),
+    prisma.levelProgress.findFirst({
+      where: { learnerId, status: ModuleStatus.ACTIVE, module: { gt: 0 } },
+      orderBy: [{ level: 'asc' }, { module: 'asc' }],
+      select: { module: true, level: true },
+    }),
+  ])
 
   if (!learner) {
     res.status(404).json({ success: false, error: 'Learner not found' })
     return
   }
 
-  res.json({ success: true, data: learner })
+  // Compute day number from account creation date
+  const joinedAt = (learner as unknown as { createdAt: Date }).createdAt
+  const dayNumber = joinedAt
+    ? Math.max(1, Math.floor((Date.now() - new Date(joinedAt).getTime()) / 86_400_000) + 1)
+    : 1
+
+  // Current module is the active LevelProgress module, defaulting to 1
+  const moduleCurrent = activeModuleRecord?.module ?? 1
+
+  res.json({
+    success: true,
+    data: {
+      ...learner,
+      moduleCurrent,
+      dayNumber,
+    },
+  })
 }
 
 // ── PUT /api/v1/learner/profile ────────────────────────────────────────────────

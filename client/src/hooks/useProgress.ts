@@ -27,6 +27,7 @@ export function useProgress() {
   const totalDaysActive = useProgressStore((s) => s.totalDaysActive)
   const serverBadges = useProgressStore((s) => s.serverBadges)
 
+  const loadLearnerProfile = useProgressStore((s) => s.loadLearnerProfile)
   const loadDashboard = useProgressStore((s) => s.loadDashboard)
   const loadMasteryMap = useProgressStore((s) => s.loadMasteryMap)
   const loadStats = useProgressStore((s) => s.loadStats)
@@ -50,6 +51,7 @@ export function useProgress() {
     levelProgressList,
     totalDaysActive,
     serverBadges,
+    loadLearnerProfile,
     loadDashboard,
     loadMasteryMap,
     loadStats,
