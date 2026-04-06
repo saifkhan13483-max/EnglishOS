@@ -98,6 +98,7 @@ model SRQueueItem {
   item            ContentItem @relation(fields: [itemId], references: [id], onDelete: Cascade)
 
   @@unique([learnerId, itemId])
+  @@index([learnerId, nextReviewDate])
 }
 
 model MissionSession {
@@ -114,6 +115,8 @@ model MissionSession {
 
   learner         Learner           @relation(fields: [learnerId], references: [id], onDelete: Cascade)
   feynmanResponses FeynmanResponse[]
+
+  @@index([learnerId, sessionDate, type])
 }
 
 model LevelProgress {

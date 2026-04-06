@@ -7,6 +7,7 @@ import compression from 'compression'
 import path from 'path'
 
 import { errorHandler } from './middleware/errorHandler'
+import { prisma } from './lib/prisma'
 
 import authRoutes from './routes/auth.routes'
 import learnerRoutes from './routes/learner.routes'
@@ -100,8 +101,15 @@ const limiter = rateLimit({
 
 app.use(limiter)
 
-app.get('/health', (_req: Request, res: Response) => {
-  res.json({ status: 'ok', timestamp: new Date().toISOString() })
+app.get('/health', async (_req: Request, res: Response) => {
+  let database: 'connected' | 'error' = 'error'
+  try {
+    await prisma.$queryRaw`SELECT 1`
+    database = 'connected'
+  } catch {
+    database = 'error'
+  }
+  res.json({ status: 'ok', database, timestamp: new Date().toISOString() })
 })
 
 const API = '/api/v1'
