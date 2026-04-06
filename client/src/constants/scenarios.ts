@@ -48,15 +48,15 @@ export const SCENARIOS: Record<number, Scenario> = {
       'Notice: one positive sentence, one negative (do not), and one question — all three sentence types in a natural flow.',
   },
   4: {
-    icon: '🙏',
-    title: 'Good Morning!',
+    icon: '🗓️',
+    title: 'A New Work Day',
     description:
-      'You arrive at your workplace in the morning. Your manager is standing at the door. Greet your manager politely in English, then ask for something you need using "please" and "thank you".',
-    hint: 'Use: Good morning, How are you, I am fine thank you, please, excuse me, thank you very much',
+      'It is Monday morning. You arrive at work. Introduce yourself to a new colleague you have never met. Tell them your name, where you are from, what you do — then ask what day the weekly team meeting is, and what time it starts.',
+    hint: 'Use: My name is, I am from, I work in, Nice to meet you, What day is, What time is, It is, Please, Thank you',
     modelResponse:
-      'Good morning! How are you today? I am doing well, thank you. Excuse me — could I please get the key for the meeting room? Thank you very much!',
+      'Good morning! My name is Ali. I am from Lahore. I work in the accounts department. Nice to meet you! Excuse me — what day is the weekly meeting? And what time does it start? Thank you very much!',
     modelNotes:
-      'Notice: starting with "Good morning", asking how they are, saying "excuse me" before a request, using "please" in the request, and ending with "thank you".',
+      'Notice: greeting + self-introduction (name, city, job), using "Nice to meet you", asking day and time politely with "excuse me", ending with "thank you".',
   },
   5: {
     icon: '🏪',
@@ -99,9 +99,9 @@ export const FEYNMAN_PROMPTS: Record<number, FeynmanPromptInfo> = {
       "Explain the Subject-Verb-Object formula for making English sentences. Give one positive sentence, one negative sentence, and one question as examples.",
   },
   4: {
-    concept: 'Daily Speaking Patterns — Module 4',
+    concept: 'Speaking Practice — Module 4',
     prompt:
-      'Explain how to greet someone in English and make a polite request. Give real-life examples of "good morning", "please", "thank you", and "excuse me" — and explain when you would use each one.',
+      'Explain how to introduce yourself in English and have a polite conversation. Include: how to greet someone, how to say your name and where you are from, how to count from one to twenty, how to say the days of the week, and how to tell the time. Give examples for each.',
   },
   5: {
     concept: 'Daily Conversations — Module 5',

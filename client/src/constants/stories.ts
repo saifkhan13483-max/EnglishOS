@@ -423,8 +423,6 @@ const STORIES: Record<string, Story> = {
   '1_2': STORY_MODULE_2,
   '1_3': STORY_MODULE_3,
   '1_4': STORY_MODULE_4,
-  '1_5': STORY_MODULE_5,
-  '1_6': STORY_MODULE_6,
 }
 
 export function getStory(level: number, module: number): Story {

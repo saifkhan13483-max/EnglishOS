@@ -438,6 +438,157 @@ async function main() {
     });
   });
 
+  // Numbers 11–20 — isPowerPack: true
+  const numbers11to20 = [
+    { english: 'Eleven',   urduRoman: 'Gyarah',  exampleSentence: 'I am eleven years old.' },
+    { english: 'Twelve',   urduRoman: 'Barah',   exampleSentence: 'There are twelve months in a year.' },
+    { english: 'Thirteen', urduRoman: 'Terah',   exampleSentence: 'She is thirteen years old.' },
+    { english: 'Fourteen', urduRoman: 'Chaudah', exampleSentence: 'I have fourteen books.' },
+    { english: 'Fifteen',  urduRoman: 'Pandrah', exampleSentence: 'The class has fifteen students.' },
+    { english: 'Sixteen',  urduRoman: 'Solah',   exampleSentence: 'He is sixteen years old.' },
+    { english: 'Seventeen',urduRoman: 'Satrah',  exampleSentence: 'There are seventeen chairs.' },
+    { english: 'Eighteen', urduRoman: 'Atharah', exampleSentence: 'She is eighteen years old.' },
+    { english: 'Nineteen', urduRoman: 'Unnees',  exampleSentence: 'I need nineteen rupees.' },
+    { english: 'Twenty',   urduRoman: 'Bees',    exampleSentence: 'Twenty students passed the test.' },
+  ];
+
+  numbers11to20.forEach((s, i) => {
+    items.push({
+      level: 1, module: 4, groupName: 'Numbers 11–20',
+      type: ContentType.VOCAB,
+      english: s.english, urduRoman: s.urduRoman, exampleSentence: s.exampleSentence,
+      isPowerPack: true, sortOrder: 27 + i,
+    });
+  });
+
+  // Tens 30–100 — isPowerPack: true
+  const tens = [
+    { english: 'Thirty',  urduRoman: 'Tees',    exampleSentence: 'I am thirty years old.' },
+    { english: 'Forty',   urduRoman: 'Chaalees', exampleSentence: 'Forty people attended.' },
+    { english: 'Fifty',   urduRoman: 'Pachaas', exampleSentence: 'The price is fifty rupees.' },
+    { english: 'Sixty',   urduRoman: 'Saath',   exampleSentence: 'Sixty seconds in a minute.' },
+    { english: 'Seventy', urduRoman: 'Sattar',  exampleSentence: 'He scored seventy marks.' },
+    { english: 'Eighty',  urduRoman: 'Assee',   exampleSentence: 'She scored eighty percent.' },
+    { english: 'Ninety',  urduRoman: 'Nabbe',   exampleSentence: 'Ninety days is three months.' },
+    { english: 'One Hundred', urduRoman: 'Ek Sau', exampleSentence: 'One hundred students in school.' },
+  ];
+
+  tens.forEach((s, i) => {
+    items.push({
+      level: 1, module: 4, groupName: 'Tens: 30–100',
+      type: ContentType.VOCAB,
+      english: s.english, urduRoman: s.urduRoman, exampleSentence: s.exampleSentence,
+      isPowerPack: true, sortOrder: 37 + i,
+    });
+  });
+
+  // Days of the Week — isPowerPack: true
+  const daysOfWeek = [
+    { english: 'Monday',    urduRoman: 'Peer',      exampleSentence: 'Monday is the first working day.' },
+    { english: 'Tuesday',   urduRoman: 'Mangal',    exampleSentence: 'I have a meeting on Tuesday.' },
+    { english: 'Wednesday', urduRoman: 'Budh',      exampleSentence: 'We play cricket on Wednesday.' },
+    { english: 'Thursday',  urduRoman: 'Jumeraat',  exampleSentence: 'School ends early on Thursday.' },
+    { english: 'Friday',    urduRoman: 'Juma',      exampleSentence: 'Friday is a holy day.' },
+    { english: 'Saturday',  urduRoman: 'Hafta',     exampleSentence: 'We rest on Saturday.' },
+    { english: 'Sunday',    urduRoman: 'Aitwar',    exampleSentence: 'Sunday is a holiday.' },
+  ];
+
+  daysOfWeek.forEach((s, i) => {
+    items.push({
+      level: 1, module: 4, groupName: 'Days of the Week',
+      type: ContentType.VOCAB,
+      english: s.english, urduRoman: s.urduRoman, exampleSentence: s.exampleSentence,
+      isPowerPack: true, sortOrder: 45 + i,
+    });
+  });
+
+  // Months of the Year — isPowerPack: false
+  const months = [
+    { english: 'January',   urduRoman: 'Janvari',   exampleSentence: 'January is a cold month.' },
+    { english: 'February',  urduRoman: 'Farvari',   exampleSentence: 'February has 28 or 29 days.' },
+    { english: 'March',     urduRoman: 'March',     exampleSentence: 'Spring starts in March.' },
+    { english: 'April',     urduRoman: 'April',     exampleSentence: 'April is a warm month.' },
+    { english: 'May',       urduRoman: 'May',       exampleSentence: 'May is very hot in Pakistan.' },
+    { english: 'June',      urduRoman: 'June',      exampleSentence: 'School holidays are in June.' },
+    { english: 'July',      urduRoman: 'July',      exampleSentence: 'It rains a lot in July.' },
+    { english: 'August',    urduRoman: 'Agast',     exampleSentence: 'Pakistan Day is in August.' },
+    { english: 'September', urduRoman: 'Sitambar',  exampleSentence: 'School starts in September.' },
+    { english: 'October',   urduRoman: 'Aktoobar',  exampleSentence: 'October weather is nice.' },
+    { english: 'November',  urduRoman: 'Navambar',  exampleSentence: 'November gets cold.' },
+    { english: 'December',  urduRoman: 'Disambar',  exampleSentence: 'December is the coldest month.' },
+  ];
+
+  months.forEach((s, i) => {
+    items.push({
+      level: 1, module: 4, groupName: 'Months of the Year',
+      type: ContentType.VOCAB,
+      english: s.english, urduRoman: s.urduRoman, exampleSentence: s.exampleSentence,
+      isPowerPack: false, sortOrder: 52 + i,
+    });
+  });
+
+  // Telling Time — isPowerPack: true
+  const tellingTime = [
+    { english: 'What time is it?',    urduRoman: 'Kya waqt hua hai?',           exampleSentence: 'Excuse me, what time is it now?' },
+    { english: 'It is 3 o\'clock.',   urduRoman: 'Teen baje hain.',              exampleSentence: 'It is 3 o\'clock in the afternoon.' },
+    { english: 'It is half past 4.',  urduRoman: 'Sarrhe chaar baje hain.',      exampleSentence: 'The meeting is at half past 4.' },
+    { english: 'It is quarter past 2.',urduRoman: 'Savaa do baje hain.',         exampleSentence: 'It is quarter past 2, hurry up!' },
+    { english: 'It is quarter to 5.', urduRoman: 'Paune paanch baje hain.',      exampleSentence: 'It is quarter to 5, time to leave.' },
+    { english: 'In the morning',      urduRoman: 'Subah ko',                     exampleSentence: 'I wake up in the morning at 6.' },
+    { english: 'In the afternoon',    urduRoman: 'Dopahar ko',                   exampleSentence: 'We eat lunch in the afternoon.' },
+    { english: 'At night',            urduRoman: 'Raat ko',                      exampleSentence: 'I study English at night.' },
+  ];
+
+  tellingTime.forEach((s, i) => {
+    items.push({
+      level: 1, module: 4, groupName: 'Telling Time',
+      type: ContentType.PHRASE,
+      english: s.english, urduRoman: s.urduRoman, exampleSentence: s.exampleSentence,
+      isPowerPack: true, sortOrder: 64 + i,
+    });
+  });
+
+  // Self-Introduction Phrases — isPowerPack: true
+  const selfIntro = [
+    { english: 'My name is ___.',            urduRoman: 'Mera naam ___ hai.',                 exampleSentence: 'My name is Ali Ahmed.' },
+    { english: 'I am ___ years old.',        urduRoman: 'Meri umar ___ saal hai.',             exampleSentence: 'I am 22 years old.' },
+    { english: 'I am from Lahore.',          urduRoman: 'Mein Lahore se hoon.',                exampleSentence: 'I am from Lahore, Pakistan.' },
+    { english: 'I am a student.',            urduRoman: 'Mein ek talib ilm hoon.',             exampleSentence: 'I am a student at Government College.' },
+    { english: 'I work in an office.',       urduRoman: 'Mein office mein kaam karta hoon.',   exampleSentence: 'I work in an office in the city.' },
+    { english: 'My hobby is reading.',       urduRoman: 'Mera shauk kitaabein parhna hai.',    exampleSentence: 'My hobby is reading books.' },
+    { english: 'Nice to meet you.',          urduRoman: 'Aap se milkar khushi hui.',           exampleSentence: 'Nice to meet you for the first time.' },
+  ];
+
+  selfIntro.forEach((s, i) => {
+    items.push({
+      level: 1, module: 4, groupName: 'Self-Introduction',
+      type: ContentType.PHRASE,
+      english: s.english, urduRoman: s.urduRoman, exampleSentence: s.exampleSentence,
+      isPowerPack: true, sortOrder: 72 + i,
+    });
+  });
+
+  // Direction Words — isPowerPack: false
+  const directions = [
+    { english: 'Go straight.',     urduRoman: 'Seedha jaaiye.',            exampleSentence: 'Go straight and you will see the school.' },
+    { english: 'Turn left.',        urduRoman: 'Baayin taraf muriye.',       exampleSentence: 'Turn left at the traffic signal.' },
+    { english: 'Turn right.',       urduRoman: 'Seedhi taraf muriye.',       exampleSentence: 'Turn right at the roundabout.' },
+    { english: 'Where is ___?',     urduRoman: '___ kahan hai?',             exampleSentence: 'Excuse me, where is the hospital?' },
+    { english: 'How far is it?',    urduRoman: 'Yeh kitna door hai?',        exampleSentence: 'How far is it from here?' },
+    { english: 'About 5 minutes.',  urduRoman: 'Takriban 5 minute.',         exampleSentence: 'It is about 5 minutes by walk.' },
+    { english: 'On the left.',      urduRoman: 'Baayin taraf.',              exampleSentence: 'The shop is on the left side.' },
+    { english: 'On the right.',     urduRoman: 'Seedhi taraf.',              exampleSentence: 'The school is on the right.' },
+  ];
+
+  directions.forEach((s, i) => {
+    items.push({
+      level: 1, module: 4, groupName: 'Direction Words',
+      type: ContentType.PHRASE,
+      english: s.english, urduRoman: s.urduRoman, exampleSentence: s.exampleSentence,
+      isPowerPack: false, sortOrder: 79 + i,
+    });
+  });
+
   // ════════════════════════════════════════════════════════════════════════
   // LEVEL 2 — ELEMENTARY (Days 31–75)
   // ════════════════════════════════════════════════════════════════════════

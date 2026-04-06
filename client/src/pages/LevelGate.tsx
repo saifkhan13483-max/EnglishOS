@@ -99,6 +99,33 @@ const QUESTIONS: Question[] = [
     hint: 'Think about gaining new knowledge or skill.',
     answer: 'learn',
   },
+  {
+    id: 11, type: 'grammar',
+    prompt: 'What is the English word for the number "Paanch"?',
+    hint: 'Think about counting: one, two, three, four, ___',
+    options: ['Four', 'Five', 'Six', 'Seven'],
+    correct: 1,
+  },
+  {
+    id: 12, type: 'grammar',
+    prompt: 'Which is the correct English name for "Juma" (the holy day)?',
+    hint: 'Days of the week: Monday, Tuesday, Wednesday, Thursday, ___, Saturday, Sunday',
+    options: ['Thursday', 'Saturday', 'Friday', 'Sunday'],
+    correct: 2,
+  },
+  {
+    id: 13, type: 'vocab',
+    prompt: 'Complete the self-introduction: "My ___ is Ali."',
+    hint: 'This is the first thing you say when you introduce yourself.',
+    answer: 'name',
+  },
+  {
+    id: 14, type: 'sentence',
+    prompt: 'Is this self-introduction correct?',
+    hint: 'Check if the sentence structure is right for introducing yourself.',
+    sentence: 'My name is Sara. I am from Karachi.',
+    isCorrect: true,
+  },
 ]
 
 const PASS_THRESHOLD = 70

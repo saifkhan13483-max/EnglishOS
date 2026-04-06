@@ -30,7 +30,7 @@ const MODULE_META: Record<number, Record<number, { name: string; days: string; d
     1: { name: 'Alphabets & Sounds',  days: 'Days 1–5',   description: '26 letters, vowels first, pronunciation guide with Roman Urdu' },
     2: { name: 'Core 100 Words',      days: 'Days 6–12',  description: 'The 100 words powering 50% of all everyday conversations' },
     3: { name: 'Basic Sentences',     days: 'Days 13–20', description: 'SVO formula — one formula, every sentence in English' },
-    4: { name: 'Speaking Practice',   days: 'Days 21–30', description: 'Daily speaking drills and pronunciation with Feynman Check' },
+    4: { name: 'Numbers, Days & Speaking', days: 'Days 21–30', description: 'Numbers 1–100, days of the week, months, telling time, self-introduction, polite phrases, and greetings' },
   },
   2: {
     1: { name: 'Present Tense',       days: 'Days 1–9',   description: 'Simple and continuous present — the foundation of conversation' },
