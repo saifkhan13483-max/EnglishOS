@@ -38,6 +38,7 @@ app.use(
       if (
         allowedOrigins.some((o) => origin === o) ||
         origin.endsWith('.replit.dev') ||
+        origin.endsWith('.replit.app') ||
         origin.endsWith('.repl.co')
       ) {
         return callback(null, true)
