@@ -1,0 +1,225 @@
+You are redesigning the typography and color system for EnglishOS — a 300-day English fluency
+platform for South Asian (Urdu/Hindi) learners. The site uses React 18 + Vite, Tailwind CSS,
+and Framer Motion. It has a dark, high-tech aesthetic with red as the dominant brand accent.
+
+Below is the CURRENT system, followed by the EXACT changes I want. Implement all of them.
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+CURRENT FONTS
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+Display / Headings → Space Grotesk
+Body Text          → Inter
+Code / Technical   → JetBrains Mono
+Roman Urdu         → Noto Sans
+
+CURRENT COLOR PALETTE
+Backgrounds:  #0A0A0F, #111118, #1A1A28
+Brand:        Red #E94560, Blue #4A9EFF, Gold #F5B014, Green #2ECC71, Purple #A855F7
+Text:         #FFFFFF, #C8C8E0, #6A6A8A
+Borders:      #2A2A3E, #3A3A5A
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+TYPOGRAPHY IMPROVEMENTS
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+1. UPGRADE HEADING FONT: Replace Space Grotesk with "Plus Jakarta Sans" (Google Fonts).
+   - Why: Space Grotesk is strong for pure tech brands but reads cold for a LEARNING platform.
+     Plus Jakarta Sans has geometric clarity like Space Grotesk but adds warmth and friendliness
+     — critical for non-native English learners who may feel intimidated. It also has excellent
+     weight range (200–800) for headline hierarchy.
+   - Use weights: 600 (section headings), 700 (page titles), 800 (hero headlines).
+   - Set letter-spacing: -0.02em on all headings for tighter, modern feel.
+
+2. KEEP Inter FOR BODY — but refine it:
+   - Default weight: 400 for body, 500 for emphasis/labels, 600 for bold inline text.
+   - Line-height: 1.7 for body paragraphs (currently likely 1.5 — bump it for readability,
+     especially for ESL readers who need breathing room).
+   - Max paragraph width: 65ch (readable measure for non-native readers).
+   - Font-size base: 16px minimum on mobile, 17px on desktop.
+
+3. KEEP JetBrains Mono — but scope it tightly:
+   - ONLY use in: code blocks, XP counters, day-count displays, streak numbers, timer elements.
+   - Add font-feature-settings: "liga" on, "calt" on for coding ligatures.
+   - Use tabular-nums (font-variant-numeric: tabular-nums) on all number displays.
+
+4. UPGRADE Roman Urdu: Replace Noto Sans with "Noto Sans Devanagari" + "Noto Nastaliq Urdu"
+   - Use Noto Nastaliq Urdu for any Urdu script passages (proper Nastaliq calligraphic flow).
+   - Use Noto Sans Devanagari for Hindi script if needed.
+   - For Roman Urdu (Latin script), keep Inter as the body font — it handles Latin perfectly.
+   - Set a font-family stack: 'Inter', 'Noto Nastaliq Urdu', 'Noto Sans Devanagari', sans-serif
+     for mixed-content areas.
+
+5. ADD A DISPLAY/ACCENT FONT for special moments:
+   - Add "Instrument Serif" (Google Fonts) — use ONLY for:
+     • Motivational quotes on lesson-complete screens
+     • The "Day X of 300" milestone display
+     • Testimonial pull-quotes
+   - This creates a premium editorial contrast against the geometric system fonts.
+   - Weight: 400 (regular italic) for quotes, 400 (regular) for display numbers.
+
+6. TYPOGRAPHY SCALE (use Tailwind's extend):
+   - text-xs:   0.75rem / 1rem
+   - text-sm:   0.875rem / 1.25rem
+   - text-base: 1.0625rem / 1.75rem   ← (17px base on desktop)
+   - text-lg:   1.125rem / 1.75rem
+   - text-xl:   1.25rem / 1.75rem
+   - text-2xl:  1.5rem / 2rem
+   - text-3xl:  1.875rem / 2.25rem
+   - text-4xl:  2.25rem / 2.5rem
+   - text-5xl:  3rem / 1.15
+   - text-hero: 3.75rem / 1.05         ← (custom for hero sections)
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+COLOR PALETTE IMPROVEMENTS
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+PROBLEM WITH CURRENT PALETTE:
+- #0A0A0F is nearly pure black → causes harsh contrast with white text and OLED smearing.
+- Red accent #E94560 is strong but used in isolation — no warm/cool balance system.
+- #C8C8E0 lavender-grey secondary text has a purple tint that clashes subtly with warm red.
+- Too many brand colors (5) with no clear hierarchy — creates visual noise.
+- Borders are too similar to backgrounds — cards don't "lift" off the page.
+
+NEW BACKGROUND SYSTEM (warmer dark, less "void"):
+- bg-primary:    #0C0C14    ← (slightly lifted from pure black, adds depth)
+- bg-elevated:   #13131E    ← (cards, modals, dropdowns)
+- bg-surface:    #1C1C2A    ← (input fields, code blocks, nested surfaces)
+- bg-hover:      #242438    ← (hover states, active selections)
+- bg-highlight:  #2A2A42    ← (selected items, active tabs)
+
+WHY: Moving from #0A0A0F to #0C0C14 avoids the "OLED void" effect. Each step is a consistent
++8-10% lightness jump, creating a clear 5-level elevation system for depth and hierarchy.
+
+NEW BRAND COLOR SYSTEM (tighter hierarchy):
+
+Primary Accent — KEEP the red but refine it:
+- brand-500:  #EF4565    ← (slightly warmer and more saturated than #E94560)
+- brand-400:  #F76B84    ← (hover state, lighter variant)
+- brand-600:  #D93251    ← (pressed/active state)
+- brand-900:  #2A0A12    ← (red-tinted background for alerts/emphasis)
+- brand-glow: rgba(239, 69, 101, 0.15)  ← (subtle glow behind CTAs)
+
+Secondary Accent — Elevate blue to a proper secondary:
+- secondary-500: #5BA4FF   ← (brighter, more visible than #4A9EFF on dark bg)
+- secondary-400: #7DB8FF   ← (hover)
+- secondary-600: #3D8AEF   ← (pressed)
+- secondary-900: #0A1628   ← (blue-tinted background for info sections)
+
+Semantic Colors (reduce from 5 to 3 + red/blue):
+- success:  #34D884     ← (warmer green, higher saturation for dark bg visibility)
+- warning:  #F5B731     ← (slightly warmer gold, dual-purpose: warnings + XP/achievements)
+- error:    #EF4565     ← (reuse brand-500 — red IS the error color, reduces palette bloat)
+
+REMOVE purple (#A855F7) as a standalone brand color. If needed for rare decorative use,
+derive it from a gradient between brand-red and secondary-blue:
+- gradient-accent: linear-gradient(135deg, #EF4565, #5BA4FF)  ← replaces purple
+
+NEW TEXT COLORS:
+- text-primary:   #F0F0F8    ← (NOT pure white — reduces harsh contrast and eye strain)
+- text-secondary: #B0B0C8    ← (neutral grey, NO purple/lavender tint)
+- text-muted:     #6B6B85    ← (slightly warmer than #6A6A8A)
+- text-disabled:  #4A4A62
+- text-brand:     #EF4565    ← (for links, highlights, emphasis)
+- text-on-brand:  #FFFFFF    ← (white text on red buttons/badges)
+
+NEW BORDER & DIVIDER SYSTEM:
+- border-subtle:  #1E1E30    ← (barely visible, for structure)
+- border-default: #2A2A40    ← (standard card borders)
+- border-strong:  #3A3A55    ← (active/focused inputs)
+- border-brand:   #EF4565    ← (focus rings on interactive elements)
+
+ADD GLOW / AMBIENT EFFECTS (for the "OS" sci-fi premium feel):
+- glow-red:    0 0 30px rgba(239, 69, 101, 0.2)
+- glow-blue:   0 0 30px rgba(91, 164, 255, 0.2)
+- glow-success: 0 0 20px rgba(52, 216, 132, 0.15)
+Use these as box-shadow on: active cards, CTA buttons on hover, achievement badges,
+and the daily progress ring.
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+TAILWIND CONFIG IMPLEMENTATION
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+Update tailwind.config.ts with ALL the above values. Structure the theme.extend like this:
+
+fontFamily: {
+  display: ['"Plus Jakarta Sans"', 'sans-serif'],
+  body: ['Inter', 'sans-serif'],
+  mono: ['"JetBrains Mono"', 'monospace'],
+  urdu: ['"Noto Nastaliq Urdu"', '"Noto Sans Devanagari"', 'sans-serif'],
+  serif: ['"Instrument Serif"', 'serif'],
+}
+
+Map all colors under a semantic naming convention:
+colors.bg.primary, colors.bg.elevated, colors.bg.surface, etc.
+colors.brand.500, colors.brand.400, colors.brand.600, etc.
+colors.text.primary, colors.text.secondary, etc.
+
+Add the glow box-shadows under boxShadow.
+Add the typography scale under fontSize with [size, lineHeight] tuples.
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+GOOGLE FONTS IMPORT (update index.html or _app)
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+<link href="https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@0;1&family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&family=Noto+Nastaliq+Urdu:wght@400;700&family=Noto+Sans+Devanagari:wght@400;700&family=Plus+Jakarta+Sans:wght@600;700;800&display=swap" rel="stylesheet">
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+GLOBAL CSS RULES (add to index.css or globals.css)
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+body {
+  font-family: 'Inter', sans-serif;
+  font-size: 1.0625rem;
+  line-height: 1.7;
+  color: #F0F0F8;
+  background-color: #0C0C14;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  text-rendering: optimizeLegibility;
+}
+
+h1, h2, h3, h4, h5, h6 {
+  font-family: 'Plus Jakarta Sans', sans-serif;
+  letter-spacing: -0.02em;
+  color: #F0F0F8;
+}
+
+p {
+  max-width: 65ch;
+}
+
+code, pre, .font-mono {
+  font-family: 'JetBrains Mono', monospace;
+  font-feature-settings: "liga" on, "calt" on;
+  font-variant-numeric: tabular-nums;
+}
+
+::selection {
+  background-color: rgba(239, 69, 101, 0.3);
+  color: #FFFFFF;
+}
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+SUMMARY OF CHANGES
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+FONTS:
+✦ Space Grotesk → Plus Jakarta Sans (warmer headings for learners)
+✦ Inter stays, refined (line-height 1.7, 17px base, 65ch max-width)
+✦ JetBrains Mono stays, scoped to data/code only
+✦ Noto Sans → Noto Nastaliq Urdu + Noto Sans Devanagari (proper script support)
+✦ NEW: Instrument Serif for editorial accent moments
+
+COLORS:
+✦ Backgrounds warmed: #0A0A0F → #0C0C14 (5-level elevation system)
+✦ Red refined: #E94560 → #EF4565 (with full 400/500/600/900 scale + glow)
+✦ Blue elevated: #4A9EFF → #5BA4FF (proper secondary with scale)
+✦ Purple REMOVED as standalone (replaced by red→blue gradient)
+✦ Text softened: #FFFFFF → #F0F0F8 (reduces eye strain)
+✦ Secondary text de-purpled: #C8C8E0 → #B0B0C8 (neutral grey)
+✦ Border system expanded to 4 levels
+✦ Glow effects added for sci-fi premium feel
+✦ Semantic colors reduced from 5 to 3 (success, warning, error)
+
+Apply all changes across every component. Ensure WCAG AA contrast ratios pass for all
+text/background combinations (minimum 4.5:1 for body, 3:1 for large headings).

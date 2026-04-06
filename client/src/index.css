@@ -4,9 +4,35 @@
 
 @layer base {
   body {
-    background-color: #0A0A0F;
-    color: #C8C8E0;
     font-family: 'Inter', sans-serif;
+    font-size: 1.0625rem;
+    line-height: 1.7;
+    color: #F0F0F8;
+    background-color: #0C0C14;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+    text-rendering: optimizeLegibility;
+  }
+
+  h1, h2, h3, h4, h5, h6 {
+    font-family: 'Plus Jakarta Sans', sans-serif;
+    letter-spacing: -0.02em;
+    color: #F0F0F8;
+  }
+
+  p {
+    max-width: 65ch;
+  }
+
+  code, pre, .font-mono {
+    font-family: 'JetBrains Mono', monospace;
+    font-feature-settings: "liga" on, "calt" on;
+    font-variant-numeric: tabular-nums;
+  }
+
+  ::selection {
+    background-color: rgba(239, 69, 101, 0.3);
+    color: #FFFFFF;
   }
 
   /* Remove the default blue flash on tap in iOS Safari / Android WebView */
@@ -14,8 +40,8 @@
     -webkit-tap-highlight-color: transparent;
   }
 
-  /* Ensure Roman Urdu diacritics render correctly on Android Chrome (Edge Case 12) */
+  /* Urdu script rendering */
   [lang="ur"] {
-    font-family: 'Noto Sans', 'Inter', sans-serif;
+    font-family: 'Noto Nastaliq Urdu', 'Noto Sans Devanagari', 'Inter', sans-serif;
   }
 }
