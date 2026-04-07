@@ -15,7 +15,7 @@ The single workflow `Start application` runs both services concurrently:
 - **Express API server** on port **3001** — serves `/api/v1/*` and `/health`
 - Vite proxies `/api` and `/health` requests to localhost:3001
 
-Command: `concurrently "pnpm --filter server dev" "pnpm --filter client dev"`
+Command: `pnpm exec concurrently "pnpm --filter server dev" "pnpm --filter client dev"`
 
 ## Key Technologies
 
