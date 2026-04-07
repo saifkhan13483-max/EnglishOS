@@ -242,8 +242,8 @@ export async function refresh(req: Request, res: Response): Promise<void> {
     return
   }
 
-  // Rotate — delete old, issue new
-  await prisma.refreshToken.delete({ where: { id: stored.id } })
+  // Rotate — delete old (deleteMany is idempotent; avoids P2025 on race condition), issue new
+  await prisma.refreshToken.deleteMany({ where: { id: stored.id } })
 
   const newAccessToken = generateAccessToken(payload.userId)
   const newRefreshToken = generateRefreshToken(payload.userId)

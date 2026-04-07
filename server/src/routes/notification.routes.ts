@@ -1,5 +1,6 @@
 import { Router } from 'express'
 import { authenticate } from '../middleware/auth'
+import { asyncHandler } from '../middleware/asyncHandler'
 import {
   getNotificationPreferences,
   updateNotificationPreferences,
@@ -10,8 +11,8 @@ const router = Router()
 
 router.use(authenticate)
 
-router.get('/preferences', getNotificationPreferences)
-router.patch('/preferences', updateNotificationPreferences)
-router.post('/test', sendTestReminder)
+router.get('/preferences', asyncHandler(getNotificationPreferences))
+router.patch('/preferences', asyncHandler(updateNotificationPreferences))
+router.post('/test', asyncHandler(sendTestReminder))
 
 export default router

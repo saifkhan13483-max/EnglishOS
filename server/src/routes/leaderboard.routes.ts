@@ -1,5 +1,6 @@
 import { Router } from 'express'
 import { authenticate } from '../middleware/auth'
+import { asyncHandler } from '../middleware/asyncHandler'
 import {
   getWeeklyLeaderboard,
   submitFeynman,
@@ -10,8 +11,8 @@ const router = Router()
 
 router.use(authenticate)
 
-router.get('/feynman/weekly', getWeeklyLeaderboard)
-router.post('/feynman/submit', submitFeynman)
-router.post('/feynman/:entryId/upvote', upvoteEntry)
+router.get('/feynman/weekly', asyncHandler(getWeeklyLeaderboard))
+router.post('/feynman/submit', asyncHandler(submitFeynman))
+router.post('/feynman/:entryId/upvote', asyncHandler(upvoteEntry))
 
 export default router

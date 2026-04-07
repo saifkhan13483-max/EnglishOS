@@ -1,5 +1,6 @@
 import { Router } from 'express'
 import { authenticate } from '../middleware/auth'
+import { asyncHandler } from '../middleware/asyncHandler'
 import {
   getMasteryMap,
   getDashboard,
@@ -14,10 +15,10 @@ const router = Router()
 
 router.use(authenticate)
 
-router.get('/map', getMasteryMap)
-router.get('/dashboard', getDashboard)
-router.post('/gate/submit', validate(submitGateSchema), submitGate)
-router.post('/module/complete', completeModule)
-router.get('/stats', getStats)
+router.get('/map', asyncHandler(getMasteryMap))
+router.get('/dashboard', asyncHandler(getDashboard))
+router.post('/gate/submit', validate(submitGateSchema), asyncHandler(submitGate))
+router.post('/module/complete', asyncHandler(completeModule))
+router.get('/stats', asyncHandler(getStats))
 
 export default router

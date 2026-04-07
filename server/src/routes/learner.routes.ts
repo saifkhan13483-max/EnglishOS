@@ -1,5 +1,6 @@
 import { Router } from 'express'
 import { authenticate } from '../middleware/auth'
+import { asyncHandler } from '../middleware/asyncHandler'
 import {
   getProfile,
   updateProfile,
@@ -15,11 +16,11 @@ const router = Router()
 
 router.use(authenticate)
 
-router.get('/profile', getProfile)
-router.put('/profile', updateProfile)
-router.post('/onboarding', validate(onboardingSchema), completeOnboarding)
-router.put('/stakes', updateStakes)
-router.post('/batman-skip', useBatmanSkip)
-router.delete('/account', deleteAccount)
+router.get('/profile', asyncHandler(getProfile))
+router.put('/profile', asyncHandler(updateProfile))
+router.post('/onboarding', validate(onboardingSchema), asyncHandler(completeOnboarding))
+router.put('/stakes', asyncHandler(updateStakes))
+router.post('/batman-skip', asyncHandler(useBatmanSkip))
+router.delete('/account', asyncHandler(deleteAccount))
 
 export default router
