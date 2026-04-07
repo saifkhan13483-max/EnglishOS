@@ -70,6 +70,19 @@ All API routes are prefixed `/api/v1/`:
 - `/log` — client-side error logging
 - `/debug` — debug utilities
 
+## Seed Data
+
+Run once after first deploy or after a database reset:
+```bash
+cd server && npx prisma db seed
+```
+Seeds 657 ContentItems across Levels 1–6. Level 1 has 26 alphabet items (Module 1), 135 core words (Module 2), 23 sentence patterns (Module 3), and 26 daily patterns (Module 4).
+
+## Known-Fixed Bugs
+
+- **SR Queue initialization on registration** (`auth.controller.ts`): When a new user registers, `initializeSRQueue` is now called immediately for all Level 1 Module 1 content items so WarmupFlash cards are available from Day 1.
+- **Duplicate tile IDs in SentenceBuilder** (`sentences.ts`): All exercises now have unique tile strings. Previously some exercises had duplicate strings (e.g., `'is not'` × 2, `'Is'` × 2) which caused dnd-kit to silently drop extra tiles from the pool on drag.
+
 ## Production Build
 
 For production deployment, build both packages:

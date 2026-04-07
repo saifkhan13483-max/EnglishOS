@@ -4,6 +4,7 @@ import jwt from 'jsonwebtoken'
 import crypto from 'crypto'
 import { ModuleStatus } from '@prisma/client'
 import { prisma } from '../lib/prisma'
+import { initializeSRQueue } from '../services/srEngine'
 
 // ── Constants ─────────────────────────────────────────────────────────────────
 
@@ -134,6 +135,15 @@ export async function register(req: Request, res: Response): Promise<void> {
       }
     }),
   })
+
+  // Seed the SR queue with all Level 1 Module 1 content items so warm-up flashcards
+  // are available from Day 1
+  const module1Items = await prisma.contentItem.findMany({
+    where: { level: 1, module: 1 },
+  })
+  if (module1Items.length > 0) {
+    await initializeSRQueue(learner.id, module1Items)
+  }
 
   // Generate tokens
   const accessToken = generateAccessToken(learner.id)
