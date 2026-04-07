@@ -3,6 +3,7 @@ import { useNavigate } from 'react-router-dom'
 import { motion, AnimatePresence, useReducedMotion } from 'framer-motion'
 import { trackEvent } from '@/utils/analytics'
 import { useMissionStore } from '@/stores/missionStore'
+import { useProgressStore } from '@/stores/progressStore'
 
 import WarmupFlash      from './WarmupFlash'
 import CoreDrop         from './CoreDrop'
@@ -61,8 +62,10 @@ export default function MissionShell({ type = 'morning' }: MissionShellProps) {
   const PHASES    = isEvening ? EVENING_PHASES : MORNING_PHASES
   const TOTAL     = PHASES.length
 
-  const startMission = useMissionStore((s) => s.startMission)
-  const resetMission = useMissionStore((s) => s.reset)
+  const startMission      = useMissionStore((s) => s.startMission)
+  const resetMission      = useMissionStore((s) => s.reset)
+  const loadModuleContent = useMissionStore((s) => s.loadModuleContent)
+  const learnerProfile    = useProgressStore((s) => s.learnerProfile)
 
   // Start the mission on the backend when this shell mounts
   useEffect(() => {
@@ -73,6 +76,15 @@ export default function MissionShell({ type = 'morning' }: MissionShellProps) {
     })
   // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [type])
+
+  // For evening missions, pre-load module content so StoryReplay has vocab tooltips
+  useEffect(() => {
+    if (type !== 'evening') return
+    const level  = learnerProfile?.currentLevel  ?? 1
+    const module = learnerProfile?.currentModule ?? 1
+    loadModuleContent(level, module)
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [type, learnerProfile?.currentLevel, learnerProfile?.currentModule])
 
   // Track phase transitions
   useEffect(() => {

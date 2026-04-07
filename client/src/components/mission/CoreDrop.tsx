@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react'
+import { useEffect, useRef, useState } from 'react'
 import { motion, AnimatePresence } from 'framer-motion'
 import Button from '@/components/ui/Button'
 import Toggle from '@/components/ui/Toggle'
@@ -24,18 +24,22 @@ export default function CoreDrop({ onComplete }: CoreDropProps) {
   const [idx, setIdx] = useState(0)
   const [direction, setDirection] = useState(1)
 
-  // Load module content on mount
+  // Track which level_module key has been loaded to avoid double-fetching
+  const loadedKeyRef = useRef<string>('')
+
+  // Load module content, re-fetching if learnerProfile arrives with a different module
   useEffect(() => {
     const level = learnerProfile?.currentLevel ?? 1
     const module = learnerProfile?.currentModule ?? 1
+    const key = `${level}_${module}`
 
-    if (moduleContent.length === 0) {
+    if (key !== loadedKeyRef.current) {
+      loadedKeyRef.current = key
       loadModuleContent(level, module)
-    } else {
-      setCards(moduleContent)
     }
+  // Re-run whenever the learner's level or module changes (profile loads after mount)
   // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [])
+  }, [learnerProfile?.currentLevel, learnerProfile?.currentModule])
 
   // Sync cards when moduleContent arrives (already sorted: Power Pack first, then sortOrder)
   useEffect(() => {

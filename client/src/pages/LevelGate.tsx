@@ -128,16 +128,39 @@ const QUESTIONS: Question[] = [
   },
 ]
 
-const PASS_THRESHOLD = 70
+const PASS_THRESHOLD    = 70
+const GATE_COOLDOWN_KEY = 'eos_gate_failed_at'
+const COOLDOWN_MS       = 24 * 60 * 60 * 1000
+
+// ── Cooldown helpers ──────────────────────────────────────────────────────────
+function saveCooldown() {
+  localStorage.setItem(GATE_COOLDOWN_KEY, String(Date.now()))
+}
+
+function getCooldownRemaining(): number {
+  try {
+    const raw = localStorage.getItem(GATE_COOLDOWN_KEY)
+    if (!raw) return 0
+    const failedAt = parseInt(raw, 10)
+    const elapsed  = Date.now() - failedAt
+    const remaining = Math.max(0, Math.ceil((COOLDOWN_MS - elapsed) / 1000))
+    if (remaining === 0) localStorage.removeItem(GATE_COOLDOWN_KEY)
+    return remaining
+  } catch {
+    return 0
+  }
+}
 
 // ── Utility ───────────────────────────────────────────────────────────────────
-function useCountdown(seconds: number) {
-  const [remaining, setRemaining] = useState(seconds)
+function useCountdown(initialSeconds: number) {
+  const [remaining, setRemaining] = useState(initialSeconds)
   const ref = useRef<ReturnType<typeof setInterval> | null>(null)
 
   useEffect(() => {
+    if (initialSeconds <= 0) return
     ref.current = setInterval(() => setRemaining(r => Math.max(0, r - 1)), 1000)
     return () => { if (ref.current) clearInterval(ref.current) }
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [])
 
   const h = Math.floor(remaining / 3600)
@@ -302,12 +325,21 @@ function ScoreReveal({ correct, total, wrongIds, onRetry, onPass }: {
 }) {
   const pct = Math.round((correct / total) * 100)
   const passed = pct >= PASS_THRESHOLD
-  const { formatted } = useCountdown(24 * 60 * 60)
+
+  // Persist cooldown timestamp on first render when failed
+  useEffect(() => {
+    if (!passed) saveCooldown()
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [])
+
+  const { formatted } = useCountdown(getCooldownRemaining())
 
   const wrongModules = [
     ...new Set(wrongIds.map(id => {
       const q = QUESTIONS.find(q => q.id === id)
       if (!q) return null
+      // Questions 11–14 specifically cover Module 4: Numbers, Days & Greetings
+      if (id >= 11) return 'Module 4 — Numbers, Days & Greetings'
       if (q.type === 'vocab')    return 'Vocabulary — Core 100 Words'
       if (q.type === 'grammar')  return 'Grammar — Sentence Formation'
       if (q.type === 'sentence') return 'Sentence Identification'
@@ -409,8 +441,29 @@ const LEVEL_NAMES: Record<number, string> = {
   6: 'World Stage',
 }
 
-// ── Page ──────────────────────────────────────────────────────────────────────
-export default function LevelGate() {
+// ── Cooldown blocked screen ───────────────────────────────────────────────────
+function CooldownBlocked({ onBack }: { onBack: () => void }) {
+  const { formatted } = useCountdown(getCooldownRemaining())
+  return (
+    <div className="min-h-screen bg-bg-primary flex flex-col items-center justify-center px-4 gap-6">
+      <div className="text-center">
+        <p className="text-5xl mb-4">🔒</p>
+        <p className="font-display font-bold text-text-primary text-2xl mb-2">Gate Locked</p>
+        <p className="text-sm text-text-secondary font-body max-w-xs">
+          You need to review and come back after the cooldown. Use this time to practice your weak modules.
+        </p>
+      </div>
+      <div className="bg-brand-red/10 border border-brand-red/30 rounded-2xl px-6 py-4 text-center">
+        <p className="text-xs font-mono text-brand-red uppercase tracking-wider mb-1">Next Attempt In</p>
+        <p className="font-display font-bold text-text-primary text-3xl">{formatted}</p>
+      </div>
+      <Button variant="secondary" size="lg" onClick={onBack}>← Back to Dashboard</Button>
+    </div>
+  )
+}
+
+// ── Inner page (shown only when no active cooldown) ───────────────────────────
+function LevelGateInner() {
   const navigate = useNavigate()
   const learnerProfile = useProgressStore(s => s.learnerProfile)
 
@@ -596,4 +649,15 @@ export default function LevelGate() {
       </div>
     </div>
   )
+}
+
+// ── Page (default export) ─────────────────────────────────────────────────────
+export default function LevelGate() {
+  const navigate  = useNavigate()
+  const [blocked] = useState(() => getCooldownRemaining() > 0)
+
+  if (blocked) {
+    return <CooldownBlocked onBack={() => navigate('/dashboard')} />
+  }
+  return <LevelGateInner />
 }
