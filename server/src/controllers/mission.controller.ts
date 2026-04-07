@@ -1,9 +1,29 @@
 import { Response } from 'express'
-import { SessionType, SessionStatus } from '@prisma/client'
+import { SessionType, SessionStatus, ModuleStatus } from '@prisma/client'
 import { AuthRequest } from '../middleware/auth'
 import { prisma } from '../lib/prisma'
 import { calculateRank } from '../services/rankService'
 import { checkAndAwardBadges } from '../services/badgeService'
+import { initializeSRQueue } from '../services/srEngine'
+
+// ── Module day thresholds per level ──────────────────────────────────────────
+// How many evening sessions must be completed in a module before it auto-unlocks
+// the next module. Based on the 300-day course structure.
+const MODULE_DAY_THRESHOLDS: Record<string, number> = {
+  '1_1': 7,   // Level 1, Module 1: Alphabets (Days 1–7)
+  '1_2': 10,  // Level 1, Module 2: Core 100 Words (Days 8–17)
+  '1_3': 7,   // Level 1, Module 3: Grammar/SVO (Days 18–24)
+  '1_4': 6,   // Level 1, Module 4: Speaking (Days 25–30)
+  '2_1': 9, '2_2': 9, '2_3': 9, '2_4': 9, '2_5': 9,
+  '3_1': 9, '3_2': 9, '3_3': 9, '3_4': 9, '3_5': 9,
+  '4_1': 10, '4_2': 10, '4_3': 10, '4_4': 10, '4_5': 10, '4_6': 10,
+  '5_1': 10, '5_2': 10, '5_3': 10, '5_4': 10, '5_5': 10, '5_6': 10,
+  '6_1': 10, '6_2': 10, '6_3': 10, '6_4': 10, '6_5': 10, '6_6': 10,
+}
+
+const LEVEL_MODULE_COUNTS: Record<number, number> = {
+  1: 4, 2: 5, 3: 5, 4: 6, 5: 6, 6: 6,
+}
 
 // ── Helpers ───────────────────────────────────────────────────────────────────
 
@@ -292,6 +312,75 @@ export async function completeMission(req: AuthRequest, res: Response): Promise<
     batmanMode: batmanModeActivated,
   })
 
+  // ── 8. Auto-complete module after enough evening sessions ─────────────────
+  // When an EVENING session is finished, count how many evening sessions the
+  // learner has completed since their current module was unlocked.  If the
+  // count meets the module's day threshold the module is automatically marked
+  // COMPLETE and the next module (or level gate) is unlocked.
+  let moduleCompleted: number | null = null
+  let nextModuleUnlocked: number | null = null
+
+  if (mission.type === SessionType.EVENING) {
+    const activeModuleRecord = await prisma.levelProgress.findFirst({
+      where: { learnerId, status: ModuleStatus.ACTIVE, module: { gt: 0 } },
+    })
+
+    if (activeModuleRecord) {
+      const { level, module: activeModule } = activeModuleRecord
+      const thresholdKey = `${level}_${activeModule}`
+      const dayThreshold = MODULE_DAY_THRESHOLDS[thresholdKey]
+
+      if (dayThreshold !== undefined) {
+        // Count completed evening sessions since the module was unlocked
+        const unlockedSince = activeModuleRecord.unlockedAt ?? new Date(0)
+        const eveningsDone = await prisma.missionSession.count({
+          where: {
+            learnerId,
+            type: SessionType.EVENING,
+            status: SessionStatus.COMPLETE,
+            sessionDate: { gte: unlockedSince },
+          },
+        })
+
+        if (eveningsDone >= dayThreshold) {
+          // Mark this module complete
+          await prisma.levelProgress.update({
+            where: { learnerId_level_module: { learnerId, level, module: activeModule } },
+            data: { status: ModuleStatus.COMPLETE, completedAt: now },
+          })
+          moduleCompleted = activeModule
+
+          // Unlock next module if it exists
+          const totalModules = LEVEL_MODULE_COUNTS[level] ?? 0
+          const nextMod = activeModule + 1
+          if (nextMod <= totalModules) {
+            await prisma.levelProgress.upsert({
+              where: { learnerId_level_module: { learnerId, level, module: nextMod } },
+              create: { learnerId, level, module: nextMod, status: ModuleStatus.ACTIVE, unlockedAt: now },
+              update: { status: ModuleStatus.ACTIVE, unlockedAt: now },
+            })
+            nextModuleUnlocked = nextMod
+
+            // Seed SR queue for the newly unlocked module
+            const newModuleItems = await prisma.contentItem.findMany({
+              where: { level, module: nextMod },
+            })
+            if (newModuleItems.length > 0) {
+              await initializeSRQueue(learnerId, newModuleItems)
+            }
+
+            // Award module-completion badges
+            await checkAndAwardBadges(learnerId, {
+              type: 'MODULE_COMPLETE',
+              level,
+              module: activeModule,
+            })
+          }
+        }
+      }
+    }
+  }
+
   res.json({
     success: true,
     data: {
@@ -302,6 +391,7 @@ export async function completeMission(req: AuthRequest, res: Response): Promise<
       ...(newBadges.length && { badges: newBadges }),
       ...(batmanModeActivated && { batmanModeActivated: true }),
       ...(batmanSkipProtected && { batmanSkipProtected: true }),
+      ...(moduleCompleted !== null && { moduleCompleted, nextModuleUnlocked }),
     },
   })
 }
