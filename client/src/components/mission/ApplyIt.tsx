@@ -15,6 +15,7 @@ export default function ApplyIt({ onComplete }: ApplyItProps) {
   const [response, setResponse] = useState('')
   const [submitted, setSubmitted] = useState(false)
   const [assessment, setAssessment] = useState<'up' | 'down' | null>(null)
+  const [showUrdu, setShowUrdu] = useState(false)
 
   function handleSubmit() {
     if (!response.trim()) return
@@ -29,12 +30,52 @@ export default function ApplyIt({ onComplete }: ApplyItProps) {
       </div>
 
       <div className="bg-bg-secondary border border-brand-gold/30 rounded-2xl p-5">
-        <div className="flex items-center gap-2 mb-3">
-          <span className="text-lg">{scenario.icon}</span>
-          <span className="text-xs font-mono text-brand-gold uppercase tracking-wider">Scenario</span>
+        <div className="flex items-center justify-between mb-3">
+          <div className="flex items-center gap-2">
+            <span className="text-lg">{scenario.icon}</span>
+            <span className="text-xs font-mono text-brand-gold uppercase tracking-wider">Scenario</span>
+          </div>
+
+          {/* Roman Urdu Toggle */}
+          <button
+            onClick={() => setShowUrdu((v) => !v)}
+            className={[
+              'flex items-center gap-1.5 px-3 py-1.5 rounded-lg border text-xs font-mono transition-all duration-200',
+              showUrdu
+                ? 'border-brand-gold/60 bg-brand-gold/10 text-brand-gold'
+                : 'border-border-subtle bg-transparent text-text-muted hover:border-brand-gold/40 hover:text-text-secondary',
+            ].join(' ')}
+          >
+            <span className="text-sm leading-none">اردو</span>
+            <span>{showUrdu ? 'EN' : 'UR'}</span>
+          </button>
         </div>
-        <p className="text-text-primary text-base font-body leading-relaxed">{scenario.description}</p>
-        <p className="text-xs text-text-muted mt-3 font-mono">{scenario.hint}</p>
+
+        <AnimatePresence mode="wait">
+          {showUrdu ? (
+            <motion.div
+              key="urdu"
+              initial={{ opacity: 0, y: 4 }}
+              animate={{ opacity: 1, y: 0 }}
+              exit={{ opacity: 0, y: -4 }}
+              transition={{ duration: 0.2 }}
+            >
+              <p className="text-text-primary text-base font-body leading-relaxed">{scenario.descriptionUrdu}</p>
+              <p className="text-xs text-text-muted mt-3 font-mono">{scenario.hintUrdu}</p>
+            </motion.div>
+          ) : (
+            <motion.div
+              key="english"
+              initial={{ opacity: 0, y: 4 }}
+              animate={{ opacity: 1, y: 0 }}
+              exit={{ opacity: 0, y: -4 }}
+              transition={{ duration: 0.2 }}
+            >
+              <p className="text-text-primary text-base font-body leading-relaxed">{scenario.description}</p>
+              <p className="text-xs text-text-muted mt-3 font-mono">{scenario.hint}</p>
+            </motion.div>
+          )}
+        </AnimatePresence>
       </div>
 
       <div className="flex flex-col gap-2">
