@@ -406,6 +406,122 @@ export default function Landing() {
       </section>
 
       {/* ══════════════════════════════════════
+          BEGINNER PREVIEW — DAY 1
+      ══════════════════════════════════════ */}
+      <section className="py-24 px-5 bg-bg-primary">
+        <div className="max-w-4xl mx-auto">
+          <motion.div
+            variants={fadeUp}
+            initial="hidden"
+            whileInView="show"
+            viewport={{ once: true, margin: '-80px' }}
+            className="text-center mb-14"
+          >
+            <p className="text-xs font-mono text-text-muted uppercase tracking-widest mb-3">For Beginners</p>
+            <h2 className="font-display text-3xl md:text-4xl font-bold text-text-primary">
+              Aap pehle din kya seekhenge?
+            </h2>
+            <p className="text-text-muted mt-3 text-sm max-w-md mx-auto">
+              Day 1 mein Roman Urdu ki madad se seekhna shuru karein. Koi experience ki zaroorat nahi.
+            </p>
+          </motion.div>
+
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-5 mb-8">
+            {[
+              {
+                type: '🔤 Letter',
+                typeColor: 'text-brand-blue',
+                typeBg: 'bg-brand-blue/10 border-brand-blue/30',
+                english: 'A',
+                urdu: 'Ae ki awaaz — jaise "Ab"',
+                example: '"Apple" starts with A.',
+                tip: 'Say it 3 times loud!',
+              },
+              {
+                type: '📖 Word',
+                typeColor: 'text-brand-green',
+                typeBg: 'bg-brand-green/10 border-brand-green/30',
+                english: 'Hello',
+                urdu: 'Assalamu Alaikum / Hi',
+                example: 'Hello! How are you?',
+                tip: 'Use it today with someone.',
+              },
+              {
+                type: '💬 Sentence',
+                typeColor: 'text-brand-gold',
+                typeBg: 'bg-brand-gold/10 border-brand-gold/30',
+                english: 'I am happy.',
+                urdu: 'Mein khush hoon.',
+                example: 'I am happy today.',
+                tip: 'Read it out loud slowly.',
+              },
+            ].map((card, i) => (
+              <motion.div
+                key={i}
+                variants={stagger(i * 0.1)}
+                initial="hidden"
+                whileInView="show"
+                viewport={{ once: true, margin: '-40px' }}
+                className="bg-bg-secondary border border-border-subtle rounded-2xl overflow-hidden"
+              >
+                <div className={`flex items-center justify-between px-4 pt-3 pb-2.5 border-b border-border-subtle`}>
+                  <span className={`text-xs font-mono font-semibold px-2 py-1 rounded-lg border ${card.typeBg} ${card.typeColor}`}>
+                    {card.type}
+                  </span>
+                  <span className="text-xs font-mono text-brand-gold border border-brand-gold/30 bg-brand-gold/10 px-2 py-1 rounded-lg">⚡ Power Pack</span>
+                </div>
+                <div className="p-4 flex flex-col gap-3">
+                  <div>
+                    <p className="text-xs font-mono text-text-muted mb-1 uppercase tracking-wider">English</p>
+                    <p className="font-display text-3xl font-bold text-text-primary">{card.english}</p>
+                  </div>
+                  <div className="bg-brand-blue/10 border border-brand-blue/30 rounded-xl px-3 py-2.5">
+                    <p className="text-xs font-mono text-brand-blue mb-0.5 uppercase tracking-wider">Urdu Meaning</p>
+                    <p className="text-text-secondary text-sm font-medium">{card.urdu}</p>
+                  </div>
+                  <div className="bg-bg-tertiary rounded-xl px-3 py-2.5 border border-border-subtle">
+                    <p className="text-xs font-mono text-text-muted mb-0.5 uppercase tracking-wider">Example</p>
+                    <p className="text-text-secondary text-xs italic">"{card.example}"</p>
+                  </div>
+                  <div className="flex items-start gap-2 bg-brand-gold/8 border border-brand-gold/25 rounded-xl px-3 py-2.5">
+                    <span className="text-sm">💡</span>
+                    <p className="text-xs text-brand-gold">{card.tip}</p>
+                  </div>
+                </div>
+              </motion.div>
+            ))}
+          </div>
+
+          {/* Simple 3 steps */}
+          <motion.div
+            variants={fadeUp}
+            initial="hidden"
+            whileInView="show"
+            viewport={{ once: true, margin: '-60px' }}
+            className="bg-bg-secondary border border-border-subtle rounded-2xl p-6"
+          >
+            <p className="text-xs font-mono text-text-muted uppercase tracking-widest mb-5 text-center">How it works — 3 simple steps</p>
+            <div className="grid grid-cols-1 sm:grid-cols-3 gap-5">
+              {[
+                { step: '1', icon: '🌅', title: 'Morning Mission', desc: 'Review old cards + learn new words. Takes 30 minutes.' },
+                { step: '2', icon: '🌙', title: 'Evening Mission', desc: 'Practice speaking + AI conversation. Takes 30 minutes.' },
+                { step: '3', icon: '🔁', title: 'Review System', desc: 'Words repeat at the right time so you never forget them.' },
+              ].map((s) => (
+                <div key={s.step} className="flex flex-col items-center text-center gap-2">
+                  <div className="w-10 h-10 rounded-full bg-brand-red/15 border border-brand-red/30 flex items-center justify-center font-display font-bold text-brand-red text-sm">
+                    {s.step}
+                  </div>
+                  <span className="text-xl">{s.icon}</span>
+                  <p className="font-display font-semibold text-text-primary text-sm">{s.title}</p>
+                  <p className="text-xs text-text-muted leading-relaxed">{s.desc}</p>
+                </div>
+              ))}
+            </div>
+          </motion.div>
+        </div>
+      </section>
+
+      {/* ══════════════════════════════════════
           SOCIAL PROOF — COMPARISON TABLE
       ══════════════════════════════════════ */}
       <section className="py-24 px-5 bg-bg-secondary">

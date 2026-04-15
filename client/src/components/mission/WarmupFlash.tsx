@@ -31,8 +31,8 @@ export default function WarmupFlash({ onComplete, onXpEarned }: WarmupFlashProps
   const [initialised, setInitialised] = useState(false)
   const [loading, setLoading] = useState(false)
   const [isRefresherMode, setIsRefresherMode] = useState(false)
+  const [showHowTo, setShowHowTo] = useState(true)
 
-  // Load the SR queue when mounting, then snapshot first 5 cards
   useEffect(() => {
     async function init() {
       if (useSRStore.getState().dailyQueue.length === 0) {
@@ -46,7 +46,6 @@ export default function WarmupFlash({ onComplete, onXpEarned }: WarmupFlashProps
   // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [])
 
-  // Once queue is ready, snapshot the cards. If empty, load recent items as refresher
   useEffect(() => {
     if (!initialised || cards.length > 0) return
 
@@ -56,7 +55,6 @@ export default function WarmupFlash({ onComplete, onXpEarned }: WarmupFlashProps
       return
     }
 
-    // Queue is empty — fetch the 5 most recently learned items as a refresher
     async function loadRecent() {
       setLoading(true)
       try {
@@ -78,7 +76,7 @@ export default function WarmupFlash({ onComplete, onXpEarned }: WarmupFlashProps
           setIsRefresherMode(true)
         }
       } catch {
-        // If recent load fails, proceed with no cards
+        // proceed with no cards
       } finally {
         setLoading(false)
       }
@@ -91,9 +89,7 @@ export default function WarmupFlash({ onComplete, onXpEarned }: WarmupFlashProps
 
   async function finishAndSync() {
     onXpEarned(20)
-    if (!isRefresherMode) {
-      await syncReviews()
-    }
+    if (!isRefresherMode) await syncReviews()
     setTimeout(onComplete, 400)
   }
 
@@ -102,23 +98,20 @@ export default function WarmupFlash({ onComplete, onXpEarned }: WarmupFlashProps
     if (card && !isRefresherMode) markReviewed(card.itemId, true)
     setDirection(1)
     setFlipped(false)
-    if (isLast || cardIndex >= cards.length - 1) {
-      finishAndSync()
-    } else {
-      setCardIndex((i) => i + 1)
-    }
+    setShowHowTo(false)
+    if (isLast || cardIndex >= cards.length - 1) finishAndSync()
+    else setCardIndex((i) => i + 1)
   }
 
   function handleReviewAgain() {
     if (card && !isRefresherMode) markReviewed(card.itemId, false)
     setDirection(-1)
     setFlipped(false)
-    setTimeout(() => {
-      setCardIndex((i) => (i + 1 < cards.length ? i + 1 : i))
-    }, 100)
+    setShowHowTo(false)
+    setTimeout(() => setCardIndex((i) => (i + 1 < cards.length ? i + 1 : i)), 100)
   }
 
-  // Loading state
+  // Loading states
   if (loading && !initialised) {
     return (
       <div className="flex flex-col items-center gap-8 py-16 px-4 max-w-lg mx-auto w-full">
@@ -133,7 +126,6 @@ export default function WarmupFlash({ onComplete, onXpEarned }: WarmupFlashProps
     )
   }
 
-  // Truly empty — no SR items and no recent items
   if (initialised && !loading && cards.length === 0) {
     return (
       <div className="flex flex-col items-center gap-8 py-16 px-4 max-w-lg mx-auto w-full">
@@ -144,7 +136,7 @@ export default function WarmupFlash({ onComplete, onXpEarned }: WarmupFlashProps
         <div className="w-full bg-bg-secondary border border-border-subtle rounded-2xl p-10 flex flex-col items-center gap-4">
           <span className="text-4xl">✅</span>
           <p className="text-text-primary font-body font-medium text-center">No items due for review today!</p>
-          <p className="text-text-muted text-sm text-center">Your spaced repetition queue is all caught up. Keep learning!</p>
+          <p className="text-text-muted text-sm text-center">Your spaced repetition queue is all caught up. Keep going!</p>
         </div>
         <Button variant="primary" size="lg" className="w-full" onClick={() => { onXpEarned(10); onComplete() }}>
           Continue to Today's Lesson →
@@ -153,7 +145,6 @@ export default function WarmupFlash({ onComplete, onXpEarned }: WarmupFlashProps
     )
   }
 
-  // Still loading recent items
   if (loading && initialised) {
     return (
       <div className="flex flex-col items-center gap-8 py-16 px-4 max-w-lg mx-auto w-full">
@@ -171,7 +162,8 @@ export default function WarmupFlash({ onComplete, onXpEarned }: WarmupFlashProps
   if (!card) return null
 
   return (
-    <div className="flex flex-col items-center gap-8 py-8 px-4 max-w-lg mx-auto w-full">
+    <div className="flex flex-col items-center gap-6 py-8 px-4 max-w-lg mx-auto w-full">
+      {/* Header */}
       <div className="text-center">
         <p className="text-xs font-mono text-text-muted uppercase tracking-widest mb-1">Phase 1</p>
         <h2 className="font-display text-2xl font-bold text-text-primary">Warm-Up — Quick Review</h2>
@@ -180,26 +172,52 @@ export default function WarmupFlash({ onComplete, onXpEarned }: WarmupFlashProps
         </p>
       </div>
 
+      {/* How-to guide for beginners */}
+      <AnimatePresence>
+        {showHowTo && (
+          <motion.div
+            initial={{ opacity: 0, height: 0 }}
+            animate={{ opacity: 1, height: 'auto' }}
+            exit={{ opacity: 0, height: 0 }}
+            className="overflow-hidden w-full"
+          >
+            <div className="w-full bg-brand-blue/8 border border-brand-blue/25 rounded-xl px-4 py-3 flex items-start gap-2.5">
+              <span className="text-base shrink-0">💡</span>
+              <div className="flex-1">
+                <p className="text-xs font-mono text-brand-blue font-semibold mb-1">How to use flashcards</p>
+                <p className="text-xs text-text-muted leading-relaxed">
+                  See the English word → try to remember its Urdu meaning → tap to flip and check. Be honest with yourself!
+                </p>
+              </div>
+              <button onClick={() => setShowHowTo(false)} className="text-text-muted hover:text-text-secondary text-xs ml-1 shrink-0">✕</button>
+            </div>
+          </motion.div>
+        )}
+      </AnimatePresence>
+
+      {/* Refresher mode badge */}
       {isRefresherMode && (
         <div className="w-full bg-brand-gold/10 border border-brand-gold/30 rounded-xl px-4 py-2.5 flex items-center gap-2">
           <span className="text-base">🔄</span>
           <p className="text-xs font-mono text-brand-gold">
-            Refresher Mode — No items due today. Reviewing recent words, not scored.
+            Refresher Mode — reviewing recent words. Not scored.
           </p>
         </div>
       )}
 
+      {/* Progress dots */}
       <div className="flex gap-2">
         {cards.map((_, i) => (
           <div
             key={i}
             className={`w-2 h-2 rounded-full transition-colors duration-200 ${
-              i <= cardIndex ? 'bg-brand-red' : 'bg-border-strong'
+              i < cardIndex ? 'bg-brand-green' : i === cardIndex ? 'bg-brand-red' : 'bg-border-strong'
             }`}
           />
         ))}
       </div>
 
+      {/* Flip card */}
       <AnimatePresence mode="wait">
         <motion.div
           key={cardIndex}
@@ -212,27 +230,33 @@ export default function WarmupFlash({ onComplete, onXpEarned }: WarmupFlashProps
         >
           <motion.div
             className="relative w-full"
-            style={{ transformStyle: 'preserve-3d', minHeight: 220 }}
+            style={{ transformStyle: 'preserve-3d', minHeight: 240 }}
             animate={{ rotateY: flipped ? 180 : 0 }}
             transition={{ duration: 0.3, ease: 'easeInOut' }}
           >
+            {/* Front */}
             <div
-              className="absolute inset-0 flex flex-col items-center justify-center bg-bg-secondary border border-border-subtle rounded-2xl cursor-pointer select-none p-8"
+              className="absolute inset-0 flex flex-col items-center justify-center bg-bg-secondary border border-border-subtle rounded-2xl cursor-pointer select-none p-8 gap-3"
               style={{ backfaceVisibility: 'hidden' }}
               onClick={() => setFlipped(true)}
             >
-              <p className="text-xs font-mono text-text-muted uppercase tracking-widest mb-4">English</p>
-              <p className="font-display text-5xl font-bold text-text-primary mb-3">{card.english}</p>
-              <p className="text-sm text-text-muted">Tap to reveal meaning</p>
+              <p className="text-xs font-mono text-text-muted uppercase tracking-widest">English</p>
+              <p className="font-display text-5xl font-bold text-text-primary text-center">{card.english}</p>
+              <div className="mt-2 flex items-center gap-2 px-3 py-1.5 rounded-lg border border-border-subtle bg-bg-tertiary">
+                <span className="text-xs text-text-muted font-mono">Tap to see Urdu meaning</span>
+                <span className="text-xs">👆</span>
+              </div>
             </div>
 
+            {/* Back */}
             <div
-              className="absolute inset-0 flex flex-col items-center justify-center bg-bg-tertiary border border-brand-blue/40 rounded-2xl p-8"
+              className="absolute inset-0 flex flex-col items-center justify-center bg-bg-tertiary border border-brand-blue/40 rounded-2xl p-8 gap-3"
               style={{ backfaceVisibility: 'hidden', transform: 'rotateY(180deg)' }}
             >
-              <p className="text-xs font-mono text-text-muted uppercase tracking-widest mb-3">Roman Urdu</p>
-              <p className="font-display text-3xl font-bold text-brand-blue mb-4" lang="ur">{card.romanUrdu}</p>
-              <div className="bg-bg-primary rounded-xl px-4 py-2.5 border border-border-subtle w-full text-center">
+              <p className="text-xs font-mono text-text-muted uppercase tracking-widest">Urdu Meaning</p>
+              <p className="font-display text-3xl font-bold text-brand-blue text-center" lang="ur">{card.romanUrdu}</p>
+              <div className="bg-bg-primary rounded-xl px-4 py-2.5 border border-border-subtle w-full text-center mt-1">
+                <p className="text-xs font-mono text-text-muted mb-1">Example</p>
                 <p className="text-sm text-text-secondary italic">"{card.example}"</p>
               </div>
             </div>
@@ -240,6 +264,7 @@ export default function WarmupFlash({ onComplete, onXpEarned }: WarmupFlashProps
         </motion.div>
       </AnimatePresence>
 
+      {/* Action buttons */}
       <AnimatePresence>
         {flipped && (
           <motion.div
@@ -247,43 +272,46 @@ export default function WarmupFlash({ onComplete, onXpEarned }: WarmupFlashProps
             animate={{ opacity: 1, y: 0 }}
             exit={{ opacity: 0, y: 12 }}
             transition={{ duration: 0.2 }}
-            className="flex gap-3 w-full"
+            className="flex flex-col gap-3 w-full"
           >
-            {isRefresherMode ? (
-              <>
-                <Button variant="secondary" size="md" className="flex-1" onClick={handleReviewAgain}>
-                  Next →
-                </Button>
-                <Button
-                  variant="primary"
-                  size="md"
-                  className="flex-1 !bg-brand-green !border-brand-green"
-                  onClick={handleGotIt}
-                >
-                  Got it ✓
-                </Button>
-              </>
-            ) : (
-              <>
-                <Button variant="danger" size="md" className="flex-1" onClick={handleReviewAgain}>
-                  Review Again ✗
-                </Button>
-                <Button
-                  variant="primary"
-                  size="md"
-                  className="flex-1 !bg-brand-green !border-brand-green"
-                  onClick={handleGotIt}
-                >
-                  Got it ✓
-                </Button>
-              </>
-            )}
+            <p className="text-xs font-mono text-text-muted text-center">Did you remember the meaning?</p>
+            <div className="flex gap-3 w-full">
+              {isRefresherMode ? (
+                <>
+                  <Button variant="secondary" size="md" className="flex-1" onClick={handleReviewAgain}>
+                    Next Card →
+                  </Button>
+                  <Button
+                    variant="primary"
+                    size="md"
+                    className="flex-1 !bg-brand-green !border-brand-green"
+                    onClick={handleGotIt}
+                  >
+                    Got it ✓
+                  </Button>
+                </>
+              ) : (
+                <>
+                  <Button variant="danger" size="md" className="flex-1" onClick={handleReviewAgain}>
+                    ✗ Forgot it
+                  </Button>
+                  <Button
+                    variant="primary"
+                    size="md"
+                    className="flex-1 !bg-brand-green !border-brand-green"
+                    onClick={handleGotIt}
+                  >
+                    ✓ Got it!
+                  </Button>
+                </>
+              )}
+            </div>
           </motion.div>
         )}
         {!flipped && (
           <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} className="w-full">
             <Button variant="secondary" size="md" className="w-full" onClick={() => setFlipped(true)}>
-              Flip Card
+              Flip Card — See Meaning
             </Button>
           </motion.div>
         )}

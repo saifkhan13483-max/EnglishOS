@@ -78,6 +78,16 @@ cd server && npx prisma db seed
 ```
 Seeds 657 ContentItems across Levels 1–6. Level 1 has 26 alphabet items (Module 1), 135 core words (Module 2), 23 sentence patterns (Module 3), and 26 daily patterns (Module 4).
 
+## Beginner-Friendly Improvements (April 2026)
+
+The following UX improvements were made to make the course easier to understand for beginners:
+
+- **CoreDrop (Lesson Cards)** — Each card now shows a color-coded content type badge (Letter/Word/Grammar Rule/Phrase/Sentence), a beginner tip for each content type, a clear progress bar at the top, and better visual hierarchy. Roman Urdu is always available via toggle (default ON).
+- **WarmupFlash (Review Cards)** — Added a "How to use flashcards" guide that shows on the first session. Improved action button labels ("Forgot it / Got it") and progress dots showing green for completed cards.
+- **ApplyIt (Practice)** — Added a highlighted word bank showing the hint words as clickable chips, making it easier for beginners to scaffold their responses. Added an encouraging message below the text box.
+- **FeynmanMoment** — Added a "Beginner Tip" panel reminding learners to write in simple words and not worry about mistakes.
+- **Landing Page** — Added a new "For Beginners" section that shows exactly what Day 1 looks like, with 3 sample lesson cards (Letter, Word, Sentence) and a simple 3-step "How It Works" breakdown.
+
 ## Known-Fixed Bugs
 
 - **SR Queue initialization on registration** (`auth.controller.ts`): When a new user registers, `initializeSRQueue` is now called immediately for all Level 1 Module 1 content items so WarmupFlash cards are available from Day 1.

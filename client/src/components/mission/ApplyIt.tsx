@@ -29,14 +29,14 @@ export default function ApplyIt({ onComplete }: ApplyItProps) {
         <h2 className="font-display text-2xl font-bold text-text-primary">Apply It — Real Situation</h2>
       </div>
 
-      <div className="bg-bg-secondary border border-brand-gold/30 rounded-2xl p-5">
-        <div className="flex items-center justify-between mb-3">
+      {/* Scenario card */}
+      <div className="bg-bg-secondary border border-brand-gold/30 rounded-2xl overflow-hidden">
+        <div className="flex items-center justify-between px-5 py-3 border-b border-border-subtle">
           <div className="flex items-center gap-2">
             <span className="text-lg">{scenario.icon}</span>
-            <span className="text-xs font-mono text-brand-gold uppercase tracking-wider">Scenario</span>
+            <span className="text-xs font-mono text-brand-gold uppercase tracking-wider">Real Situation</span>
           </div>
 
-          {/* Roman Urdu Toggle */}
           <button
             onClick={() => setShowUrdu((v) => !v)}
             className={[
@@ -51,44 +51,67 @@ export default function ApplyIt({ onComplete }: ApplyItProps) {
           </button>
         </div>
 
-        <AnimatePresence mode="wait">
-          {showUrdu ? (
-            <motion.div
-              key="urdu"
-              initial={{ opacity: 0, y: 4 }}
-              animate={{ opacity: 1, y: 0 }}
-              exit={{ opacity: 0, y: -4 }}
-              transition={{ duration: 0.2 }}
-            >
-              <p className="text-text-primary text-base font-body leading-relaxed">{scenario.descriptionUrdu}</p>
-              <p className="text-xs text-text-muted mt-3 font-mono">{scenario.hintUrdu}</p>
-            </motion.div>
-          ) : (
-            <motion.div
-              key="english"
-              initial={{ opacity: 0, y: 4 }}
-              animate={{ opacity: 1, y: 0 }}
-              exit={{ opacity: 0, y: -4 }}
-              transition={{ duration: 0.2 }}
-            >
-              <p className="text-text-primary text-base font-body leading-relaxed">{scenario.description}</p>
-              <p className="text-xs text-text-muted mt-3 font-mono">{scenario.hint}</p>
-            </motion.div>
-          )}
-        </AnimatePresence>
+        <div className="p-5">
+          <AnimatePresence mode="wait">
+            {showUrdu ? (
+              <motion.div
+                key="urdu"
+                initial={{ opacity: 0, y: 4 }}
+                animate={{ opacity: 1, y: 0 }}
+                exit={{ opacity: 0, y: -4 }}
+                transition={{ duration: 0.2 }}
+              >
+                <p className="text-text-primary text-base font-body leading-relaxed">{scenario.descriptionUrdu}</p>
+              </motion.div>
+            ) : (
+              <motion.div
+                key="english"
+                initial={{ opacity: 0, y: 4 }}
+                animate={{ opacity: 1, y: 0 }}
+                exit={{ opacity: 0, y: -4 }}
+                transition={{ duration: 0.2 }}
+              >
+                <p className="text-text-primary text-base font-body leading-relaxed">{scenario.description}</p>
+              </motion.div>
+            )}
+          </AnimatePresence>
+        </div>
+      </div>
+
+      {/* Word bank for beginners */}
+      <div className="bg-bg-secondary border border-border-subtle rounded-2xl p-4">
+        <p className="text-xs font-mono text-text-muted uppercase tracking-wider mb-3">
+          💡 Helpful words — use these in your answer
+        </p>
+        <div className="flex flex-wrap gap-2">
+          {(showUrdu ? scenario.hintUrdu : scenario.hint)
+            .replace(/^(Use:|Use karein:|In alfaz use karein:)/i, '')
+            .split(',')
+            .map((w) => w.trim())
+            .filter(Boolean)
+            .map((word, i) => (
+              <span
+                key={i}
+                className="px-2.5 py-1 rounded-lg border border-brand-blue/30 bg-brand-blue/10 text-brand-blue text-xs font-mono font-medium"
+              >
+                {word}
+              </span>
+            ))}
+        </div>
       </div>
 
       <div className="flex flex-col gap-2">
         <label className="text-sm font-body font-medium text-text-secondary">
-          Your response in English
+          Write your response in English
         </label>
         <textarea
           className="w-full h-28 bg-bg-secondary border border-border-subtle rounded-xl px-4 py-3 text-text-secondary text-sm resize-none outline-none focus:border-brand-red transition-colors placeholder:text-text-muted font-body"
-          placeholder="Type your response here…"
+          placeholder="Write your answer here using the helpful words above…"
           value={response}
           onChange={(e) => setResponse(e.target.value)}
           disabled={submitted}
         />
+        <p className="text-xs text-text-muted font-mono">Don't worry about being perfect — just try your best!</p>
       </div>
 
       {!submitted && (

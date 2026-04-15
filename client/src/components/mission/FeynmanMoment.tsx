@@ -125,6 +125,17 @@ export default function FeynmanMoment({ onComplete }: FeynmanMomentProps) {
         <Badge variant="blue" size="sm">📚 {concept}</Badge>
       </div>
 
+      {/* Beginner tip */}
+      <div className="bg-brand-blue/8 border border-brand-blue/25 rounded-xl px-4 py-3 flex items-start gap-2.5">
+        <span className="text-base shrink-0">💡</span>
+        <div>
+          <p className="text-xs font-mono text-brand-blue font-semibold mb-1">Beginner Tip</p>
+          <p className="text-xs text-text-muted leading-relaxed">
+            Write in simple words — like you are explaining to a 10-year-old. Don't worry about mistakes. The more you try, the better you get!
+          </p>
+        </div>
+      </div>
+
       <div className="bg-brand-red/5 border border-brand-red/30 rounded-2xl p-5">
         <div className="flex items-start gap-3">
           <span className="text-xl shrink-0">🧠</span>
