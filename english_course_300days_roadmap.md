@@ -138,7 +138,7 @@ Speaking & Listening      Advanced English           Professional Mastery
 
 ---
 
-### DAY 15 — WEEK REVIEW
+### DAY 15 — FORTNIGHT REVIEW
 **Topic:** Days 1–14 Revision
 - Alphabet, Numbers, Days, Months, Colors, Body Parts, Family, Animals, Fruits, Vegetables, Objects, Food
 - **Practice:** Ek short paragraph likho in sab cheezein use karke
@@ -645,7 +645,7 @@ Speaking & Listening      Advanced English           Professional Mastery
 
 ### DAY 73
 **Topic:** Spelling Rules — Part 1
-- I before E (believe, receive exceptions)
+- I before E except after C (believe, achieve — but: receive, deceive after C)
 - Silent letters: Know, Write, Lamb, Honest
 - **Practice:** 20 words spelling practice
 - **Homework:** 10 tricky spellings yaad karo
@@ -1128,7 +1128,7 @@ Speaking & Listening      Advanced English           Professional Mastery
 ### DAY 130
 **Topic:** Vocabulary — Homonyms (Same spelling, different meaning)
 - Bank (naddi ka kinara / paisa rakhne ki jagah)
-- Bat (chiriya / cricket bat)
+- Bat (chamgadar / cricket bat)
 - **Practice:** 10 homonym sentences
 - **Homework:** 5 homonym pairs with two sentences each
 
@@ -1575,12 +1575,7 @@ Speaking & Listening      Advanced English           Professional Mastery
 - 5-minute speech on a chosen topic
 - No preparation notes allowed
 - **Practice:** Record yourself speaking
-- **Achievement:** Phase 4 — Speaking & Listening Complete!
-
----
-
-## PHASE 5 — ADVANCED ENGLISH (DAYS 181–250)
-### Idioms, Advanced Grammar, Critical Thinking, aur Academic Skills
+- **Achievement:** Speaking Core Module — 30-Day Milestone Complete!
 
 ---
 
@@ -1744,7 +1739,12 @@ Speaking & Listening      Advanced English           Professional Mastery
 - 5-minute monologue with no preparation
 - Smooth transitions, varied vocabulary
 - **Practice:** Record yourself on any topic
-- **Achievement:** Day 200 Milestone — Halfway Through Advanced Phase!
+- **Achievement:** Phase 4 — Speaking & Listening Complete!
+
+---
+
+## PHASE 5 — ADVANCED ENGLISH (DAYS 201–250)
+### Advanced Grammar, Idioms, Critical Thinking, aur Academic Skills
 
 ---
 
@@ -2582,7 +2582,7 @@ Speaking & Listening      Advanced English           Professional Mastery
 
 ---
 
-### DAY 300 — COURSE COMPLETE! 🎉
+### DAY 300 — COURSE COMPLETE!
 **Topic:** FINAL GRADUATION — FLUENT ENGLISH ACHIEVED
 
 **Final Assessment:**
