@@ -4,6 +4,7 @@
 > **Language of Instructions:** Roman Urdu (Aasaan samajh ke liye)
 > **Daily Time Required:** 1 Hour (Morning 20 min + Evening 40 min)
 > **Level:** Complete Beginner to Advanced/Professional
+> **Companion File:** Har din ka detail lesson content `english_course_complete.md` mein hai — dono files saath use karein
 
 ---
 
@@ -308,25 +309,32 @@ Speaking & Listening      Advanced English           Professional Mastery
 
 ### DAY 34
 **Topic:** Past Simple — Irregular Verbs Part 1
-- Go → Went / Come → Came / Eat → Ate / Do → Did / Have → Had
+- Go→Went / Come→Came / Eat→Ate / Do→Did / Have→Had / Say→Said / Get→Got / Give→Gave
+- Think→Thought / Know→Knew / Find→Found / Feel→Felt / Sleep→Slept / Buy→Bought
+- Note: English mein 100+ irregular verbs hain — inhe groups mein seekho (detail list `english_course_complete.md` mein hai)
 - **Practice:** Har verb ka ek past sentence
-- **Homework:** 5 irregular past sentences
+- **Homework:** 10 irregular verbs notebook mein likhna (base form + past form)
 
 ---
 
 ### DAY 35
 **Topic:** Past Simple — Irregular Verbs Part 2
-- See → Saw / Take → Took / Make → Made / Write → Wrote / Read → Read
+- See→Saw / Take→Took / Make→Made / Write→Wrote / Read→Read / Tell→Told / Meet→Met
+- Run→Ran / Sit→Sat / Wake→Woke / Leave→Left / Begin→Began / Drink→Drank
 - **Practice:** Har verb ka ek sentence
-- **Homework:** Yesterday ki activities irregular verbs se likho
+- **Homework:** Yesterday ki activities — sirf irregular verbs use karke describe karo
 
 ---
 
 ### DAY 36
-**Topic:** Past Simple — Negative aur Questions
-- I did not eat. / Did you go to school?
-- **Practice:** 10 sentences
-- **Homework:** 5 questions about yesterday
+**Topic:** Past Simple — Negative aur Questions + Past Continuous Intro
+- Negative: I did not eat. / She did not go to school.
+- Questions: Did you eat breakfast? / What did you do yesterday?
+- Past Continuous (Bonus): I was eating. / She was sleeping. / They were playing.
+- Formula: Subject + was/were + V+ing (koi kaam chal raha tha)
+- Use: "I was studying when he called." — ek kaam chal raha tha, doosra hua
+- **Practice:** 5 negative + 5 Past Continuous sentences
+- **Homework:** "I was doing X when Y happened" — 5 aise sentences likho
 
 ---
 
@@ -439,8 +447,16 @@ Speaking & Listening      Advanced English           Professional Mastery
 ---
 
 ### DAY 50 — PHASE 1 COMPLETE
-**Topic:** Complete Grammar Basics Revision (Days 31-49)
-- All tenses, modal verbs, adjectives, adverbs, conjunctions
+**Topic:** Complete Grammar Basics Revision (Days 1-49) + Common Beginner Mistakes
+- All tenses, modal verbs, adjectives, adverbs, conjunctions revision
+- **Common Mistakes — Abhi Se Theek Karo:**
+  - "She did not went" — GALAT / "She did not go" — SAHI (did ke baad base verb)
+  - "He is more better" — GALAT / "He is better" — SAHI (more aur -er dono ek saath nahi)
+  - "I am agree" — GALAT / "I agree" — SAHI (agree ek verb hai, am ki zaroorat nahi)
+  - "I am having a car" — GALAT / "I have a car" — SAHI (possession mein continuous nahi)
+  - "Since 3 years" — GALAT / "For 3 years" — SAHI (duration ke liye "for" use karo)
+  - "Today morning" — GALAT / "This morning" — SAHI
+  - "Return back" — GALAT / "Return" — SAHI (back pehle se shamil hai)
 - **Test:** 50-question comprehensive test
 - **Speaking Practice:** 5-minute self-introduction aur daily routine bolo
 - **Achievement:** Phase 1 — Foundation Complete!
@@ -497,10 +513,22 @@ Speaking & Listening      Advanced English           Professional Mastery
 ---
 
 ### DAY 56
-**Topic:** All Tenses — Complete Summary Table
-- 12 tenses ek saath revise karo
-- **Practice:** Ek verb (eat) ke sab tenses ka chart banao
-- **Homework:** "Go" verb ke saare tenses likho
+**Topic:** All Tenses — Complete 12-Tense Summary Table
+- 12 tenses ek saath revise karo:
+  1. Present Simple          → I eat. / He eats.
+  2. Present Continuous      → I am eating. / She is eating.
+  3. Present Perfect         → I have eaten. / She has gone.
+  4. Present Perfect Cont.   → I have been eating.
+  5. Past Simple             → I ate. / She went.
+  6. Past Continuous         → I was eating. / They were playing.
+  7. Past Perfect            → I had eaten before he came.
+  8. Past Perfect Cont.      → She had been waiting for an hour.
+  9. Future Simple           → I will eat. / She will come.
+  10. Future Continuous      → I will be eating at 8pm.
+  11. Future Perfect         → I will have finished by tomorrow.
+  12. Future Perfect Cont.   → I will have been studying for 3 hours.
+- **Practice:** Ek verb (eat) ke sab 12 tenses ka full chart banao
+- **Homework:** "Go" verb ke saare 12 tenses likho — positive form mein
 
 ---
 
@@ -612,7 +640,7 @@ Speaking & Listening      Advanced English           Professional Mastery
 - You are coming, aren't you?
 - She can swim, can't she?
 - **Practice:** 10 sentences with question tags
-- **Homework:** 5 questions tag sentences
+- **Homework:** 5 question tag sentences
 
 ---
 
