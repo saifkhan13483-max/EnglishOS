@@ -264,20 +264,22 @@ Speaking & Listening      Advanced English           Professional Mastery
 ---
 
 ### DAY 29
-**Topic:** Question Words — Who, What, Where, When, Why, How
+**Topic:** Question Words — Who, What, Where, When, Why, How, Which, Whose
 - Who is he? / What is this? / Where do you live?
+- When does school start? / Why are you late? / How are you?
+- Which book is yours? / Whose bag is this?
 - **Practice:** Har question word se 2 questions
 - **Homework:** 10 questions apni daily life ke baare mein
 
 ---
 
 ### DAY 30 — MONTH 1 REVIEW TEST
-**Topic:** Phase 1 Week 1-4 Full Revision
+**Topic:** Month 1 (Days 1-30) Full Revision
 - Alphabet, Numbers, Vocabulary, Greetings, Introduction
 - Pronouns, Verb To Be, Simple Present Tense
-- Adjectives, Articles, Prepositions
+- Adjectives, Articles, Prepositions, Question Words
 - **Test:** 30 questions (MCQ + Fill in the blanks + Short sentences)
-- **Achievement:** Beginner Level 1 Complete!
+- **Achievement:** Month 1 Complete! (Phase 1 ends at Day 50)
 
 ---
 
@@ -414,10 +416,12 @@ Speaking & Listening      Advanced English           Professional Mastery
 ---
 
 ### DAY 46
-**Topic:** Possessives — My, Mine, Your, Yours, His, Her, Hers
+**Topic:** Possessives — My, Mine, Your, Yours, His, Her, Hers, Its, Our, Ours, Their, Theirs
 - This is my book. / The book is mine.
-- **Practice:** 10 sentences
-- **Homework:** Apni belongings ke baare mein sentences
+- That is their car. / The car is theirs.
+- We love our country. / The decision is ours.
+- **Practice:** 10 sentences using different possessives
+- **Homework:** Apni aur apne family ki belongings ke baare mein sentences
 
 ---
 
@@ -894,8 +898,8 @@ Speaking & Listening      Advanced English           Professional Mastery
 
 ### DAY 99
 **Topic:** Writing — Descriptive Paragraph
-- Aisi jagah ya insaan describe karo jo saamne ho jaise
-- Use: adjectives, adverbs, specific details
+- Aisi detail dena jaise cheez saamne ho — reader khud dekh sake
+- Use: adjectives, adverbs, sensory details (sight, sound, smell)
 - **Practice:** Apna ghar describe karo (7 sentences)
 - **Homework:** Apna school/office describe karo
 
@@ -1023,7 +1027,8 @@ Speaking & Listening      Advanced English           Professional Mastery
 
 ### DAY 114
 **Topic:** Informal Letter — To a Friend
-- Casual language, Slang allowed, Personal stories
+- Casual language, friendly tone, Personal stories
+- No strict format — but still greet, share news, and close warmly
 - **Practice:** Letter to friend about your holiday
 - **Homework:** Letter to cousin about your school
 
@@ -1276,8 +1281,9 @@ Speaking & Listening      Advanced English           Professional Mastery
 
 ### DAY 144
 **Topic:** Idioms — Part 2
-- Bite the bullet / Costs an arm and a leg / Let the cat out of the bag
-- **Practice:** 10 more idioms
+- Bite the bullet / Cost an arm and a leg / Let the cat out of the bag
+- Burn the midnight oil / Keep your chin up / The ball is in your court
+- **Practice:** 10 more idioms with meanings and sentences
 - **Homework:** Conversation using 5 idioms
 
 ---
@@ -1762,7 +1768,7 @@ Speaking & Listening      Advanced English           Professional Mastery
 
 ---
 
-### DAY 200
+### DAY 200 — PHASE 4 COMPLETE
 **Topic:** Advanced Speaking — Monologue Practice
 - 5-minute monologue with no preparation
 - Smooth transitions, varied vocabulary
@@ -2579,16 +2585,16 @@ Speaking & Listening      Advanced English           Professional Mastery
 **Topic:** English Fluency — Benchmark Test
 - Read, Write, Listen, Speak — all assessed
 - **Practice:** Full 3-hour English test
-- **Homework:** Compare with Day 30 test results
+- **Homework:** Compare with Day 100 test results — kitna farq aa gaya?
 
 ---
 
 ### DAY 297
 **Topic:** Reflection aur Growth Assessment
-- Compare Day 1 vs Day 297
-- What improved? What still needs work?
-- **Practice:** Write a 300-word reflection essay
-- **Homework:** Share your journey with someone
+- Compare Day 1 (sirf alphabet likha tha) vs Day 297 (essays, speeches, professional English)
+- Kya kya seekha? Kahan improvement hui? Kya abhi bhi improve karna hai?
+- **Practice:** Write a 300-word reflection essay: "My 300-Day English Journey"
+- **Homework:** Share your journey with someone to inspire them
 
 ---
 
