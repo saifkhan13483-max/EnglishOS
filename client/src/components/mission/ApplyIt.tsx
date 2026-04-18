@@ -10,7 +10,8 @@ interface ApplyItProps {
 
 export default function ApplyIt({ onComplete }: ApplyItProps) {
   const currentModule = useProgressStore((s) => s.learnerProfile?.currentModule ?? 1)
-  const scenario = getScenario(currentModule)
+  const currentLevel  = useProgressStore((s) => s.learnerProfile?.currentLevel  ?? 1)
+  const scenario = getScenario(currentModule, currentLevel)
 
   const [response, setResponse] = useState('')
   const [submitted, setSubmitted] = useState(false)

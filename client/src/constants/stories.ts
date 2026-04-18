@@ -418,16 +418,279 @@ const STORY_MODULE_6: Story = {
   ],
 }
 
+// ─── Level 2 Story — Tenses & Daily Life ──────────────────────────────────
+const STORY_LEVEL2: Story = {
+  title: 'Bilal at the Market',
+  subtitle: 'Past, present, and future — one conversation',
+  nodes: [
+    {
+      type: 'panel',
+      scene: 'market',
+      speaker: 'Narrator',
+      speakerColor: '#6A6A8A',
+      text: 'Bilal goes to the market with his mother. She asks him to speak only English today. "This is your practice," she says. Bilal takes a deep breath.',
+    },
+    {
+      type: 'panel',
+      scene: 'market',
+      speaker: 'Shopkeeper',
+      speakerColor: '#E07B39',
+      text: '"Hello! What do you want today? We have fresh fruits and vegetables."',
+    },
+    {
+      type: 'choice',
+      scene: 'market',
+      speaker: 'Narrator',
+      speakerColor: '#6A6A8A',
+      prompt: 'Bilal wants to buy oranges. How does he ask?',
+      options: ['"I want oranges please. How much do they cost?"', '"I am looking for oranges. Do you have any today?"'],
+      acks: [
+        'The shopkeeper smiles. "Good question! Oranges are 100 rupees per kilo." Bilal nods. He used Present Simple perfectly.',
+        'The shopkeeper nods. "Yes! I have fresh oranges. Arrived this morning." Bilal used Present Continuous — well done!',
+      ],
+    },
+    {
+      type: 'panel',
+      scene: 'market',
+      speaker: 'Bilal',
+      speakerColor: '#34D399',
+      text: '"Yesterday I bought mangoes here. They were delicious. Today I want oranges, and tomorrow I will come for bananas!"',
+    },
+    {
+      type: 'panel',
+      scene: 'market',
+      speaker: 'Shopkeeper',
+      speakerColor: '#E07B39',
+      text: '"Yesterday, today, tomorrow — you use three tenses in one sentence! You speak English very well!"',
+    },
+    {
+      type: 'panel',
+      scene: 'market',
+      speaker: 'Mother',
+      speakerColor: '#A78BFA',
+      text: '"I am so proud of you, Bilal. You spoke English to a stranger without any fear. That is real progress."',
+    },
+    {
+      type: 'panel',
+      scene: 'home',
+      speaker: 'Narrator',
+      speakerColor: '#6A6A8A',
+      text: 'On the way home, Bilal thinks: "I know the past, present, and future. Every day I practise, and every day I get better. That is my routine."',
+    },
+  ],
+}
+
+// ─── Level 3 Story — Grammar & Reading ─────────────────────────────────────
+const STORY_LEVEL3: Story = {
+  title: 'The Grammar Tutor',
+  subtitle: 'Bilal teaches — and discovers he has truly learned',
+  nodes: [
+    {
+      type: 'panel',
+      scene: 'classroom',
+      speaker: 'Narrator',
+      speakerColor: '#6A6A8A',
+      text: 'Bilal\'s neighbour, a boy named Faiz, is struggling with English grammar. Faiz\'s father asks Bilal for help. Bilal agrees — but feels nervous. "Can I really teach?"',
+    },
+    {
+      type: 'panel',
+      scene: 'classroom',
+      speaker: 'Faiz',
+      speakerColor: '#F59E0B',
+      text: '"Bilal bhai, I don\'t understand — when do I use \'have eaten\' and when do I use \'ate\'? They both mean the same to me."',
+    },
+    {
+      type: 'choice',
+      scene: 'classroom',
+      speaker: 'Narrator',
+      speakerColor: '#6A6A8A',
+      prompt: 'Bilal thinks. How does he explain the difference?',
+      options: ['"I ate lunch at 2pm" — time is clear, so Past Simple. "I have eaten biryani" — no time, just the experience."', '"Both are past, but the first is more recent. The second happened longer ago."'],
+      acks: [
+        'Faiz\'s eyes light up. "Oh! If I know when, I say ate. If I just know the experience, I say have eaten!" Bilal smiles — that is exactly right!',
+        'Bilal pauses. "Actually, let me correct myself. It is not about time ago — it is about whether the time is mentioned or not. Let me show you with examples."',
+      ],
+    },
+    {
+      type: 'panel',
+      scene: 'tea',
+      speaker: 'Bilal',
+      speakerColor: '#34D399',
+      text: '"Now let us read a short paragraph together. I will show you how to find the main idea. Look for the first sentence — that is usually the topic sentence."',
+    },
+    {
+      type: 'panel',
+      scene: 'tea',
+      speaker: 'Faiz',
+      speakerColor: '#F59E0B',
+      text: '"According to the passage, the farmer worked for twenty years... Is that the main idea?" Bilal nods proudly. "Perfect. You found it in ten seconds."',
+    },
+    {
+      type: 'panel',
+      scene: 'home',
+      speaker: 'Narrator',
+      speakerColor: '#6A6A8A',
+      text: 'That evening, Bilal realises something: when you can teach something, you truly understand it. He has learned 500 words, all 12 tenses, and how to read English — and he passed his knowledge on.',
+    },
+  ],
+}
+
+// ─── Level 4 Story — Writing & Speaking ────────────────────────────────────
+const STORY_LEVEL4: Story = {
+  title: 'The Letter That Changed Everything',
+  subtitle: 'Bilal writes his first formal letter — and speaks at a meeting',
+  nodes: [
+    {
+      type: 'panel',
+      scene: 'home',
+      speaker: 'Narrator',
+      speakerColor: '#6A6A8A',
+      text: 'The community centre in Bilal\'s neighbourhood has a problem. The road in front of it is broken. Nobody has fixed it for two years. Bilal decides to write a letter to the local council.',
+    },
+    {
+      type: 'panel',
+      scene: 'home',
+      speaker: 'Bilal',
+      speakerColor: '#34D399',
+      text: '"Respected Sir, I hope this letter finds you in good health. I am writing to bring an urgent matter to your attention. The road outside the community centre has not been repaired for two years."',
+    },
+    {
+      type: 'choice',
+      scene: 'home',
+      speaker: 'Narrator',
+      speakerColor: '#6A6A8A',
+      prompt: 'Bilal wants to make his letter stronger. What does he add?',
+      options: ['"Furthermore, this road is dangerous for school children. Therefore, I humbly request immediate attention."', '"Although it is a small road, it is very important. Unless it is fixed, people will be hurt."'],
+      acks: [
+        'The letter uses linking words — Furthermore and Therefore. It is clear, polite, and professional. Bilal\'s teacher would be proud.',
+        'Complex sentences with Although and Unless — perfect Level 4 grammar! The letter is both emotional and logical.',
+      ],
+    },
+    {
+      type: 'panel',
+      scene: 'evening',
+      speaker: 'Narrator',
+      speakerColor: '#6A6A8A',
+      text: 'Two weeks later, a council officer arrives. He calls Bilal and invites him to speak at a public meeting. "Your letter was one of the best we received," he says.',
+    },
+    {
+      type: 'panel',
+      scene: 'evening',
+      speaker: 'Bilal',
+      speakerColor: '#34D399',
+      text: '"Good evening everyone. Not only is this road a safety risk, but it also affects the dignity of our community. Furthermore, fixing it will benefit over 500 families. In conclusion, I request immediate action."',
+    },
+    {
+      type: 'panel',
+      scene: 'evening',
+      speaker: 'Officer',
+      speakerColor: '#4A9EFF',
+      text: '"That was the most organised speech I have heard from a resident. Your English is excellent — and your arguments are very strong. The road will be fixed within one month."',
+    },
+    {
+      type: 'panel',
+      scene: 'home',
+      speaker: 'Narrator',
+      speakerColor: '#6A6A8A',
+      text: 'Bilal walks home feeling ten feet tall. A formal letter. A public speech. Complex sentences and strong arguments. This is what English can do — it gives your voice power.',
+    },
+  ],
+}
+
+// ─── Level 5 Story — Business & Professional English ───────────────────────
+const STORY_LEVEL5: Story = {
+  title: 'The Interview',
+  subtitle: 'Bilal\'s first real professional opportunity — in English',
+  nodes: [
+    {
+      type: 'panel',
+      scene: 'evening',
+      speaker: 'Narrator',
+      speakerColor: '#6A6A8A',
+      text: 'Bilal has applied for a job at a tech company. Today is the interview. He has burned the midnight oil preparing — practising conditionals, passive voice, and professional phrases.',
+    },
+    {
+      type: 'panel',
+      scene: 'shop',
+      speaker: 'Interviewer',
+      speakerColor: '#4A9EFF',
+      text: '"Thank you for coming, Bilal. Let us begin. Tell me — if you were given a project with a very tight deadline, how would you handle it?"',
+    },
+    {
+      type: 'choice',
+      scene: 'shop',
+      speaker: 'Narrator',
+      speakerColor: '#6A6A8A',
+      prompt: 'Bilal needs to answer using a conditional. What does he say?',
+      options: ['"If I were given a tight deadline, I would immediately break the project into small tasks and prioritise the most important ones."', '"If I had been trained better, I would have been more prepared. But I learn quickly and I would give my best effort."'],
+      acks: [
+        'A perfect Type 2 conditional! The interviewer nods. "Good. You think in a structured way. That is exactly what we need in our team."',
+        'A Type 3 conditional — slightly unexpected, but honest. The interviewer smiles. "I respect the honesty. What you said next is what matters: you learn quickly. We like that."',
+      ],
+    },
+    {
+      type: 'panel',
+      scene: 'shop',
+      speaker: 'Interviewer',
+      speakerColor: '#4A9EFF',
+      text: '"Now, tell me about a time when a mistake was made in your previous work. How was it handled?"',
+    },
+    {
+      type: 'panel',
+      scene: 'shop',
+      speaker: 'Bilal',
+      speakerColor: '#34D399',
+      text: '"An incorrect report was submitted by our team once. The error was identified immediately. The data was corrected, the client was informed, and a better process was put in place."',
+    },
+    {
+      type: 'panel',
+      scene: 'shop',
+      speaker: 'Interviewer',
+      speakerColor: '#4A9EFF',
+      text: '"Excellent use of passive voice — very professional. Most candidates say \'we made a mistake\'. You described the process objectively, like a true professional."',
+    },
+    {
+      type: 'panel',
+      scene: 'home',
+      speaker: 'Narrator',
+      speakerColor: '#6A6A8A',
+      text: 'Three days later, Bilal receives the call: he got the job. He thinks back to Day 1 — vowels, numbers, basic sentences. He never gave up. And now, English has changed his life.',
+    },
+  ],
+}
+
 const STORIES: Record<string, Story> = {
   '1_1': STORY_MODULE_1,
   '1_2': STORY_MODULE_2,
   '1_3': STORY_MODULE_3,
   '1_4': STORY_MODULE_4,
+  '2_1': STORY_LEVEL2,
+  '2_2': STORY_LEVEL2,
+  '2_3': STORY_LEVEL2,
+  '2_4': STORY_LEVEL2,
   '2_5': STORY_MODULE_5,
+  '3_1': STORY_LEVEL3,
+  '3_2': STORY_LEVEL3,
+  '3_3': STORY_LEVEL3,
+  '3_4': STORY_LEVEL3,
   '3_5': STORY_MODULE_5,
+  '4_1': STORY_LEVEL4,
+  '4_2': STORY_LEVEL4,
+  '4_3': STORY_LEVEL4,
+  '4_4': STORY_LEVEL4,
+  '4_5': STORY_LEVEL4,
+  '4_6': STORY_LEVEL4,
+  '5_1': STORY_LEVEL5,
+  '5_2': STORY_LEVEL5,
+  '5_3': STORY_LEVEL5,
   '5_4': STORY_MODULE_5,
+  '5_5': STORY_LEVEL5,
+  '5_6': STORY_LEVEL5,
   '6_1': STORY_MODULE_6,
   '6_2': STORY_MODULE_6,
+  '6_3': STORY_MODULE_6,
+  '6_4': STORY_MODULE_6,
+  '6_5': STORY_MODULE_6,
   '6_6': STORY_MODULE_6,
 }
 

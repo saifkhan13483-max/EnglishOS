@@ -96,9 +96,10 @@ interface ConversationSimProps {
 export default function ConversationSim({ onComplete, onXpEarned }: ConversationSimProps) {
   const learnerProfile = useProgressStore(s => s.learnerProfile)
   const currentModule = learnerProfile?.currentModule ?? 1
+  const currentLevel  = learnerProfile?.currentLevel  ?? 1
   const toast = useToast()
 
-  const scenario = getScenario(currentModule)
+  const scenario = getScenario(currentModule, currentLevel)
 
   const [messages, setMessages] = useState<Message[]>([])
   const [apiHistory, setApiHistory] = useState<ApiHistoryItem[]>([])

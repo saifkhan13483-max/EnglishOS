@@ -1325,41 +1325,261 @@ async function main() {
     items.push({ level: 6, module: 4, groupName: 'IELTS / Exam Preparation', type: ContentType.PHRASE, english: p.english, urduRoman: p.urduRoman, exampleSentence: p.exampleSentence, isPowerPack: p.isPowerPack, sortOrder: i + 1 });
   });
 
+  // ── LEVEL 2, MODULE 5: Level 2 Gate (Review) ────────────────────────────
+
+  const level2GateGrammar = [
+    { english: 'Present Simple: I eat / He eats', urduRoman: 'Roz hoti baat — He/She/It ke saath "s" lagao', exampleSentence: 'I work every day. He works every day.', isPowerPack: true },
+    { english: 'Present Continuous: I am eating', urduRoman: 'Abhi ho raha hai — am/is/are + V-ing', exampleSentence: 'She is studying right now. They are playing.', isPowerPack: true },
+    { english: 'Past Simple: I ate / She went', urduRoman: 'Ho gaya — V2 (regular: +ed, irregular: yaad karo)', exampleSentence: 'I went to school. She ate biryani.', isPowerPack: true },
+    { english: 'Future with Will: I will go', urduRoman: 'Hoga — will + Verb (base form)', exampleSentence: 'I will call you tomorrow. She will come soon.', isPowerPack: true },
+    { english: 'Going to: I am going to study', urduRoman: 'Pehle se plan — am/is/are going to + Verb', exampleSentence: 'I am going to study tonight. He is going to leave.', isPowerPack: true },
+    { english: 'Articles: a / an / the', urduRoman: 'a (consonant) / an (vowel) / the (khaas cheez)', exampleSentence: 'I saw a dog. He ate an apple. The sun is bright.', isPowerPack: true },
+  ];
+  level2GateGrammar.forEach((g, i) => {
+    items.push({ level: 2, module: 5, groupName: 'Level 2 Gate — Grammar Review', type: ContentType.GRAMMAR, english: g.english, urduRoman: g.urduRoman, exampleSentence: g.exampleSentence, isPowerPack: g.isPowerPack, sortOrder: i + 1 });
+  });
+
+  const level2GatePhrases = [
+    { english: 'I have been learning English for ___ weeks.', urduRoman: 'Mein ___ haftoon se English seekh raha hoon.', exampleSentence: 'I have been learning English for six weeks.', isPowerPack: true },
+    { english: 'My English is getting better every day.', urduRoman: 'Meri English roz behtar ho rahi hai.', exampleSentence: 'I practise daily and my English is getting better every day.', isPowerPack: true },
+    { english: 'Can you tell me what time it is?', urduRoman: 'Kya aap mujhe waqt bata sakte hain?', exampleSentence: 'Excuse me, can you tell me what time it is?', isPowerPack: false },
+    { english: 'I used to ___ when I was younger.', urduRoman: 'Jab mein chota tha, mein ___ karta tha.', exampleSentence: 'I used to play cricket when I was younger.', isPowerPack: false },
+    { english: 'I am going to improve my English.', urduRoman: 'Mein apni English behtar karney wala hoon.', exampleSentence: 'I am going to improve my English every day.', isPowerPack: true },
+  ];
+  level2GatePhrases.forEach((p, i) => {
+    items.push({ level: 2, module: 5, groupName: 'Level 2 Gate — Key Phrases', type: ContentType.PHRASE, english: p.english, urduRoman: p.urduRoman, exampleSentence: p.exampleSentence, isPowerPack: p.isPowerPack, sortOrder: 7 + i });
+  });
+
+  // ── LEVEL 3, MODULE 5: Level 3 Gate (Review) ────────────────────────────
+
+  const level3GateGrammar = [
+    { english: 'Present Perfect: I have eaten / She has gone', urduRoman: 'Abhi tak ka asar — have/has + V3', exampleSentence: 'I have finished the task. She has already left.', isPowerPack: true },
+    { english: 'Past Continuous: I was sleeping when...', urduRoman: 'Jab kuch aur hua tab — was/were + V-ing', exampleSentence: 'I was studying when the lights went out.', isPowerPack: true },
+    { english: 'All 12 tenses — I know the formula for each', urduRoman: 'Dono: simple aur continuous / perfect aur perfect continuous', exampleSentence: 'Simple, Continuous, Perfect, Perfect Continuous — 3 times = 12 tenses.', isPowerPack: true },
+    { english: 'Reading: main idea + supporting details', urduRoman: 'Topic sentence = main idea | Baaki = details', exampleSentence: 'What is the main idea of this paragraph?', isPowerPack: true },
+    { english: 'Story vocabulary: setting, characters, events', urduRoman: 'Setting (jagah), Characters (log), Events (waqiat)', exampleSentence: 'The story is set in Lahore. The main character is Hassan.', isPowerPack: false },
+  ];
+  level3GateGrammar.forEach((g, i) => {
+    items.push({ level: 3, module: 5, groupName: 'Level 3 Gate — Grammar & Reading Review', type: ContentType.GRAMMAR, english: g.english, urduRoman: g.urduRoman, exampleSentence: g.exampleSentence, isPowerPack: g.isPowerPack, sortOrder: i + 1 });
+  });
+
+  const level3GatePhrases = [
+    { english: 'According to the passage, ___.', urduRoman: 'Passage ke mutabiq, ___.', exampleSentence: 'According to the passage, Hassan woke up at 4 AM every day.', isPowerPack: true },
+    { english: 'The author suggests that ___.', urduRoman: 'Likhne wale ka kehna hai ke ___.', exampleSentence: 'The author suggests that hard work always brings results.', isPowerPack: true },
+    { english: 'In conclusion, ___.', urduRoman: 'Aakhir mein ___.', exampleSentence: 'In conclusion, dedication is the key to success.', isPowerPack: true },
+    { english: 'I have learned ___ new words in this level.', urduRoman: 'Is level mein meine ___ naye alfaaz seekhe.', exampleSentence: 'I have learned over 500 new words in this level.', isPowerPack: false },
+    { english: 'I can now use all 12 tenses in English.', urduRoman: 'Mein ab English ke tamam 12 tenses use kar sakta hoon.', exampleSentence: 'I can now use all 12 tenses correctly in my writing and speaking.', isPowerPack: false },
+  ];
+  level3GatePhrases.forEach((p, i) => {
+    items.push({ level: 3, module: 5, groupName: 'Level 3 Gate — Key Phrases', type: ContentType.PHRASE, english: p.english, urduRoman: p.urduRoman, exampleSentence: p.exampleSentence, isPowerPack: p.isPowerPack, sortOrder: 6 + i });
+  });
+
+  // ── LEVEL 4, MODULE 5: Idioms & Phrases ──────────────────────────────────
+
+  const level4Idioms = [
+    { english: 'Break a leg', urduRoman: 'Kamiyaabi ki dua (literally nahi — good luck!)', exampleSentence: 'Break a leg in your presentation today!', isPowerPack: true },
+    { english: 'Piece of cake', urduRoman: 'Bahut aasaan kaam', exampleSentence: 'The test was a piece of cake for the top students.', isPowerPack: true },
+    { english: 'Burn the midnight oil', urduRoman: 'Raat ko der tak kaam/parhaai karna', exampleSentence: 'She burns the midnight oil before every exam.', isPowerPack: true },
+    { english: 'Under the weather', urduRoman: 'Thoda beemar / theek nahi', exampleSentence: 'I am feeling a bit under the weather today.', isPowerPack: true },
+    { english: 'Hit the nail on the head', urduRoman: 'Bilkul sahi baat kehna', exampleSentence: 'You hit the nail on the head with that suggestion.', isPowerPack: true },
+    { english: 'Spill the beans', urduRoman: 'Galti se raaz batana', exampleSentence: 'Do not spill the beans about the surprise party!', isPowerPack: true },
+    { english: 'Once in a blue moon', urduRoman: 'Bahut kaam hi hota hai — bahut mushkil se', exampleSentence: 'He visits his relatives once in a blue moon.', isPowerPack: true },
+    { english: 'Bite the bullet', urduRoman: 'Mushkil ko accept karo aur aage baro', exampleSentence: 'Just bite the bullet and finish the report.', isPowerPack: true },
+    { english: 'Beat around the bush', urduRoman: 'Ghuma phira ke baat karna — seedhi baat nahi', exampleSentence: 'Stop beating around the bush. Tell me directly.', isPowerPack: false },
+    { english: 'Hit the sack', urduRoman: 'So jaana / neend ke liye jaana', exampleSentence: 'I am exhausted. Time to hit the sack.', isPowerPack: false },
+    { english: 'Cost an arm and a leg', urduRoman: 'Bahut zyada mehnga hona', exampleSentence: 'That phone costs an arm and a leg.', isPowerPack: false },
+    { english: 'The ball is in your court', urduRoman: 'Ab aapki baari / aapki zimmedaari', exampleSentence: 'I offered to help. The ball is in your court now.', isPowerPack: false },
+    { english: 'A blessing in disguise', urduRoman: 'Jo bura lage lekin baad mein acha nikle', exampleSentence: 'Losing that job was a blessing in disguise.', isPowerPack: false },
+    { english: 'Let the cat out of the bag', urduRoman: 'Galti se chhupa hua raaz batana', exampleSentence: 'He let the cat out of the bag about the promotion.', isPowerPack: false },
+    { english: 'Pull someone\'s leg', urduRoman: 'Kisi ke saath mazaak karna', exampleSentence: 'I was just pulling your leg — I did not mean it seriously!', isPowerPack: false },
+  ];
+  level4Idioms.forEach((id, i) => {
+    items.push({ level: 4, module: 5, groupName: 'Idioms & Fixed Expressions', type: ContentType.PHRASE, english: id.english, urduRoman: id.urduRoman, exampleSentence: id.exampleSentence, isPowerPack: id.isPowerPack, sortOrder: i + 1 });
+  });
+
+  // ── LEVEL 4, MODULE 6: Level 4 Gate (Review) ────────────────────────────
+
+  const level4GateGrammar = [
+    { english: 'Although / Even though — contrast connector', urduRoman: 'Haalaanki / Baawajood is ke', exampleSentence: 'Although it rained, the match continued.', isPowerPack: true },
+    { english: 'Not only... but also — adding strong points', urduRoman: 'Sirf nahi... balke bhi', exampleSentence: 'She is not only talented but also hardworking.', isPowerPack: true },
+    { english: 'The more... the more — parallel comparison', urduRoman: 'Jitna zyada... utna zyada', exampleSentence: 'The more you practise, the more confident you become.', isPowerPack: true },
+    { english: 'WRONG: She did not went. RIGHT: She did not go.', urduRoman: '"did" ke baad hamesha base verb — galti mat karo', exampleSentence: 'She did not go to school. (NOT: did not went)', isPowerPack: true },
+    { english: 'Formal letter format: Respected Sir / Yours sincerely', urduRoman: 'Darkhwast mein shuroo aur aakhir ka tarika', exampleSentence: 'Respected Sir, I humbly request you to consider my application. Yours sincerely, Ali.', isPowerPack: true },
+  ];
+  level4GateGrammar.forEach((g, i) => {
+    items.push({ level: 4, module: 6, groupName: 'Level 4 Gate — Key Concepts', type: ContentType.GRAMMAR, english: g.english, urduRoman: g.urduRoman, exampleSentence: g.exampleSentence, isPowerPack: g.isPowerPack, sortOrder: i + 1 });
+  });
+
+  const level4GatePhrases = [
+    { english: 'Furthermore, this shows that ___.', urduRoman: 'Mazeed yeh ke yeh sabit karta hai ke ___.', exampleSentence: 'Furthermore, this shows that regular practice leads to fluency.', isPowerPack: true },
+    { english: 'In conclusion, I believe that ___.', urduRoman: 'Aakhir mein, mujhe yaqeen hai ke ___.', exampleSentence: 'In conclusion, I believe that education is the greatest gift.', isPowerPack: true },
+    { english: 'On the other hand, some people argue that ___.', urduRoman: 'Doosri taraf, kuch log kehte hain ke ___.', exampleSentence: 'On the other hand, some people argue that experience is more important than degrees.', isPowerPack: false },
+    { english: 'I have been studying for four months and I feel confident.', urduRoman: 'Mein chaar mahine se parh raha hoon aur mujhe confidence hai.', exampleSentence: 'I have been studying English for four months and I feel very confident.', isPowerPack: false },
+  ];
+  level4GatePhrases.forEach((p, i) => {
+    items.push({ level: 4, module: 6, groupName: 'Level 4 Gate — Review Phrases', type: ContentType.PHRASE, english: p.english, urduRoman: p.urduRoman, exampleSentence: p.exampleSentence, isPowerPack: p.isPowerPack, sortOrder: 6 + i });
+  });
+
+  // ── LEVEL 5, MODULE 5: Business English ──────────────────────────────────
+
+  const businessMeetings = [
+    { english: 'Let us get started — shall we begin?', urduRoman: 'Shuru karte hain — kya shuru karein?', exampleSentence: 'Good morning everyone. Let us get started with today\'s agenda.', isPowerPack: true },
+    { english: 'The purpose of today\'s meeting is to ___.', urduRoman: 'Aaj ki meeting ka maqsad ___ hai.', exampleSentence: 'The purpose of today\'s meeting is to review the monthly targets.', isPowerPack: true },
+    { english: 'Could I add something here?', urduRoman: 'Kya mein yahaan kuch add kar sakta hoon?', exampleSentence: 'If I may — could I add something here about the budget?', isPowerPack: true },
+    { english: 'To summarize what has been discussed...', urduRoman: 'Jo baat hui uska khulaasa — to summarize...', exampleSentence: 'To summarize what has been discussed, we need three more weeks.', isPowerPack: true },
+    { english: 'Let us schedule a follow-up meeting.', urduRoman: 'Agli meeting fix karte hain.', exampleSentence: 'Let us schedule a follow-up meeting for next Monday at 10 AM.', isPowerPack: true },
+    { english: 'I would like to propose / suggest that ___.', urduRoman: 'Mein yeh tawiza dena chahta hoon ke ___.', exampleSentence: 'I would like to propose that we extend the deadline by one week.', isPowerPack: true },
+    { english: 'With respect, I disagree because ___.', urduRoman: 'Aadab ke saath, mein ikhtilaaf rakhta hoon kyunke ___.', exampleSentence: 'With respect, I disagree because the data does not support this conclusion.', isPowerPack: false },
+    { english: 'That is a valid point. However, ___.', urduRoman: 'Yeh ek theek baat hai. Lekin, ___.', exampleSentence: 'That is a valid point. However, we must also consider the cost.', isPowerPack: false },
+  ];
+  businessMeetings.forEach((p, i) => {
+    items.push({ level: 5, module: 5, groupName: 'Business Meetings', type: ContentType.PHRASE, english: p.english, urduRoman: p.urduRoman, exampleSentence: p.exampleSentence, isPowerPack: p.isPowerPack, sortOrder: i + 1 });
+  });
+
+  const businessNegotiation = [
+    { english: 'We are looking for a win-win solution.', urduRoman: 'Hum ek aisaa hal chahte hain jo dono ke liye behtar ho.', exampleSentence: 'We are looking for a win-win solution that works for both sides.', isPowerPack: true },
+    { english: 'What is the best price you can offer?', urduRoman: 'Aap se behtar qeemat kya mil sakti hai?', exampleSentence: 'We are interested, but what is the best price you can offer?', isPowerPack: true },
+    { english: 'We can offer ___ if you can commit to ___.', urduRoman: 'Agar aap ___ par raaz hoon to hum ___ de sakte hain.', exampleSentence: 'We can offer a 15% discount if you can commit to a one-year contract.', isPowerPack: true },
+    { english: 'I will need to discuss this with my team.', urduRoman: 'Mujhe yeh apni team ke saath discuss karna hoga.', exampleSentence: 'This sounds promising. I will need to discuss this with my team first.', isPowerPack: false },
+    { english: 'Do we have a deal?', urduRoman: 'Kya hum raaz hain? Kya deal pakki hai?', exampleSentence: 'We have agreed on all the terms. Do we have a deal?', isPowerPack: false },
+    { english: 'I look forward to a long-term partnership.', urduRoman: 'Main uzwi shiraakat ki ummeed rakhta hoon.', exampleSentence: 'I look forward to a long-term partnership with your company.', isPowerPack: false },
+  ];
+  businessNegotiation.forEach((p, i) => {
+    items.push({ level: 5, module: 5, groupName: 'Business Negotiations', type: ContentType.PHRASE, english: p.english, urduRoman: p.urduRoman, exampleSentence: p.exampleSentence, isPowerPack: p.isPowerPack, sortOrder: 9 + i });
+  });
+
+  const businessVocab = [
+    { english: 'Agenda', urduRoman: 'Meeting ka program / schedule', exampleSentence: 'Please review the agenda before the meeting.', isPowerPack: true },
+    { english: 'Deadline', urduRoman: 'Kaam mukammal karne ki aakhri tarikh', exampleSentence: 'The deadline for this project is Friday at 5 PM.', isPowerPack: true },
+    { english: 'Follow up', urduRoman: 'Kisi kaam ka baa\'d mein jaiza lena', exampleSentence: 'I will follow up with the client tomorrow morning.', isPowerPack: true },
+    { english: 'Stakeholder', urduRoman: 'Woh log jin ka kisi project mein hissa ho', exampleSentence: 'We must inform all stakeholders about the changes.', isPowerPack: false },
+    { english: 'KPI (Key Performance Indicator)', urduRoman: 'Kaam ki quality napne ka parameter', exampleSentence: 'Our main KPI this quarter is customer satisfaction.', isPowerPack: false },
+    { english: 'Action item', urduRoman: 'Jo kaam meeting mein decide hua karna hai', exampleSentence: 'The action item from today\'s meeting is to prepare a new proposal.', isPowerPack: false },
+  ];
+  businessVocab.forEach((w, i) => {
+    items.push({ level: 5, module: 5, groupName: 'Business Vocabulary', type: ContentType.VOCAB, english: w.english, urduRoman: w.urduRoman, exampleSentence: w.exampleSentence, isPowerPack: w.isPowerPack, sortOrder: 15 + i });
+  });
+
+  // ── LEVEL 5, MODULE 6: Level 5 Gate (Review) ────────────────────────────
+
+  const level5GateGrammar = [
+    { english: 'If + Present, will + Verb (Type 1 — real/possible)', urduRoman: 'Agar... to — Type 1: Ho sakta hai', exampleSentence: 'If you study hard, you will pass the exam.', isPowerPack: true },
+    { english: 'If + Past, would + Verb (Type 2 — imaginary)', urduRoman: 'Type 2: Kash hota... (imagination)', exampleSentence: 'If I had a million rupees, I would start a school.', isPowerPack: true },
+    { english: 'If + had + V3, would have + V3 (Type 3 — past impossible)', urduRoman: 'Type 3: Jo hua nahi us ki arzoo', exampleSentence: 'If she had studied, she would have passed easily.', isPowerPack: true },
+    { english: 'Passive: The letter was written by Ali.', urduRoman: 'Object + was/were + V3 + by + Subject', exampleSentence: 'The project was completed by the team on time.', isPowerPack: true },
+    { english: 'Never give up — phrasal verb example', urduRoman: 'Give up = haar maanna — kabhi haar mat maano', exampleSentence: 'Never give up on your dreams. Look up every word you do not know.', isPowerPack: true },
+  ];
+  level5GateGrammar.forEach((g, i) => {
+    items.push({ level: 5, module: 6, groupName: 'Level 5 Gate — Grammar Mastery', type: ContentType.GRAMMAR, english: g.english, urduRoman: g.urduRoman, exampleSentence: g.exampleSentence, isPowerPack: g.isPowerPack, sortOrder: i + 1 });
+  });
+
+  const level5GatePhrases = [
+    { english: 'Let us schedule a follow-up meeting for ___.', urduRoman: 'Agli meeting ___ ke liye fix karte hain.', exampleSentence: 'Let us schedule a follow-up meeting for next Monday at 10 AM.', isPowerPack: true },
+    { english: 'I would like to propose that ___.', urduRoman: 'Mein tawiza karta hoon ke ___.', exampleSentence: 'I would like to propose that we extend the project timeline.', isPowerPack: true },
+    { english: 'Once in a blue moon he visits. — Idiom check!', urduRoman: 'Idiom: Once in a blue moon = bahut kabhie kabhie', exampleSentence: 'He visits his parents once in a blue moon.', isPowerPack: false },
+    { english: 'The report was submitted before the deadline.', urduRoman: 'Passive voice ka istimaal — report ka zikr aage', exampleSentence: 'The report was submitted by the team before the deadline.', isPowerPack: false },
+  ];
+  level5GatePhrases.forEach((p, i) => {
+    items.push({ level: 5, module: 6, groupName: 'Level 5 Gate — Review Phrases', type: ContentType.PHRASE, english: p.english, urduRoman: p.urduRoman, exampleSentence: p.exampleSentence, isPowerPack: p.isPowerPack, sortOrder: 6 + i });
+  });
+
+  // ── LEVEL 6, MODULE 5: Accent & Delivery ─────────────────────────────────
+
+  const accentPronunciation = [
+    { english: 'Word Stress: IM-por-tant (stress the first syllable)', urduRoman: 'Zabar (stress) pehle syllable par — IM-por-tant', exampleSentence: 'The MOST im-POR-tant thing is to practise daily.', isPowerPack: true },
+    { english: 'Sentence Stress: stress content words (nouns, verbs, adjectives)', urduRoman: 'Sentence mein zaroori alfaaz (noun, verb, adjective) zor se bolain', exampleSentence: 'I WANT to LEARN ENGLISH WELL. (want, learn, English, well = stressed)', isPowerPack: true },
+    { english: 'Rising intonation for questions: Are you coming? ↗', urduRoman: 'Sawaal mein awaaz upar jaati hai ↗', exampleSentence: 'Are you COMING? Did you FINISH? (voice rises at end)', isPowerPack: true },
+    { english: 'Falling intonation for statements: I am coming. ↘', urduRoman: 'Bayaan mein awaaz neeche aati hai ↘', exampleSentence: 'I am coming home. ↘ She finished her work. ↘', isPowerPack: true },
+    { english: 'Linking words: "I am" sounds like "I\'m" in fast speech', urduRoman: 'Tez bolne mein words aapas mein jur jaate hain', exampleSentence: 'I am → I\'m | Do not → Don\'t | Going to → Gonna (informal)', isPowerPack: true },
+    { english: 'Silent letters: know (k silent), write (w silent)', urduRoman: 'Kuch letters likhe jaate hain lekin bole nahi jaate', exampleSentence: 'know (n-OH), write (r-ITE), hour (OW-er), honest (ON-est)', isPowerPack: true },
+    { english: 'th sound: think (soft th) vs this (hard th)', urduRoman: '"th" ki do awazein — soft (think) aur hard (this)', exampleSentence: 'THINK (soft th — zabaaan daant ke beech) | THIS (hard th — same but with voice)', isPowerPack: false },
+    { english: 'Pace: slow down for clarity, pause at commas', urduRoman: 'Aahista bolain — clearly bolna zaroori hai, comma par rukain', exampleSentence: 'Speak slowly and clearly. Pause at punctuation marks for natural rhythm.', isPowerPack: false },
+  ];
+  accentPronunciation.forEach((p, i) => {
+    items.push({ level: 6, module: 5, groupName: 'Pronunciation & Accent', type: ContentType.GRAMMAR, english: p.english, urduRoman: p.urduRoman, exampleSentence: p.exampleSentence, isPowerPack: p.isPowerPack, sortOrder: i + 1 });
+  });
+
+  const deliveryPhrases = [
+    { english: 'Good morning / afternoon everyone. Today I will be talking about ___.', urduRoman: 'Presentation shuru karne ka tarika', exampleSentence: 'Good morning everyone. Today I will be talking about digital marketing.', isPowerPack: true },
+    { english: 'Let me begin by explaining ___.', urduRoman: 'Shuraat mein ___ samjhaata hoon.', exampleSentence: 'Let me begin by explaining the background of this issue.', isPowerPack: true },
+    { english: 'Moving on to my next point...', urduRoman: 'Agla nuqta — transition phrase', exampleSentence: 'Moving on to my next point, let us look at the data.', isPowerPack: true },
+    { english: 'To summarize, the key takeaways are ___.', urduRoman: 'Khulaasa — is presentation ki key baatein', exampleSentence: 'To summarize, the key takeaways are: plan, practise, and persist.', isPowerPack: true },
+    { english: 'Are there any questions?', urduRoman: 'Koi sawaal? — Presentation ke baad bolne ka tarika', exampleSentence: 'Thank you for listening. Are there any questions?', isPowerPack: true },
+    { english: 'I would like to draw your attention to ___.', urduRoman: 'Dhyan dilan chahta hoon ___ ki taraf.', exampleSentence: 'I would like to draw your attention to the chart on the right.', isPowerPack: false },
+    { english: 'That is an excellent question. My answer is ___.', urduRoman: 'Q&A mein sawaal ka jawab dene ka professional tarika', exampleSentence: 'That is an excellent question. My answer is that consistency is the key.', isPowerPack: false },
+  ];
+  deliveryPhrases.forEach((p, i) => {
+    items.push({ level: 6, module: 5, groupName: 'Public Speaking & Delivery', type: ContentType.PHRASE, english: p.english, urduRoman: p.urduRoman, exampleSentence: p.exampleSentence, isPowerPack: p.isPowerPack, sortOrder: 9 + i });
+  });
+
+  // ── LEVEL 6, MODULE 6: Final Gate (Mastery Review) ───────────────────────
+
+  const finalGateGrammar = [
+    { english: 'Professional email opener: I hope this email finds you well.', urduRoman: 'Professional email ka aaghaz — formal aur polite', exampleSentence: 'Dear Sir, I hope this email finds you well. I am writing to apply for the position.', isPowerPack: true },
+    { english: 'Interview: My greatest strength is my dedication to quality.', urduRoman: 'Interview mein apni khoobee kehna — confidently', exampleSentence: 'My greatest strength is my dedication to producing quality work on time.', isPowerPack: true },
+    { english: 'IELTS Task 2: Some argue... while others believe...', urduRoman: 'IELTS Opinion essay — dono taraf ki raaye', exampleSentence: 'Some argue that social media is harmful, while others believe it connects the world.', isPowerPack: true },
+    { english: 'Conditionals review: If I had known, I would have acted.', urduRoman: 'Type 3 conditional — past ki arzoo', exampleSentence: 'If I had known about this course earlier, I would have started sooner.', isPowerPack: true },
+    { english: 'Word upgrade: good → outstanding, bad → dreadful', urduRoman: 'Weak words ki jagah strong words — advanced vocabulary', exampleSentence: 'Her performance was not just good — it was outstanding and captivating.', isPowerPack: true },
+    { english: 'Passive voice in reports: The data was collected by the team.', urduRoman: 'Report writing mein passive voice zaroori hai', exampleSentence: 'The survey was conducted in three cities and the data was analysed carefully.', isPowerPack: true },
+  ];
+  finalGateGrammar.forEach((g, i) => {
+    items.push({ level: 6, module: 6, groupName: 'Final Gate — Mastery Review', type: ContentType.GRAMMAR, english: g.english, urduRoman: g.urduRoman, exampleSentence: g.exampleSentence, isPowerPack: g.isPowerPack, sortOrder: i + 1 });
+  });
+
+  const finalGatePhrases = [
+    { english: 'I have completed 300 days of English learning.', urduRoman: 'Mein ne 300 din ki English seekh mukammal ki.', exampleSentence: 'I have completed 300 days of consistent English learning. I am proud of this achievement.', isPowerPack: true },
+    { english: 'My English has improved from basic to professional level.', urduRoman: 'Meri English basic se professional level tak pahunchi.', exampleSentence: 'Over the past year, my English has improved from basic to a professional level.', isPowerPack: true },
+    { english: 'I can now write professional emails, give interviews, and present ideas in English.', urduRoman: 'Ab mein professional emails likh sakta, interviews de sakta, aur ideas present kar sakta hoon.', exampleSentence: 'I can now confidently write emails, attend interviews, and present my ideas in English.', isPowerPack: true },
+    { english: 'The journey of a thousand miles begins with a single step.', urduRoman: 'Hazaar mile ka safar ek qadam se shuru hota hai.', exampleSentence: 'You started with A, E, I, O, U. The journey of a thousand miles begins with a single step.', isPowerPack: true },
+    { english: 'Keep going. Your best English is still ahead of you.', urduRoman: 'Chalte raho. Tumhari sabse behtar English abhi aani hai.', exampleSentence: 'Keep going. Your best English is still ahead of you. Never stop learning.', isPowerPack: true },
+  ];
+  finalGatePhrases.forEach((p, i) => {
+    items.push({ level: 6, module: 6, groupName: 'Final Gate — Achievement Phrases', type: ContentType.PHRASE, english: p.english, urduRoman: p.urduRoman, exampleSentence: p.exampleSentence, isPowerPack: p.isPowerPack, sortOrder: 7 + i });
+  });
+
   // ── INSERT ALL ────────────────────────────────────────────────────────────
 
   const result = await prisma.contentItem.createMany({ data: items });
 
   console.log(`Seeded ${result.count} ContentItems.`);
   console.log('LEVEL 1:');
-  console.log(`  Module 1 (Alphabets):        ${5 + 21} items (5 vowels + 21 consonants)`);
-  console.log(`  Module 2 (Core Words):      ${12 + 5 + 50 + 28 + 22 + 18} items (A:12 B:5 C:50 D:28 E:22 F:18)`);
-  console.log(`  Module 3 (Basic Sentences): ${1 + 8 + 7 + 7} items (SVO:1 Positive:8 Negative:7 Questions:7)`);
-  console.log(`  Module 4 (Daily Patterns):  ${8 + 8 + 10} items (Greetings:8 Requests:8 Numbers:10)`);
+  console.log('  Module 1 (Alphabets):          5 vowels + 21 consonants');
+  console.log('  Module 2 (Core Words):         135 words across 6 categories');
+  console.log('  Module 3 (Basic Sentences):    SVO + positive/negative/question patterns');
+  console.log('  Module 4 (Numbers/Days/Time):  greetings + polite requests + numbers + days + months + time + self-intro + directions');
   console.log('LEVEL 2:');
-  console.log('  Module 1 (Present Tense):   grammar rules + example sentences + time expressions');
-  console.log('  Module 2 (Past Tense):      grammar + 24 irregular verbs + time expressions');
-  console.log('  Module 3 (Future Tense):    will/going-to + articles + plurals');
-  console.log('  Module 4 (Daily Convos):    shopping + restaurant + introductions + directions');
+  console.log('  Module 1 (Present Tense):      grammar rules + example sentences + time expressions');
+  console.log('  Module 2 (Past Tense):         grammar + 24 irregular verbs + time expressions');
+  console.log('  Module 3 (Future Tense):       will/going-to + articles + plurals');
+  console.log('  Module 4 (Daily Convos):       shopping + restaurant + introductions + directions');
+  console.log('  Module 5 (Level 2 Gate):       tense review + key phrases');
   console.log('LEVEL 3:');
-  console.log('  Module 1 (All 12 Tenses):   12 tense formulas + 6 PP trigger words');
-  console.log('  Module 2 (500 Core Words):  100 words across 5 categories');
-  console.log('  Module 3 (Short Stories):   8 vocab + 4 sentence patterns');
-  console.log('  Module 4 (Reading):         5 comprehension patterns');
+  console.log('  Module 1 (All 12 Tenses):      12 tense formulas + 6 PP trigger words');
+  console.log('  Module 2 (500 Core Words):     100 words across 5 categories');
+  console.log('  Module 3 (Short Stories):      8 vocab + 4 sentence patterns');
+  console.log('  Module 4 (Reading Practice):   5 comprehension patterns');
+  console.log('  Module 5 (Level 3 Gate):       grammar & reading review + key phrases');
   console.log('LEVEL 4:');
-  console.log('  Module 1 (Writing Skills):  12 linking words + 5 topics');
-  console.log('  Module 2 (Letter Writing):  10 letter phrases');
-  console.log('  Module 3 (Complex Sentences): 8 complex structures');
-  console.log('  Module 4 (Speaking):        8 common mistakes + 5 speaking scripts');
+  console.log('  Module 1 (Writing Skills):     12 linking words + 5 topics');
+  console.log('  Module 2 (Letter Writing):     10 letter phrases');
+  console.log('  Module 3 (Complex Sentences):  8 complex structures');
+  console.log('  Module 4 (Speaking Confidence):8 common mistakes + 5 speaking scripts');
+  console.log('  Module 5 (Idioms & Phrases):   15 everyday idioms');
+  console.log('  Module 6 (Level 4 Gate):       key concepts + review phrases');
   console.log('LEVEL 5:');
-  console.log('  Module 1 (Conditionals):    8 conditional structures');
-  console.log('  Module 2 (Passive Voice):   7 passive voice patterns');
-  console.log('  Module 3 (Idioms):          15 common idioms');
-  console.log('  Module 4 (Phrasal Verbs):   20 phrasal verbs');
+  console.log('  Module 1 (Advanced Grammar):   8 conditional structures');
+  console.log('  Module 2 (Passive Voice):      7 passive voice patterns');
+  console.log('  Module 3 (Idioms & Expressions): 15 common idioms');
+  console.log('  Module 4 (Phrasal Verbs):      20 phrasal verbs');
+  console.log('  Module 5 (Business English):   meetings + negotiations + business vocab');
+  console.log('  Module 6 (Level 5 Gate):       grammar mastery + review phrases');
   console.log('LEVEL 6:');
-  console.log('  Module 1 (Professional Email): 10 email phrases');
+  console.log('  Module 1 (Professional Emails):10 email phrases');
   console.log('  Module 2 (Interview English):  8 interview answers');
-  console.log('  Module 3 (Power Words):        20 power words + 7 upgrades');
-  console.log('  Module 4 (IELTS Prep):         10 IELTS phrases');
+  console.log('  Module 3 (Advanced Vocabulary):20 power words + 7 word upgrades');
+  console.log('  Module 4 (IELTS/Exam Prep):    10 IELTS phrases');
+  console.log('  Module 5 (Accent & Delivery):  pronunciation tips + public speaking phrases');
+  console.log('  Module 6 (Final Gate):         mastery review + achievement phrases');
 }
 
 main()
