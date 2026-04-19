@@ -163,7 +163,7 @@ export const SENTENCES_BY_MODULE: Record<number, SentenceExercise[]> = {
       mode: 'Positive',
       hint: 'My name is ___ — use this for self-introduction',
       zones: [{ id: 'starter', label: 'MY NAME' }, { id: 'verb', label: 'IS' }, { id: 'name', label: 'NAME' }],
-      tiles: ['My name', 'is', 'Ali', 'Her name', 'was', 'Sara'],
+      tiles: ['My name', 'is', 'Ali', 'Her name', 'is called', 'Sara'],
       correct: { starter: 'My name', verb: 'is', name: 'Ali' },
       vocabWords: ['name'],
     },

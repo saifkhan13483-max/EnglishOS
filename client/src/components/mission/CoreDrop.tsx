@@ -43,8 +43,8 @@ const TYPE_CONFIG: Record<string, { label: string; color: string; bg: string; em
   },
   PHRASE: {
     label: 'Phrase',
-    color: '#A855F7',
-    bg: 'border-purple-500/30',
+    color: 'text-purple-500',
+    bg: 'bg-purple-500/10 border-purple-500/30',
     emoji: '🗣️',
     tip: 'This is a phrase used in real conversations. Practice it until it feels natural!',
   },

@@ -99,7 +99,7 @@ export default function WarmupFlash({ onComplete, onXpEarned }: WarmupFlashProps
     setDirection(1)
     setFlipped(false)
     setShowHowTo(false)
-    if (isLast || cardIndex >= cards.length - 1) finishAndSync()
+    if (isLast) finishAndSync()
     else setCardIndex((i) => i + 1)
   }
 

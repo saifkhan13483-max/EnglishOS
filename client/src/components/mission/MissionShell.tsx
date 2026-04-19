@@ -169,7 +169,7 @@ export default function MissionShell({ type = 'morning' }: MissionShellProps) {
             </p>
           </div>
 
-          <span className="text-xs font-mono text-text-muted w-7 text-right">
+          <span className="text-xs font-mono text-text-muted w-8 text-right">
             {phase}/{TOTAL}
           </span>
         </div>
