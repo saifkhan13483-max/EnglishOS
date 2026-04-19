@@ -1157,6 +1157,233 @@ How often should I take this?  → Kitni baar lena hai?
 
 ---
 
+# MODULE 10-A: PASSIVE VOICE — KAAM KAUN KAR RAHA HAI?
+## (Roadmap Phase 2: Day 57-58)
+
+> **Passive Voice tab use karte hain jab kaam karne wala nahi batana ya zaroori nahi hota.**
+
+---
+
+## Active vs Passive — Farq Samjho
+
+```
+Active:   Maryam ne letter likha.     → Maryam wrote the letter.
+Passive:  Letter likha gaya.          → The letter was written.
+
+Active:   Police ne chor pakra.       → Police caught the thief.
+Passive:  Chor pakra gaya.            → The thief was caught.
+```
+
+---
+
+## Passive Voice ka Formula
+
+```
++---------------------------------------------------+
+|  Subject + "to be" (sahi form) + Verb ki 3rd form |
++---------------------------------------------------+
+```
+
+---
+
+## Tense ke Hisaab se Passive Form
+
+| Tense | Active | Passive |
+|-------|--------|---------|
+| Present Simple | She cleans the room. | The room is cleaned. |
+| Past Simple | He repaired the car. | The car was repaired. |
+| Future Simple | They will build a house. | A house will be built. |
+| Present Continuous | She is cooking food. | Food is being cooked. |
+| Present Perfect | He has written a letter. | A letter has been written. |
+
+---
+
+## Passive banane ka Tarika (Step by Step)
+
+```
+Step 1: Active ka Object (kya/kise) uthao — woh Passive ka Subject banta hai.
+Step 2: "To Be" ki sahi form use karo (is/was/will be/etc).
+Step 3: Main verb ki 3rd form (past participle) lagao.
+Step 4: Active ka Subject hatao ya "by + subject" lagao (agar zaroori ho).
+
+Misal:
+Active:  Ali fixed the bike.
+         Subject=Ali / Object=the bike
+
+Passive: The bike was fixed (by Ali).
+         (the bike → subject / was = to be past / fixed = V3 / by Ali = optional)
+```
+
+---
+
+## "By" kab use karein?
+
+```
+By use karo jab batana zaroori ho:
+  The book was written by Allama Iqbal.     → Kitaab Allama Iqbal ne likhi.
+
+By hata do jab pata nahi ya zaroori nahi:
+  The window was broken.                    → Khirki tooti — kisne todi nahi pata.
+  The letter was delivered this morning.    → Khat aaj subah pohoncha.
+```
+
+---
+
+## Sentences Practice
+
+```
+Active:   The chef cooks the food.
+Passive:  The food is cooked (by the chef).
+
+Active:   Someone stole my phone.
+Passive:  My phone was stolen.
+
+Active:   The teacher will check the papers.
+Passive:  The papers will be checked.
+
+Active:   They have cancelled the match.
+Passive:  The match has been cancelled.
+```
+
+---
+
+## Common Mistakes
+
+```
+GALAT: The letter was written by him yesterday.  (by him → ise)
+SAHI:  The letter was written by him yesterday.  (order sahi hai — by + subject aakhir mein)
+
+GALAT: The car is repaired by mechanic.
+SAHI:  The car is repaired by the mechanic.  (the laga — specific mechanic)
+
+GALAT: Rice is being eating.
+SAHI:  Rice is being eaten.  (V3 use karo, not Ving)
+```
+
+---
+
+# MODULE 10-B: REPORTED SPEECH — DOOSRE KI BAAT BATANA
+## (Roadmap Phase 2: Day 59)
+
+> **Jab koi kisi ki baat aage batata hai — seedha quote nahi karta — tab Reported Speech use hoti hai.**
+
+---
+
+## Direct vs Reported — Farq Samjho
+
+```
+Direct Speech:   Ali ne kaha, "Main thak gaya hoon."
+                 Ali said, "I am tired."
+
+Reported Speech: Ali ne kaha ke woh thak gaya hai.
+                 Ali said that he was tired.
+```
+
+---
+
+## Tense Changes Jadwal
+
+| Direct Speech (jo kaha) | Reported Speech (jo bataya) |
+|------------------------|----------------------------|
+| is / am / are | was / were |
+| was / were | had been |
+| do / does | did |
+| did | had done |
+| will | would |
+| can | could |
+| may | might |
+| have / has | had |
+
+---
+
+## Pronoun Changes
+
+```
+Direct:   She said, "I am hungry."
+Reported: She said that she was hungry.
+          (I → she — jo bol raha tha uski taraf change hota hai)
+
+Direct:   He said to me, "You are right."
+Reported: He told me that I was right.
+          (You → I)
+```
+
+---
+
+## "Say" vs "Tell" — Zaroori Farq
+
+```
+say  → kisi ka naam nahi aata:   She said that she was tired.
+tell → kisi ka naam aata hai:    She told me that she was tired.
+                                  She told Ali that she was tired.
+```
+
+---
+
+## Time aur Place Words — Tabdili
+
+```
+Direct → Reported
+now      → then
+today    → that day
+tomorrow → the next day
+yesterday → the day before
+here      → there
+this      → that
+```
+
+---
+
+## Sawal (Questions) ka Reported Speech
+
+**Yes/No Questions:**
+```
+Direct:   He asked, "Are you coming?"
+Reported: He asked if / whether I was coming.
+          (if ya whether lagao)
+```
+
+**Wh- Questions:**
+```
+Direct:   She asked, "Where do you live?"
+Reported: She asked where I lived.
+          (wh-word seedha rakhte hain, tense change hota hai)
+```
+
+---
+
+## Commands (Hukam) ka Reported Speech
+
+```
+Direct:   The teacher said, "Open your books."
+Reported: The teacher told us to open our books.
+          (told + object + to + base verb)
+
+Direct:   She said, "Don't make noise."
+Reported: She told us not to make noise.
+          (told + object + not to + base verb)
+```
+
+---
+
+## Practice Sentences
+
+```
+Direct:   He said, "I live in Lahore."
+Reported: He said that he lived in Lahore.
+
+Direct:   She said, "I will call you tomorrow."
+Reported: She said that she would call me the next day.
+
+Direct:   He asked, "Did you eat lunch?"
+Reported: He asked if I had eaten lunch.
+
+Direct:   The teacher said, "Submit your homework."
+Reported: The teacher told us to submit our homework.
+```
+
+---
+
 ## STEP 2 — FINAL TEST (Din 75)
 
 - [ ] Present Simple mein 10 sentences bana sako

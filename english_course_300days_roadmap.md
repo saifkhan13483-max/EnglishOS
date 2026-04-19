@@ -12,7 +12,7 @@
 
 ```
 PHASE 1 (Days 001-050)    PHASE 2 (Days 051-100)    PHASE 3 (Days 101-150)
-Foundation & Basics       Grammar Mastery            Reading & Writing
+Foundation & Basics       Grammar Mastery            Reading, Writing & Language
 
 PHASE 4 (Days 151-200)    PHASE 5 (Days 201-250)    PHASE 6 (Days 251-300)
 Speaking & Listening      Advanced English           Professional Mastery
@@ -454,19 +454,20 @@ Speaking & Listening      Advanced English           Professional Mastery
 ---
 
 ### DAY 50 — PHASE 1 COMPLETE
-**Topic:** Complete Grammar Basics Revision (Days 1-49) + Common Beginner Mistakes
-- All tenses, modal verbs, adjectives, adverbs, conjunctions revision
+**Topic:** Phase 1 Grammar Basics Revision (Days 1-49) + Common Beginner Mistakes
+- Abhi tak padhay hue tenses ka revision: Present Simple, Present Continuous, Past Simple, Future Simple
+- Modal verbs (can, may, must, should), adjectives, adverbs, conjunctions, prepositions ka revision
 - **Common Mistakes — Abhi Se Theek Karo:**
   - "She did not went" — GALAT / "She did not go" — SAHI (did ke baad base verb)
   - "He is more better" — GALAT / "He is better" — SAHI (more aur -er dono ek saath nahi)
   - "I am agree" — GALAT / "I agree" — SAHI (agree ek verb hai, am ki zaroorat nahi)
   - "I am having a car" — GALAT / "I have a car" — SAHI (possession mein continuous nahi)
-  - "Since 3 years" — GALAT / "For 3 years" — SAHI (duration ke liye "for" use karo)
   - "Today morning" — GALAT / "This morning" — SAHI
   - "Return back" — GALAT / "Return" — SAHI (back pehle se shamil hai)
+  - "Since 3 years" — GALAT / "For 3 years" — SAHI (yeh Present Perfect ka rule hai — Day 51 mein seekhoge)
 - **Test:** 50-question comprehensive test
 - **Speaking Practice:** 5-minute self-introduction aur daily routine bolo
-- **Companion File:** `english_course_complete.md` Step 1 Final Test (Day 30) aur Step 2 content zaroor dekho — wahan har topic ka full explanation aur exercises hain
+- **Companion File:** `english_course_complete.md` Modules 1–10 (Alphabets se Daily Conversations tak) mein har topic ka full explanation aur exercises hain
 - **Achievement:** Phase 1 — Foundation Complete!
 
 ---
@@ -548,6 +549,7 @@ Speaking & Listening      Advanced English           Professional Mastery
 - Passive: A mango is eaten by her.
 - **Practice:** 10 sentences active → passive
 - **Homework:** 5 passive sentences
+- **Companion File:** `english_course_complete.md` Module 10-A — Passive Voice (formula, tense table, step-by-step tarika, common mistakes)
 
 ---
 
@@ -556,6 +558,7 @@ Speaking & Listening      Advanced English           Professional Mastery
 - Was eaten / Has been eaten / Will be eaten
 - **Practice:** 10 sentences
 - **Homework:** Newspaper se 5 passive sentences dhoondo
+- **Companion File:** `english_course_complete.md` Module 10-A — Tense ke Hisaab se Passive Form table aur "by" kab use karein
 
 ---
 
@@ -565,6 +568,7 @@ Speaking & Listening      Advanced English           Professional Mastery
 - Indirect: She said that she was happy.
 - **Practice:** 10 sentences
 - **Homework:** 5 conversations indirect mein likho
+- **Companion File:** `english_course_complete.md` Module 10-B — Reported Speech (tense changes jadwal, pronoun changes, say vs tell, questions aur commands)
 
 ---
 
@@ -916,13 +920,13 @@ Speaking & Listening      Advanced English           Professional Mastery
 - All tenses, passive, conditionals, vocabulary
 - **Test:** 100-question comprehensive test
 - **Speaking:** 3-minute topic speech (My Life / My Dream)
-- **Companion File:** `english_course_complete.md` Modules 6–10 (Present/Past/Future Tenses, Articles, Daily Conversations) zaroor review karo — wahan full sentences, exercises aur common mistakes hain
+- **Companion File:** `english_course_complete.md` Modules 6–10-B (Present/Past/Future Tenses, Articles, Daily Conversations, Passive Voice, Reported Speech) zaroor review karo — wahan full sentences, exercises aur common mistakes hain
 - **Achievement:** Phase 2 — Grammar Mastery Complete!
 
 ---
 
-## PHASE 3 — READING & WRITING (DAYS 101–150)
-### Advanced Reading, Essay Writing, aur Comprehension
+## PHASE 3 — READING, WRITING & LANGUAGE SKILLS (DAYS 101–150)
+### Essay Writing, Comprehension, Vocabulary Enrichment, Pronunciation & Listening Foundations
 
 ---
 
@@ -1338,12 +1342,12 @@ Speaking & Listening      Advanced English           Professional Mastery
 ---
 
 ### DAY 150 — PHASE 3 COMPLETE
-**Topic:** Reading & Writing Full Assessment
-- Essay (300 words), Letter, Summary, Comprehension
-- **Test:** Full writing portfolio
+**Topic:** Reading, Writing & Language Skills Full Assessment
+- Essay (300 words), Letter, Summary, Comprehension, Idioms revision
+- **Test:** Full writing portfolio + vocabulary/idioms test
 - **Speaking:** Present a 3-minute prepared topic
-- **Companion File:** `english_course_complete.md` Modules 11–15 (Tenses, 500 Core Words, Short Stories, Paragraph & Letter Writing) mein full content aur sample paragraphs/letters hain — in ka zaroor mutaala karo
-- **Achievement:** Phase 3 — Reading & Writing Complete!
+- **Companion File:** `english_course_complete.md` Modules 11–15 (Sare Tenses, 500 Core Words, Short Stories, Paragraph & Letter Writing) mein full content aur sample paragraphs/letters hain — in ka zaroor mutaala karo
+- **Achievement:** Phase 3 — Reading, Writing & Language Skills Complete!
 
 ---
 
@@ -2672,7 +2676,7 @@ the 300-Day English Mastery Course,
 |-------|------|-------|---------|
 | Phase 1 | 1–50 | Foundation & Basics | Beginner Level |
 | Phase 2 | 51–100 | Grammar Mastery | Elementary-Intermediate |
-| Phase 3 | 101–150 | Reading & Writing | Intermediate |
+| Phase 3 | 101–150 | Reading, Writing & Language Skills | Intermediate |
 | Phase 4 | 151–200 | Speaking & Listening | Upper-Intermediate |
 | Phase 5 | 201–250 | Advanced English | Advanced |
 | Phase 6 | 251–300 | Professional Mastery | Fluent/Professional |
