@@ -84,6 +84,22 @@ export default function StoryReplay({ onComplete }: StoryReplayProps) {
   const [choiceMade, setChoiceMade] = useState<{ nodeIdx: number; ack: string } | null>(null)
   const [dir, setDir] = useState(1)
 
+  /* Guard: if story has no nodes, auto-complete this phase */
+  if (!story.nodes.length) {
+    return (
+      <div className="flex flex-col items-center justify-center gap-4 py-16 px-4 max-w-lg mx-auto w-full">
+        <span className="text-4xl">📖</span>
+        <p className="text-text-secondary text-sm text-center">Story content is being prepared for this level. Completing phase…</p>
+        <button
+          onClick={() => { addXp(0); onComplete() }}
+          className="px-6 py-2.5 rounded-xl bg-brand-blue text-white text-sm font-semibold hover:bg-brand-blue/90 transition-colors"
+        >
+          Continue
+        </button>
+      </div>
+    )
+  }
+
   const node = story.nodes[idx]
 
   function advance() {
