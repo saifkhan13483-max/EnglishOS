@@ -46,13 +46,13 @@ function StatCard({
       animate={{ opacity: 1, y: 0 }}
       transition={{ delay, duration: 0.4, ease: [0.22, 1, 0.36, 1] }}
       onAnimationComplete={start}
-      className="flex-1 bg-bg-secondary border border-border-subtle rounded-2xl p-4 flex flex-col items-center gap-1.5 text-center"
+      className="flex-1 min-w-0 bg-bg-secondary border border-border-subtle rounded-2xl p-3 sm:p-4 flex flex-col items-center gap-1 sm:gap-1.5 text-center"
     >
-      <span className="text-2xl">{icon}</span>
-      <span className="font-display text-2xl font-bold" style={{ color }}>
+      <span className="text-xl sm:text-2xl">{icon}</span>
+      <span className="font-display text-xl sm:text-2xl font-bold" style={{ color }}>
         {val}{unit}
       </span>
-      <span className="text-xs font-mono text-text-muted uppercase tracking-wider">{label}</span>
+      <span className="text-[10px] sm:text-xs font-mono text-text-muted uppercase tracking-wide truncate w-full">{label}</span>
     </motion.div>
   )
 }
@@ -152,7 +152,7 @@ export default function DayClose({ onComplete }: DayCloseProps) {
   const dayNumber = learnerProfile?.dayNumber ?? 1
 
   return (
-    <div className="relative min-h-screen bg-bg-primary flex flex-col items-center">
+    <div className="relative w-full bg-bg-primary flex flex-col items-center">
       {/* Batman Mode Activation overlay */}
       <AnimatePresence>
         {showBatmanAnimation && (
@@ -187,7 +187,7 @@ export default function DayClose({ onComplete }: DayCloseProps) {
 
         {/* Stats row */}
         {!isLoading && (
-          <div className="flex gap-3">
+          <div className="flex gap-2 sm:gap-3">
             <StatCard icon="⭐" label="XP Today"  value={displayXp}     unit=" XP" color="#F5B014" delay={0.2}  />
             <StatCard icon="🔥" label="Streak"    value={displayStreak} unit="d"   color="#E94560" delay={0.35} />
             <StatCard icon="🧠" label="Brain %"   value={displayBrain}  unit="%"   color="#2ECC71" delay={0.5}  />
@@ -195,7 +195,7 @@ export default function DayClose({ onComplete }: DayCloseProps) {
         )}
 
         {isLoading && (
-          <div className="flex gap-3">
+          <div className="flex gap-2 sm:gap-3">
             {[0.2, 0.35, 0.5].map(d => (
               <motion.div
                 key={d}

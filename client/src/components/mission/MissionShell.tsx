@@ -194,9 +194,9 @@ export default function MissionShell({ type = 'morning' }: MissionShellProps) {
         {/* Row 3: phase names */}
         <div className="flex px-4 pb-3">
           {PHASES.map((name, i) => (
-            <div key={name} className="flex-1 text-center">
+            <div key={name} className="flex-1 text-center min-w-0 overflow-hidden px-0.5">
               <span
-                className={`text-[10px] font-mono transition-colors duration-200 ${
+                className={`text-[10px] font-mono transition-colors duration-200 block truncate ${
                   i + 1 === phase
                     ? isEvening
                       ? 'text-brand-blue font-semibold'
@@ -212,7 +212,7 @@ export default function MissionShell({ type = 'morning' }: MissionShellProps) {
       </div>
 
       {/* ── Phase content ── */}
-      <div className="flex-1 overflow-y-auto flex flex-col">
+      <div className="flex-1 overflow-hidden flex flex-col">
         <AnimatePresence mode="wait" custom={dir}>
           <motion.div
             key={phase}
@@ -221,7 +221,7 @@ export default function MissionShell({ type = 'morning' }: MissionShellProps) {
             initial="enter"
             animate="center"
             exit="exit"
-            className="flex-1 flex flex-col"
+            className="flex-1 flex flex-col overflow-y-auto"
           >
             {/* ── Morning phases ── */}
             {!isEvening && phase === 1 && <WarmupFlash   onComplete={advance} onXpEarned={showXp} />}

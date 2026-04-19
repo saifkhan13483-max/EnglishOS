@@ -220,7 +220,7 @@ export default function ConversationSim({ onComplete, onXpEarned }: Conversation
   const msgCount = messages.filter(m => m.role === 'user').length
 
   return (
-    <div className="flex flex-col h-full max-w-lg mx-auto w-full">
+    <div className="flex flex-col min-h-0 flex-1 max-w-lg mx-auto w-full">
       {/* Header bar */}
       <div className="shrink-0 px-4 py-3 border-b border-border-subtle bg-bg-primary">
         <div className="flex items-center justify-between">
@@ -246,7 +246,7 @@ export default function ConversationSim({ onComplete, onXpEarned }: Conversation
       </div>
 
       {/* Messages */}
-      <div className="flex-1 overflow-y-auto px-4 py-4 flex flex-col gap-3 min-h-[320px]">
+      <div className="flex-1 min-h-0 overflow-y-auto px-4 py-4 flex flex-col gap-3" style={{ minHeight: '240px' }}>
         <AnimatePresence initial={false}>
           {messages.map(msg => (
             <motion.div

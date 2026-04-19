@@ -32,16 +32,16 @@ export default function ApplyIt({ onComplete }: ApplyItProps) {
 
       {/* Scenario card */}
       <div className="bg-bg-secondary border border-brand-gold/30 rounded-2xl overflow-hidden">
-        <div className="flex items-center justify-between px-5 py-3 border-b border-border-subtle">
-          <div className="flex items-center gap-2">
-            <span className="text-lg">{scenario.icon}</span>
-            <span className="text-xs font-mono text-brand-gold uppercase tracking-wider">Real Situation</span>
+        <div className="flex items-center justify-between gap-2 px-4 sm:px-5 py-3 border-b border-border-subtle">
+          <div className="flex items-center gap-2 min-w-0">
+            <span className="text-lg shrink-0">{scenario.icon}</span>
+            <span className="text-xs font-mono text-brand-gold uppercase tracking-wider truncate">Real Situation</span>
           </div>
 
           <button
             onClick={() => setShowUrdu((v) => !v)}
             className={[
-              'flex items-center gap-1.5 px-3 py-1.5 rounded-lg border text-xs font-mono transition-all duration-200',
+              'flex items-center gap-1 sm:gap-1.5 px-2.5 sm:px-3 py-1.5 rounded-lg border text-xs font-mono transition-all duration-200 shrink-0',
               showUrdu
                 ? 'border-brand-gold/60 bg-brand-gold/10 text-brand-gold'
                 : 'border-border-subtle bg-transparent text-text-muted hover:border-brand-gold/40 hover:text-text-secondary',

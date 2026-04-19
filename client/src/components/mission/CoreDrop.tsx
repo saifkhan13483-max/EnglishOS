@@ -198,7 +198,7 @@ export default function CoreDrop({ onComplete }: CoreDropProps) {
             {/* English word/text */}
             <div>
               <p className="text-xs font-mono text-text-muted mb-1.5 uppercase tracking-wider">English</p>
-              <p className="font-display text-4xl font-bold text-text-primary leading-tight">{card.english}</p>
+              <p className="font-display text-3xl sm:text-4xl font-bold text-text-primary leading-tight break-words">{card.english}</p>
             </div>
 
             {/* Audio */}

@@ -236,12 +236,12 @@ export default function WarmupFlash({ onComplete, onXpEarned }: WarmupFlashProps
           >
             {/* Front */}
             <div
-              className="absolute inset-0 flex flex-col items-center justify-center bg-bg-secondary border border-border-subtle rounded-2xl cursor-pointer select-none p-8 gap-3"
+              className="absolute inset-0 flex flex-col items-center justify-center bg-bg-secondary border border-border-subtle rounded-2xl cursor-pointer select-none p-5 sm:p-8 gap-3"
               style={{ backfaceVisibility: 'hidden' }}
               onClick={() => setFlipped(true)}
             >
               <p className="text-xs font-mono text-text-muted uppercase tracking-widest">English</p>
-              <p className="font-display text-5xl font-bold text-text-primary text-center">{card.english}</p>
+              <p className="font-display text-4xl sm:text-5xl font-bold text-text-primary text-center break-words">{card.english}</p>
               <div className="mt-2 flex items-center gap-2 px-3 py-1.5 rounded-lg border border-border-subtle bg-bg-tertiary">
                 <span className="text-xs text-text-muted font-mono">Tap to see Urdu meaning</span>
                 <span className="text-xs">👆</span>
@@ -250,11 +250,11 @@ export default function WarmupFlash({ onComplete, onXpEarned }: WarmupFlashProps
 
             {/* Back */}
             <div
-              className="absolute inset-0 flex flex-col items-center justify-center bg-bg-tertiary border border-brand-blue/40 rounded-2xl p-8 gap-3"
+              className="absolute inset-0 flex flex-col items-center justify-center bg-bg-tertiary border border-brand-blue/40 rounded-2xl p-5 sm:p-8 gap-3"
               style={{ backfaceVisibility: 'hidden', transform: 'rotateY(180deg)' }}
             >
               <p className="text-xs font-mono text-text-muted uppercase tracking-widest">Urdu Meaning</p>
-              <p className="font-display text-3xl font-bold text-brand-blue text-center" lang="ur">{card.romanUrdu}</p>
+              <p className="font-display text-2xl sm:text-3xl font-bold text-brand-blue text-center break-words" lang="ur">{card.romanUrdu}</p>
               <div className="bg-bg-primary rounded-xl px-4 py-2.5 border border-border-subtle w-full text-center mt-1">
                 <p className="text-xs font-mono text-text-muted mb-1">Example</p>
                 <p className="text-sm text-text-secondary italic">"{card.example}"</p>
