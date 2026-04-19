@@ -224,6 +224,9 @@ export default function Landing() {
             <Button variant="ghost" size="lg" onClick={scrollToMethod}>
               See How It Works
             </Button>
+            <Button variant="ghost" size="lg" onClick={() => navigate('/roadmap')}>
+              🗺️ View 300-Day Roadmap
+            </Button>
           </motion.div>
 
           {/* Stats strip */}

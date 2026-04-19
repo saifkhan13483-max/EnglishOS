@@ -19,6 +19,7 @@ const FeynmanArchive = lazy(() => import('@/pages/FeynmanArchive'))
 const Leaderboard    = lazy(() => import('@/pages/Leaderboard'))
 const LevelGate      = lazy(() => import('@/pages/LevelGate'))
 const Profile        = lazy(() => import('@/pages/Profile'))
+const Roadmap        = lazy(() => import('@/pages/Roadmap'))
 const NotFound       = lazy(() => import('@/pages/NotFound'))
 
 /* ── Full-screen loading spinner ────────────────────────────────────── */
@@ -107,6 +108,9 @@ export default function AppRouter() {
       <ToastContainer />
       <Suspense fallback={<LoadingScreen />}>
         <Routes>
+
+          {/* Fully public route — accessible without auth */}
+          <Route path="/roadmap" element={<Roadmap />} />
 
           {/* Public routes — redirect to /map when already logged in */}
           <Route element={<PublicRoute />}>

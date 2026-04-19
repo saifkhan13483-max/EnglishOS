@@ -88,6 +88,16 @@ The following UX improvements were made to make the course easier to understand 
 - **FeynmanMoment** — Added a "Beginner Tip" panel reminding learners to write in simple words and not worry about mistakes.
 - **Landing Page** — Added a new "For Beginners" section that shows exactly what Day 1 looks like, with 3 sample lesson cards (Letter, Word, Sentence) and a simple 3-step "How It Works" breakdown.
 
+## 300-Day Roadmap Page (April 2026)
+
+Added a standalone interactive Roadmap page (`/roadmap`) accessible to all users (public, no auth required):
+- Source markdown: `english website/english_course_300days_roadmap.md` → copied to `client/src/assets/roadmap.md`
+- Imported at build time using Vite's `?raw` query suffix
+- Custom inline markdown parser extracts all 6 levels, modules, and 300 daily entries
+- UI features: hero section, level overview table, learning frameworks accordion, level tab selector, module accordions with day cards, search within a level
+- Entry points: "View 300-Day Roadmap" button on Landing page hero + "Roadmap" item in AppShell navigation for logged-in users
+- Component: `client/src/pages/Roadmap.tsx`
+
 ## Known-Fixed Bugs
 
 - **SR Queue initialization on registration** (`auth.controller.ts`): When a new user registers, `initializeSRQueue` is now called immediately for all Level 1 Module 1 content items so WarmupFlash cards are available from Day 1.
