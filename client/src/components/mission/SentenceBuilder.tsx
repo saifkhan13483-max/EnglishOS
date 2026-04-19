@@ -146,7 +146,7 @@ export default function SentenceBuilder({ onComplete, onXpEarned }: SentenceBuil
 
   const [exIdx, setExIdx] = useState(0)
   const [slots, setSlots] = useState<Record<string, string>>({})
-  const [pool, setPool] = useState<string[]>(() => shuffle(exercises[0].tiles))
+  const [pool, setPool] = useState<string[]>(() => exercises[0] ? shuffle(exercises[0].tiles) : [])
   const [checked, setChecked] = useState(false)
   const [isCorrect, setIsCorrect] = useState(false)
   const [shake, setShake] = useState(false)
@@ -169,9 +169,10 @@ export default function SentenceBuilder({ onComplete, onXpEarned }: SentenceBuil
   )
 
   // Mark vocabulary words from this exercise in the SR queue
+  const exVocabWords = ex?.vocabWords ?? []
   const markVocabWords = useCallback(
     (correct: boolean) => {
-      for (const word of ex.vocabWords) {
+      for (const word of exVocabWords) {
         const card = dailyQueue.find(
           c => c.english.toLowerCase() === word.toLowerCase()
         )
@@ -180,8 +181,25 @@ export default function SentenceBuilder({ onComplete, onXpEarned }: SentenceBuil
         }
       }
     },
-    [ex.vocabWords, dailyQueue, markReviewed]
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+    [exVocabWords.join(','), dailyQueue, markReviewed]
   )
+
+  /* Guard: no exercises available for this level/module yet */
+  if (!exercises.length) {
+    return (
+      <div className="flex flex-col items-center justify-center gap-4 py-16 px-4 max-w-lg mx-auto w-full">
+        <span className="text-4xl">🧩</span>
+        <p className="text-text-secondary text-sm text-center">Sentence exercises are being prepared for this module. Completing phase…</p>
+        <button
+          onClick={() => { if (onXpEarned) onXpEarned(0); onComplete() }}
+          className="px-6 py-2.5 rounded-xl bg-brand-blue text-white text-sm font-semibold hover:bg-brand-blue/90 transition-colors"
+        >
+          Continue
+        </button>
+      </div>
+    )
+  }
 
   function handleDragStart(e: DragStartEvent) {
     setDragging(e.active.id as string)
