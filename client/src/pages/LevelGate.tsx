@@ -22,7 +22,9 @@ interface Question {
   isCorrect?: boolean
 }
 
-const QUESTIONS: Question[] = [
+// ── Level-specific question banks ─────────────────────────────────────────────
+
+const QUESTIONS_LEVEL_1: Question[] = [
   {
     id: 1, type: 'vocab',
     prompt: 'Type the English meaning of: "yaad karna"',
@@ -128,6 +130,546 @@ const QUESTIONS: Question[] = [
   },
 ]
 
+const QUESTIONS_LEVEL_2: Question[] = [
+  {
+    id: 1, type: 'vocab',
+    prompt: 'Type the past tense of the verb: "go"',
+    hint: 'This is an irregular verb — it does not just add -ed.',
+    answer: 'went',
+  },
+  {
+    id: 2, type: 'grammar',
+    prompt: 'Which sentence uses Present Continuous correctly?',
+    hint: 'Present Continuous = Subject + is/am/are + verb-ing.',
+    options: ['She is eat rice.', 'She eats rice now.', 'She is eating rice.', 'She eating rice.'],
+    correct: 2,
+  },
+  {
+    id: 3, type: 'sentence',
+    prompt: 'Is this sentence correct or incorrect?',
+    hint: '"am went" mixes two tenses — only one verb form needed.',
+    sentence: 'I am went to the market.',
+    isCorrect: false,
+  },
+  {
+    id: 4, type: 'vocab',
+    prompt: 'Type the past tense of the verb: "eat"',
+    hint: 'Another irregular verb — think about what you "ate" yesterday.',
+    answer: 'ate',
+  },
+  {
+    id: 5, type: 'grammar',
+    prompt: 'Which Past Simple question is correct?',
+    hint: 'Past Simple questions use "Did" + base verb (not past form).',
+    options: ['Did you went?', 'Did you go?', 'You did go?', 'Went you?'],
+    correct: 1,
+  },
+  {
+    id: 6, type: 'sentence',
+    prompt: 'Is this sentence correct or incorrect?',
+    hint: 'With "does not", the verb stays in base form (no -s, no -es).',
+    sentence: 'She doesn\'t likes tea.',
+    isCorrect: false,
+  },
+  {
+    id: 7, type: 'vocab',
+    prompt: 'Type the English meaning of: "kal" (aane wala)',
+    hint: 'This refers to the day after today.',
+    answer: 'tomorrow',
+  },
+  {
+    id: 8, type: 'grammar',
+    prompt: 'Which sentence correctly shows the Future tense (Going To)?',
+    hint: 'Going To = Subject + am/is/are + going to + base verb.',
+    options: [
+      'I go to the market later.',
+      'I went to the market tomorrow.',
+      'I am going to study tomorrow.',
+      'I will going study tomorrow.',
+    ],
+    correct: 2,
+  },
+  {
+    id: 9, type: 'sentence',
+    prompt: 'Is this sentence correct or incorrect?',
+    hint: '"They" is plural — use "were", not "was".',
+    sentence: 'They was playing cricket.',
+    isCorrect: false,
+  },
+  {
+    id: 10, type: 'vocab',
+    prompt: 'Type the English meaning of: "maafi maangna"',
+    hint: 'You say this when you have done something wrong.',
+    answer: 'apologize',
+  },
+  {
+    id: 11, type: 'grammar',
+    prompt: 'Which sentence is Past Simple tense?',
+    hint: 'Past Simple uses the past form of the verb without any helper.',
+    options: ['He runs fast yesterday.', 'He runned fast.', 'He ran fast.', 'He was run fast.'],
+    correct: 2,
+  },
+  {
+    id: 12, type: 'grammar',
+    prompt: 'Complete: "I ___ to the market yesterday."',
+    hint: 'Yesterday tells us this is past tense.',
+    options: ['go', 'went', 'gone', 'going'],
+    correct: 1,
+  },
+  {
+    id: 13, type: 'vocab',
+    prompt: 'Type the English meaning of: "roz"',
+    hint: 'This word describes how often something happens — daily.',
+    answer: 'every day',
+  },
+  {
+    id: 14, type: 'sentence',
+    prompt: 'Is this polite phrase correct?',
+    hint: 'This is a natural everyday expression for not understanding.',
+    sentence: 'Can you please repeat that? I didn\'t understand.',
+    isCorrect: true,
+  },
+]
+
+const QUESTIONS_LEVEL_3: Question[] = [
+  {
+    id: 1, type: 'vocab',
+    prompt: 'Type the English meaning of: "mushkil"',
+    hint: 'When something is not easy to do, it is ___.',
+    answer: 'difficult',
+  },
+  {
+    id: 2, type: 'grammar',
+    prompt: 'Which sentence is Present Perfect tense?',
+    hint: 'Present Perfect = Subject + have/has + past participle.',
+    options: ['I eat already.', 'I have eaten.', 'I was eating.', 'I am eating now.'],
+    correct: 1,
+  },
+  {
+    id: 3, type: 'sentence',
+    prompt: 'Is this sentence correct or incorrect?',
+    hint: 'Present Perfect Continuous uses "have/has been + verb-ing".',
+    sentence: 'She has been studied for two hours.',
+    isCorrect: false,
+  },
+  {
+    id: 4, type: 'vocab',
+    prompt: 'Type the English meaning of: "udaas"',
+    hint: 'This is the opposite of happy.',
+    answer: 'sad',
+  },
+  {
+    id: 5, type: 'grammar',
+    prompt: 'Which sentence uses Past Perfect correctly?',
+    hint: 'Past Perfect = had + past participle.',
+    options: ['He had went home.', 'He have gone home.', 'He had gone home.', 'He gone home.'],
+    correct: 2,
+  },
+  {
+    id: 6, type: 'sentence',
+    prompt: 'Is this sentence correct or incorrect?',
+    hint: 'Past Perfect is used when one past event happened before another.',
+    sentence: 'By the time she arrived, they had already left.',
+    isCorrect: true,
+  },
+  {
+    id: 7, type: 'vocab',
+    prompt: 'Type the English meaning of: "mukhtalif"',
+    hint: 'When two things are not the same, they are ___.',
+    answer: 'different',
+  },
+  {
+    id: 8, type: 'grammar',
+    prompt: 'Which sentence is in Passive Voice?',
+    hint: 'Passive voice = Object + was/were + past participle.',
+    options: ['They ate the food.', 'The food was eaten.', 'She was eating the food.', 'He did eat food.'],
+    correct: 1,
+  },
+  {
+    id: 9, type: 'sentence',
+    prompt: 'Is this Passive Voice sentence correct or incorrect?',
+    hint: 'The past participle of "write" is "written", not "wrote".',
+    sentence: 'The book was wrote by the author.',
+    isCorrect: false,
+  },
+  {
+    id: 10, type: 'vocab',
+    prompt: 'Type the English meaning of: "alag"',
+    hint: 'When things are not together or not the same.',
+    answer: 'separate',
+  },
+  {
+    id: 11, type: 'grammar',
+    prompt: 'Which Type 1 Conditional sentence is correct?',
+    hint: 'Type 1: If + Present Simple, will + base verb.',
+    options: [
+      'If he study, he pass.',
+      'If he studies, he will pass.',
+      'If he will study, he passes.',
+      'If he studied, he passes.',
+    ],
+    correct: 1,
+  },
+  {
+    id: 12, type: 'grammar',
+    prompt: 'Complete: "The report ___ submitted by next week."',
+    hint: 'Future Passive uses "will be + past participle".',
+    options: ['has been', 'will have been', 'will be', 'had been'],
+    correct: 2,
+  },
+  {
+    id: 13, type: 'vocab',
+    prompt: 'Type the English meaning of: "shukriya"',
+    hint: 'What you say when someone helps you or does something kind.',
+    answer: 'thank you',
+  },
+  {
+    id: 14, type: 'sentence',
+    prompt: 'Is this Present Perfect Continuous sentence correct?',
+    hint: 'For time duration we use "for" — not "since".',
+    sentence: 'She has been living in London for three years.',
+    isCorrect: true,
+  },
+]
+
+const QUESTIONS_LEVEL_4: Question[] = [
+  {
+    id: 1, type: 'vocab',
+    prompt: 'Type the English meaning of: "zaroor"',
+    hint: 'When something is absolutely needed or certain to happen.',
+    answer: 'definitely',
+  },
+  {
+    id: 2, type: 'grammar',
+    prompt: 'Which linking word shows contrast (opposite idea)?',
+    hint: 'This word connects two ideas that go against each other.',
+    options: ['Furthermore', 'However', 'Therefore', 'Moreover'],
+    correct: 1,
+  },
+  {
+    id: 3, type: 'sentence',
+    prompt: 'Is this sentence correct or incorrect?',
+    hint: '"Despite" is never followed by "of" — use "Despite" directly.',
+    sentence: 'Despite of the rain, we went outside.',
+    isCorrect: false,
+  },
+  {
+    id: 4, type: 'vocab',
+    prompt: 'Type the English meaning of: "baghair"',
+    hint: 'This word means "not having" something.',
+    answer: 'without',
+  },
+  {
+    id: 5, type: 'grammar',
+    prompt: 'Which is the correct formal letter opening?',
+    hint: 'Formal letters use respectful titles and proper punctuation.',
+    options: ['Hey you!', 'Dear Sir/Madam,', 'Hello friend,', 'Hi there,'],
+    correct: 1,
+  },
+  {
+    id: 6, type: 'sentence',
+    prompt: 'Is this formal email sentence correct?',
+    hint: 'This is a standard phrase used in professional writing.',
+    sentence: 'I am writing to inform you about the schedule.',
+    isCorrect: true,
+  },
+  {
+    id: 7, type: 'vocab',
+    prompt: 'Type the English meaning of: "jaldi"',
+    hint: 'When you move fast or do something fast.',
+    answer: 'quickly',
+  },
+  {
+    id: 8, type: 'grammar',
+    prompt: 'Which sentence uses a relative clause correctly?',
+    hint: 'Use "who" for people, "which" for things.',
+    options: [
+      'The man who works here is my uncle.',
+      'The man which works here is my uncle.',
+      'The man that he works here is my uncle.',
+      'The man who he works is my uncle.',
+    ],
+    correct: 0,
+  },
+  {
+    id: 9, type: 'sentence',
+    prompt: 'Is this relative clause sentence correct?',
+    hint: '"which" can be used for things — like a report.',
+    sentence: 'The report which I submitted yesterday was approved.',
+    isCorrect: true,
+  },
+  {
+    id: 10, type: 'vocab',
+    prompt: 'Type the English meaning of: "muqabla"',
+    hint: 'When two people or teams compete against each other.',
+    answer: 'competition',
+  },
+  {
+    id: 11, type: 'grammar',
+    prompt: 'What does the idiom "once in a blue moon" mean?',
+    hint: 'Think about something that almost never happens.',
+    options: ['Very often', 'Very rarely', 'Once a month', 'At midnight'],
+    correct: 1,
+  },
+  {
+    id: 12, type: 'grammar',
+    prompt: 'Which sentence sounds most formal and professional?',
+    hint: 'Formal writing avoids slang and contractions.',
+    options: ["We wanna talk.", "I'm gonna go.", 'I wish to discuss this matter.', "Let's chat about it."],
+    correct: 2,
+  },
+  {
+    id: 13, type: 'vocab',
+    prompt: 'Type the English meaning of: "bahas"',
+    hint: 'When people talk and disagree about a topic.',
+    answer: 'argument',
+  },
+  {
+    id: 14, type: 'sentence',
+    prompt: 'Is this complex sentence correct?',
+    hint: '"Not only... but also" is a standard advanced sentence structure.',
+    sentence: 'Not only did she win the prize, but she also set a new record.',
+    isCorrect: true,
+  },
+]
+
+const QUESTIONS_LEVEL_5: Question[] = [
+  {
+    id: 1, type: 'vocab',
+    prompt: 'Type the English meaning of: "ummid"',
+    hint: 'When you believe something good will happen in the future.',
+    answer: 'hope',
+  },
+  {
+    id: 2, type: 'grammar',
+    prompt: 'Which is a Type 2 Conditional sentence?',
+    hint: 'Type 2: If + Past Simple, would + base verb (imaginary situation).',
+    options: [
+      'If it rains, I stay home.',
+      'If it rained, I would stay home.',
+      'If it had rained, I would have stayed.',
+      'If it rains, I will stay home.',
+    ],
+    correct: 1,
+  },
+  {
+    id: 3, type: 'sentence',
+    prompt: 'Is this Type 3 Conditional sentence correct?',
+    hint: 'Type 3: If + Past Perfect, would have + past participle.',
+    sentence: 'If I would have studied harder, I had passed the exam.',
+    isCorrect: false,
+  },
+  {
+    id: 4, type: 'vocab',
+    prompt: 'Type the English meaning of: "tawajjuh"',
+    hint: 'What a teacher asks students to give during a lesson.',
+    answer: 'attention',
+  },
+  {
+    id: 5, type: 'grammar',
+    prompt: 'What does the phrasal verb "give up" mean?',
+    hint: 'Think about someone who stops trying because it is too hard.',
+    options: ['give a gift', 'surrender/stop trying', 'increase an amount', 'call off a meeting'],
+    correct: 1,
+  },
+  {
+    id: 6, type: 'sentence',
+    prompt: 'Is this Passive Voice sentence correct?',
+    hint: '"was been" is not correct — passive uses was/were + past participle directly.',
+    sentence: 'The project was been completed by our team.',
+    isCorrect: false,
+  },
+  {
+    id: 7, type: 'vocab',
+    prompt: 'Type the English meaning of: "faisla"',
+    hint: 'When you choose between options and make up your mind.',
+    answer: 'decision',
+  },
+  {
+    id: 8, type: 'grammar',
+    prompt: 'Which phrasal verb means "to cancel"?',
+    hint: 'Think about calling something off before it happens.',
+    options: ['call up', 'call on', 'call off', 'call in'],
+    correct: 2,
+  },
+  {
+    id: 9, type: 'sentence',
+    prompt: 'Is this Present Perfect Continuous sentence correct?',
+    hint: 'For duration (a period of time), use "for" — not "since".',
+    sentence: 'She has been working on this project since six months.',
+    isCorrect: false,
+  },
+  {
+    id: 10, type: 'vocab',
+    prompt: 'Type the English meaning of: "mustaqqil"',
+    hint: 'When you do not need others to help you.',
+    answer: 'independent',
+  },
+  {
+    id: 11, type: 'grammar',
+    prompt: 'Which is the correct way to begin a formal business request?',
+    hint: 'Business English is polite, professional, and clear.',
+    options: [
+      'Gimme the report.',
+      'I would like to request...',
+      'Send me the report asap.',
+      'Hey, can you send?',
+    ],
+    correct: 1,
+  },
+  {
+    id: 12, type: 'grammar',
+    prompt: 'What does "raining cats and dogs" mean?',
+    hint: 'This idiom has nothing to do with actual animals.',
+    options: ['Cats and dogs are outside.', 'It is raining very heavily.', 'The weather is mild.', 'Animals are in the rain.'],
+    correct: 1,
+  },
+  {
+    id: 13, type: 'vocab',
+    prompt: 'Type the English meaning of: "taraqqi"',
+    hint: 'When someone improves and moves forward in life or work.',
+    answer: 'progress',
+  },
+  {
+    id: 14, type: 'sentence',
+    prompt: 'Is this Passive Voice sentence correct?',
+    hint: 'Passive voice: Subject + was/were + past participle + by + agent.',
+    sentence: 'He was made the project manager by the CEO last quarter.',
+    isCorrect: true,
+  },
+]
+
+const QUESTIONS_LEVEL_6: Question[] = [
+  {
+    id: 1, type: 'vocab',
+    prompt: 'Type the English meaning of: "mahir"',
+    hint: 'Someone who is very skilled and experienced in a field.',
+    answer: 'expert',
+  },
+  {
+    id: 2, type: 'grammar',
+    prompt: 'Which is a professional email sign-off?',
+    hint: 'Professional emails end with a formal closing phrase.',
+    options: ['Cya!', 'Yours sincerely,', 'Bye bye,', 'See you!'],
+    correct: 1,
+  },
+  {
+    id: 3, type: 'sentence',
+    prompt: 'Is this email closing sentence correct?',
+    hint: '"look forward to" must be followed by a gerund (verb+ing), not base verb.',
+    sentence: 'I look forward to hear from you.',
+    isCorrect: false,
+  },
+  {
+    id: 4, type: 'vocab',
+    prompt: 'Type the English meaning of: "qaabil"',
+    hint: 'When someone has the ability or talent to do something.',
+    answer: 'capable',
+  },
+  {
+    id: 5, type: 'grammar',
+    prompt: 'Which phrase correctly introduces an opinion in an IELTS essay?',
+    hint: 'IELTS essays use formal, structured language for opinions.',
+    options: ['In my opinion,', 'I think so.', 'Opinion:', 'What I believe:'],
+    correct: 0,
+  },
+  {
+    id: 6, type: 'sentence',
+    prompt: 'Is this interview sentence correct?',
+    hint: '"My greatest strength" is singular — which "be" verb goes with a singular subject?',
+    sentence: 'My greatest strength are my communication skills.',
+    isCorrect: false,
+  },
+  {
+    id: 7, type: 'vocab',
+    prompt: 'Type the English meaning of: "musalsal"',
+    hint: 'When something happens without stopping, one after another.',
+    answer: 'continuous',
+  },
+  {
+    id: 8, type: 'grammar',
+    prompt: 'Which sentence demonstrates advanced professional vocabulary?',
+    hint: 'Professional English uses precise and formal words.',
+    options: [
+      'The policy caused big problems.',
+      'The policy precipitated significant challenges.',
+      'The policy made big issues.',
+      'The policy gave problems.',
+    ],
+    correct: 1,
+  },
+  {
+    id: 9, type: 'sentence',
+    prompt: 'Is this advanced sentence correct?',
+    hint: '"Despite" + noun/gerund phrase + comma + main clause is correct.',
+    sentence: 'Despite facing numerous obstacles, she persevered and achieved her goals.',
+    isCorrect: true,
+  },
+  {
+    id: 10, type: 'vocab',
+    prompt: 'Type the English meaning of: "nawkari"',
+    hint: 'What you apply for when you want to earn money.',
+    answer: 'job',
+  },
+  {
+    id: 11, type: 'grammar',
+    prompt: 'Which phrase correctly describes a graph trend for IELTS?',
+    hint: 'IELTS graph descriptions use formal language for trends.',
+    options: [
+      'The graph go up in 2020.',
+      'There was a sharp increase in 2020.',
+      '2020 had much increase.',
+      'In 2020 it increased much.',
+    ],
+    correct: 1,
+  },
+  {
+    id: 12, type: 'grammar',
+    prompt: 'Which sentence is most appropriate for a job cover letter?',
+    hint: 'Cover letters are formal — avoid casual language.',
+    options: [
+      'I am good at my job.',
+      'I possess extensive experience in project management.',
+      'I worked before in this field.',
+      'Please hire me, I am good.',
+    ],
+    correct: 1,
+  },
+  {
+    id: 13, type: 'vocab',
+    prompt: 'Type the English meaning of: "tafseel"',
+    hint: 'When you give more information about something.',
+    answer: 'detail',
+  },
+  {
+    id: 14, type: 'sentence',
+    prompt: 'Is this IELTS-style academic sentence correct?',
+    hint: 'Academic English uses formal vocabulary like "acknowledged" and "pivotal".',
+    sentence: 'It is widely acknowledged that education plays a pivotal role in societal development.',
+    isCorrect: true,
+  },
+]
+
+const QUESTIONS_BY_LEVEL: Record<number, Question[]> = {
+  1: QUESTIONS_LEVEL_1,
+  2: QUESTIONS_LEVEL_2,
+  3: QUESTIONS_LEVEL_3,
+  4: QUESTIONS_LEVEL_4,
+  5: QUESTIONS_LEVEL_5,
+  6: QUESTIONS_LEVEL_6,
+}
+
+// ── Level-specific wrap stats ─────────────────────────────────────────────────
+
+const LEVEL_WRAP_STATS: Record<number, { vocabWords: number; grammarRules: number; feynmanImprovement: number }> = {
+  1: { vocabWords: 100,  grammarRules: 8,  feynmanImprovement: 34 },
+  2: { vocabWords: 250,  grammarRules: 15, feynmanImprovement: 28 },
+  3: { vocabWords: 500,  grammarRules: 20, feynmanImprovement: 25 },
+  4: { vocabWords: 750,  grammarRules: 28, feynmanImprovement: 30 },
+  5: { vocabWords: 1000, grammarRules: 35, feynmanImprovement: 22 },
+  6: { vocabWords: 1500, grammarRules: 42, feynmanImprovement: 20 },
+}
+
 const PASS_THRESHOLD    = 70
 const GATE_COOLDOWN_KEY = 'eos_gate_failed_at'
 const COOLDOWN_MS       = 24 * 60 * 60 * 1000
@@ -179,7 +721,9 @@ function VocabQuestion({ question, onAnswer }: {
   const [status, setStatus] = useState<'idle' | 'correct' | 'wrong'>('idle')
 
   function check() {
-    const correct = input.trim().toLowerCase() === question.answer!.toLowerCase()
+    const userAnswer = input.trim().toLowerCase()
+    const correctAnswer = question.answer!.toLowerCase()
+    const correct = userAnswer === correctAnswer || correctAnswer.split('/').map(s => s.trim()).includes(userAnswer)
     setStatus(correct ? 'correct' : 'wrong')
     setTimeout(() => { setStatus('idle'); setInput(''); onAnswer(correct) }, 1100)
   }
@@ -316,17 +860,18 @@ const TYPE_LABELS: Record<QuestionType, { label: string; color: string }> = {
 }
 
 // ── Score reveal ──────────────────────────────────────────────────────────────
-function ScoreReveal({ correct, total, wrongIds, onRetry, onPass }: {
+function ScoreReveal({ correct, total, wrongIds, questions, levelName, onRetry, onPass }: {
   correct: number
   total: number
   wrongIds: number[]
+  questions: Question[]
+  levelName: string
   onRetry: () => void
   onPass: () => void
 }) {
   const pct = Math.round((correct / total) * 100)
   const passed = pct >= PASS_THRESHOLD
 
-  // Persist cooldown timestamp on first render when failed
   useEffect(() => {
     if (!passed) saveCooldown()
   // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -334,14 +879,12 @@ function ScoreReveal({ correct, total, wrongIds, onRetry, onPass }: {
 
   const { formatted } = useCountdown(getCooldownRemaining())
 
-  const wrongModules = [
+  const wrongAreas = [
     ...new Set(wrongIds.map(id => {
-      const q = QUESTIONS.find(q => q.id === id)
+      const q = questions.find(q => q.id === id)
       if (!q) return null
-      // Questions 11–14 specifically cover Module 4: Numbers, Days & Greetings
-      if (id >= 11) return 'Module 4 — Numbers, Days & Greetings'
-      if (q.type === 'vocab')    return 'Vocabulary — Core 100 Words'
-      if (q.type === 'grammar')  return 'Grammar — Sentence Formation'
+      if (q.type === 'vocab')    return 'Vocabulary'
+      if (q.type === 'grammar')  return 'Grammar Rules'
       if (q.type === 'sentence') return 'Sentence Identification'
       return null
     }).filter(Boolean))
@@ -385,7 +928,7 @@ function ScoreReveal({ correct, total, wrongIds, onRetry, onPass }: {
           <div className="text-center">
             <p className="font-display font-bold text-text-primary text-2xl mb-1">Level Gate Passed! 🎉</p>
             <p className="text-sm text-text-secondary font-body">
-              You have proven your mastery of Level 1 — Base Camp.
+              You have proven your mastery of {levelName}.
             </p>
           </div>
           <Button variant="primary" size="lg" className="w-full max-w-sm" onClick={onPass}>
@@ -397,15 +940,15 @@ function ScoreReveal({ correct, total, wrongIds, onRetry, onPass }: {
           <div className="text-center">
             <p className="font-display font-bold text-text-primary text-2xl mb-1">Not Quite Yet</p>
             <p className="text-sm text-text-secondary font-body">
-              You need {PASS_THRESHOLD}% to pass. Review the modules below and try again.
+              You need {PASS_THRESHOLD}% to pass. Review the areas below and try again.
             </p>
           </div>
 
-          {wrongModules.length > 0 && (
+          {wrongAreas.length > 0 && (
             <div className="w-full max-w-sm bg-bg-secondary border border-border-subtle rounded-2xl p-4">
-              <p className="text-xs font-mono text-text-muted uppercase tracking-wider mb-3">Modules to Review</p>
+              <p className="text-xs font-mono text-text-muted uppercase tracking-wider mb-3">Areas to Review</p>
               <div className="flex flex-col gap-2">
-                {wrongModules.map(m => (
+                {wrongAreas.map(m => (
                   <div key={m} className="flex items-center gap-2.5">
                     <span className="w-1.5 h-1.5 rounded-full bg-brand-red shrink-0" />
                     <span className="text-sm font-body text-text-secondary">{m}</span>
@@ -457,7 +1000,7 @@ function CooldownBlocked({ onBack }: { onBack: () => void }) {
         <p className="text-xs font-mono text-brand-red uppercase tracking-wider mb-1">Next Attempt In</p>
         <p className="font-display font-bold text-text-primary text-3xl">{formatted}</p>
       </div>
-      <Button variant="secondary" size="lg" onClick={onBack}>← Back to Dashboard</Button>
+      <Button variant="secondary" size="lg" onClick={onBack}>← Back to Map</Button>
     </div>
   )
 }
@@ -467,6 +1010,10 @@ function LevelGateInner() {
   const navigate = useNavigate()
   const learnerProfile = useProgressStore(s => s.learnerProfile)
 
+  const level = learnerProfile?.currentLevel ?? 1
+  const levelName = LEVEL_NAMES[level] ?? `Level ${level}`
+  const questions = QUESTIONS_BY_LEVEL[level] ?? QUESTIONS_LEVEL_1
+
   const [currentIdx, setCurrentIdx] = useState(0)
   const [answers, setAnswers] = useState<boolean[]>([])
   const [showHint, setShowHint] = useState(false)
@@ -474,8 +1021,8 @@ function LevelGateInner() {
   const [wrongIds, setWrongIds] = useState<number[]>([])
   const [showCeremony, setShowCeremony] = useState(false)
 
-  const current = QUESTIONS[currentIdx]
-  const total   = QUESTIONS.length
+  const current = questions[currentIdx]
+  const total   = questions.length
   const pct     = Math.round((currentIdx / total) * 100)
 
   function handleAnswer(correct: boolean) {
@@ -490,11 +1037,11 @@ function LevelGateInner() {
       const pctFinal = Math.round((finalCorrect / total) * 100)
       const passed = pctFinal >= PASS_THRESHOLD
 
-      trackEvent('level_gate_attempted', { score_pct: pctFinal, correct: finalCorrect, total })
+      trackEvent('level_gate_attempted', { level, score_pct: pctFinal, correct: finalCorrect, total })
       if (passed) {
-        trackEvent('level_gate_passed', { score_pct: pctFinal })
+        trackEvent('level_gate_passed', { level, score_pct: pctFinal })
       } else {
-        trackEvent('level_gate_failed', { score_pct: pctFinal, wrong_count: total - finalCorrect })
+        trackEvent('level_gate_failed', { level, score_pct: pctFinal, wrong_count: total - finalCorrect })
       }
 
       setDone(true)
@@ -507,20 +1054,20 @@ function LevelGateInner() {
 
   // Show the ceremony overlay when the gate is passed
   if (showCeremony) {
-    const level = learnerProfile?.currentLevel ?? 1
+    const wrapStats = LEVEL_WRAP_STATS[level] ?? LEVEL_WRAP_STATS[1]
     return (
       <LevelWrapCeremony
         level={level}
-        locationName={LEVEL_NAMES[level] ?? `Level ${level}`}
+        locationName={levelName}
         stats={{
-          vocabWords: 100,
-          grammarRules: 12,
+          vocabWords: wrapStats.vocabWords,
+          grammarRules: wrapStats.grammarRules,
           daysCompleted: learnerProfile?.dayNumber ?? 30,
-          feynmanImprovement: 34,
+          feynmanImprovement: wrapStats.feynmanImprovement,
         }}
         myWhy={learnerProfile?.why ?? 'Career Growth'}
         nextLevelName={LEVEL_NAMES[level + 1] ?? `Level ${level + 1}`}
-        onBegin={() => navigate('/dashboard')}
+        onBegin={() => navigate('/map')}
         onReturnToMap={() => navigate('/map')}
       />
     )
@@ -537,7 +1084,9 @@ function LevelGateInner() {
             correct={correctCount}
             total={total}
             wrongIds={wrongIds}
-            onRetry={() => navigate('/dashboard')}
+            questions={questions}
+            levelName={levelName}
+            onRetry={() => navigate('/map')}
             onPass={() => setShowCeremony(true)}
           />
         </div>
@@ -561,7 +1110,7 @@ function LevelGateInner() {
       {/* Header */}
       <div className="flex items-center justify-between px-4 pt-4 pb-2">
         <button
-          onClick={() => navigate('/dashboard')}
+          onClick={() => navigate('/map')}
           className="text-text-muted hover:text-text-primary transition-colors p-1"
           aria-label="Exit gate"
         >
@@ -570,7 +1119,7 @@ function LevelGateInner() {
           </svg>
         </button>
         <div className="text-center">
-          <p className="text-xs font-mono text-text-muted uppercase tracking-widest">Level 1 Gate</p>
+          <p className="text-xs font-mono text-text-muted uppercase tracking-widest">Level {level} Gate — {levelName}</p>
           <p className="text-xs font-mono text-text-secondary">Prove Your Mastery</p>
         </div>
         <span className="text-xs font-mono text-text-muted">{currentIdx + 1}/{total}</span>
@@ -635,7 +1184,7 @@ function LevelGateInner() {
 
       {/* Bottom progress indicator */}
       <div className="px-4 pb-6 pt-2 flex justify-center gap-1.5 max-w-lg mx-auto w-full">
-        {QUESTIONS.map((_, i) => (
+        {questions.map((_, i) => (
           <div
             key={i}
             className={[
@@ -657,7 +1206,7 @@ export default function LevelGate() {
   const [blocked] = useState(() => getCooldownRemaining() > 0)
 
   if (blocked) {
-    return <CooldownBlocked onBack={() => navigate('/dashboard')} />
+    return <CooldownBlocked onBack={() => navigate('/map')} />
   }
   return <LevelGateInner />
 }

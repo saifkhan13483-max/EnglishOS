@@ -26,12 +26,12 @@ const LEVEL_DISPLAY: Record<number, { name: string; color: string; totalModules:
 }
 
 const MODULE_NAMES: Record<number, Record<number, string>> = {
-  1: { 1: 'Alphabets & Sounds', 2: 'Core 100 Words', 3: 'Basic Sentences', 4: 'Speaking Practice' },
+  1: { 1: 'Alphabets & Sounds', 2: 'Core 100 Words', 3: 'Basic Sentences', 4: 'Numbers, Days & Speaking' },
   2: { 1: 'Present Tense', 2: 'Past Tense', 3: 'Future Tense', 4: 'Daily Conversations', 5: 'Level 2 Gate' },
-  3: { 1: 'All 12 Tenses', 2: '500 Core Words', 3: 'Short Stories', 4: 'Listening Practice', 5: 'Level 3 Gate' },
-  4: { 1: 'Reading Skills', 2: 'Writing Skills', 3: 'Complex Sentences', 4: 'Speaking Confidence', 5: 'Idioms & Phrases', 6: 'Level 4 Gate' },
-  5: { 1: 'Advanced Grammar', 2: 'Phrasal Verbs', 3: 'Fluency Drills', 4: 'Job Interview Prep', 5: 'Business English', 6: 'Level 5 Gate' },
-  6: { 1: 'Professional Writing', 2: 'Public Speaking', 3: 'Advanced Vocabulary', 4: 'IELTS/Exam Prep', 5: 'Accent & Delivery', 6: 'Final Gate' },
+  3: { 1: 'All 12 Tenses', 2: '500 Core Words', 3: 'Short Stories', 4: 'Reading Practice', 5: 'Level 3 Gate' },
+  4: { 1: 'Writing Skills', 2: 'Letter Writing', 3: 'Complex Sentences', 4: 'Speaking Confidence', 5: 'Idioms & Phrases', 6: 'Level 4 Gate' },
+  5: { 1: 'Advanced Grammar', 2: 'Passive Voice', 3: 'Idioms & Expressions', 4: 'Phrasal Verbs', 5: 'Business English', 6: 'Level 5 Gate' },
+  6: { 1: 'Professional Emails', 2: 'Interview English', 3: 'Advanced Vocabulary', 4: 'IELTS / Exam Prep', 5: 'Accent & Delivery', 6: 'Final Gate' },
 }
 
 const BADGE_META: Record<string, { icon: string; name: string }> = {
