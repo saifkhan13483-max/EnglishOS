@@ -98,6 +98,28 @@ Added a standalone interactive Roadmap page (`/roadmap`) accessible to all users
 - Entry points: "View 300-Day Roadmap" button on Landing page hero + "Roadmap" item in AppShell navigation for logged-in users
 - Component: `client/src/pages/Roadmap.tsx`
 
+## Mission Content — All Levels Populated (April 2026)
+
+Populated all stub functions in `client/src/constants/` with full roadmap-aligned content:
+
+### `stories.ts` — 32 interactive stories (one per level-module)
+- Stories keyed by `"level-module"` string (e.g. `"1-1"` through `"6-6"`)
+- Each story has 6-8 nodes mixing `PanelNode` and `ChoiceNode` types for interactivity
+- Characters: Bilal (learner), Ali (friend), Sara (female learner), Teacher Miss Sara, Shopkeeper, Manager, Interviewer
+- Scenes: classroom, market, home, street, office, restaurant, park, university, stage
+- SCENE_GRADIENTS fully defined for all scene types
+- Stories progress from "Pehli Mulaqat" (Base Camp) → "World Stage" (Final Gate)
+
+### `sentences.ts` — 130+ drag-and-drop exercises across all 32 modules
+- Exercises keyed by `"level-module"` string; 3-5 exercises per module
+- Level 1: Articles, nouns, pronouns, am/is/are, basic SVO, negatives, questions
+- Level 2: Present/Past/Future tenses, can, would like, phrasals, perfect aspects
+- Level 3: All 12 tenses, passive, reported speech, conditionals, narrative connectors
+- Level 4: Linking words (however/therefore/moreover), letter writing, relative clauses, idioms
+- Level 5: Inversions, mixed conditionals, cleft sentences, passive voice, business idioms, phrasal verbs
+- Level 6: Professional emails, interview language, advanced vocabulary (alleviate/exacerbate), IELTS phrases
+- All tile strings are unique within each exercise; correct values match tile strings exactly
+
 ## Known-Fixed Bugs
 
 - **SR Queue initialization on registration** (`auth.controller.ts`): When a new user registers, `initializeSRQueue` is now called immediately for all Level 1 Module 1 content items so WarmupFlash cards are available from Day 1.
