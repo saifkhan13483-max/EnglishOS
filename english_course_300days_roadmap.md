@@ -1,27 +1,56 @@
-# ENGLISH COURSE — FULL 300 DAYS ROADMAP
-## Complete Day-by-Day Plan: Beginner to Fluent
+# ENGLISHOS — 300 DAYS MASTERY ROADMAP
+## Base Camp se World Stage Tak: Complete Day-by-Day Plan
 
 > **Language of Instructions:** Roman Urdu (Aasaan samajh ke liye)
-> **Daily Time Required:** 1 Hour (Morning 20 min + Evening 40 min)
-> **Level:** Complete Beginner to Advanced/Professional
-> **Companion File:** Har din ka detail lesson content `english_course_complete.md` mein hai — dono files saath use karein
+> **Roz Ka Waqt:** 1 Ghanta (Subah Morning Mission 20 min + Shaam Evening Mission 40 min)
+> **Level:** Complete Beginner → Advanced / Professional
+> **Companion File:** Har topic ka full lesson content `english_course_complete.md` mein hai — dono files saath use karein
+> **Site:** EnglishOS pe roz apni Morning aur Evening Missions complete karo — XP kamao, streak barqarar rakho!
 
 ---
 
-## ROADMAP OVERVIEW
+## ROADMAP OVERVIEW — 6 LEVELS, 300 DAYS
 
 ```
-PHASE 1 (Days 001-050)    PHASE 2 (Days 051-100)    PHASE 3 (Days 101-150)
-Foundation & Basics       Grammar Mastery            Reading, Writing & Language
+LEVEL 1 — BASE CAMP       LEVEL 2 — VILLAGE          LEVEL 3 — TOWN
+Days 001–030 (30 din)     Days 031–075 (45 din)       Days 076–120 (45 din)
+Alphabets → Sentences     Grammar Foundations         Reading & Writing
 
-PHASE 4 (Days 151-200)    PHASE 5 (Days 201-250)    PHASE 6 (Days 251-300)
-Speaking & Listening      Advanced English           Professional Mastery
+LEVEL 4 — CITY            LEVEL 5 — CAPITAL           LEVEL 6 — WORLD STAGE
+Days 121–180 (60 din)     Days 181–240 (60 din)       Days 241–300 (60 din)
+Advanced Writing &        Expert Grammar &            Professional Mastery
+Speaking                  Business English            Interviews & Exams
 ```
+
+| Level | Name | Days | Goal | EnglishOS Unlock |
+|-------|------|------|------|-----------------|
+| 1 | 🏕️ Base Camp | 1–30 | Alphabets, Words, Basic Sentences | Starting Point |
+| 2 | 🏘️ Village | 31–75 | Grammar, Tenses, Daily Conversations | Level 1 Gate Pass |
+| 3 | 🏙️ Town | 76–120 | All 12 Tenses, 500 Words, Reading | Level 2 Gate Pass |
+| 4 | 🌆 City | 121–180 | Writing, Letters, Speaking Confidence | Level 3 Gate Pass |
+| 5 | 🏛️ Capital | 181–240 | Advanced Grammar, Idioms, Business English | Level 4 Gate Pass |
+| 6 | 🌍 World Stage | 241–300 | Professional English, IELTS, Interviews | Level 5 Gate Pass |
 
 ---
 
-## PHASE 1 — BUNIYAAD (DAYS 1–50)
-### Alphabets, Words, aur Basic Sentences
+---
+
+## 🏕️ LEVEL 1 — BASE CAMP (DAYS 1–30)
+### Alphabets, Words, aur Basic Sentences — Bilkul Shuruwaat Se
+
+> **EnglishOS:** Yeh level unlock hai from Day 1. Roz apni Morning aur Evening Mission complete karo.
+> **Modules:** 4 modules | **Total:** 30 din | **Goal:** Basic English foundation tayyar karna
+
+| Module | Naam | Din | Focus |
+|--------|------|-----|-------|
+| Module 1 | Alphabets & Sounds | Days 1–5 | 26 letters, vowels, pronunciation |
+| Module 2 | Core 100 Words | Days 6–12 | 100 zaroori words — 50% conversations |
+| Module 3 | Basic Sentences | Days 13–20 | SVO formula — har sentence ka master key |
+| Module 4 | Numbers, Days & Speaking | Days 21–30 | Numbers, calendar, greetings, self-intro |
+
+---
+
+### 📚 MODULE 1 — ALPHABETS & SOUNDS (DAYS 1–5)
 
 ---
 
@@ -64,6 +93,10 @@ Speaking & Listening      Advanced English           Professional Mastery
 - Monday, Tuesday, Wednesday, Thursday, Friday, Saturday, Sunday
 - **Practice:** Saat din baar baar likho
 - **Homework:** Aaj konsa din hai — English mein likho
+
+---
+
+### 📚 MODULE 2 — CORE 100 WORDS (DAYS 6–12)
 
 ---
 
@@ -120,6 +153,10 @@ Speaking & Listening      Advanced English           Professional Mastery
 - Tomato, Potato, Onion, Carrot, Peas, Spinach, Cabbage, Cucumber, Brinjal, Garlic
 - **Practice:** Har sabzi ka naam 3 baar likho
 - **Homework:** "I eat potatoes" aisi 5 sentences
+
+---
+
+### 📚 MODULE 3 — BASIC SENTENCES (DAYS 13–20)
 
 ---
 
@@ -190,6 +227,10 @@ Speaking & Listening      Advanced English           Professional Mastery
 - Rule: He/She/It ke saath "s" lagao
 - **Practice:** 10 sentences
 - **Homework:** Roz ki 5 activities English mein likho
+
+---
+
+### 📚 MODULE 4 — NUMBERS, DAYS & SPEAKING (DAYS 21–30)
 
 ---
 
@@ -273,13 +314,36 @@ Speaking & Listening      Advanced English           Professional Mastery
 
 ---
 
-### DAY 30 — MONTH 1 REVIEW TEST
-**Topic:** Month 1 (Days 1-30) Full Revision
+### DAY 30 — LEVEL 1 COMPLETE! 🏕️ → 🏘️
+**Topic:** Level 1: Base Camp — Full Revision & Gate Test
 - Alphabet, Numbers, Vocabulary, Greetings, Introduction
 - Pronouns, Verb To Be, Simple Present Tense
 - Adjectives, Articles, Prepositions, Question Words
 - **Test:** 30 questions (MCQ + Fill in the blanks + Short sentences)
-- **Achievement:** Month 1 Complete! (Phase 1 — Days 1-50 — Day 50 tak jaari rahega)
+- **EnglishOS Gate:** Level 1 Gate pass karo → Level 2 (Village) unlock hoga!
+- **Achievement:** 🏕️ Base Camp Complete! Level 2 — Village unlock!
+
+---
+
+---
+
+## 🏘️ LEVEL 2 — VILLAGE (DAYS 31–75)
+### Grammar Foundations, Tenses, aur Daily Conversations
+
+> **EnglishOS:** Level 1 Gate pass karne ke baad yeh level unlock hoga.
+> **Modules:** 5 modules | **Total:** 45 din | **Goal:** Grammar ki neenv mazboot karna
+
+| Module | Naam | Din (Absolute) | Focus |
+|--------|------|----------------|-------|
+| Module 1 | Present Tense | Days 31–40 | Simple & Continuous Present |
+| Module 2 | Past Tense | Days 41–52 | Simple & Continuous Past, Irregular Verbs |
+| Module 3 | Future Tense | Days 53–62 | Will, Going To, Articles, Comparatives |
+| Module 4 | Daily Conversations | Days 63–70 | Shopping, Restaurant, Directions |
+| Module 5 | Level 2 Gate | Days 71–75 | Revision & Gate Test |
+
+---
+
+### 📚 MODULE 1 — PRESENT TENSE (DAYS 31–40)
 
 ---
 
@@ -378,6 +442,10 @@ Speaking & Listening      Advanced English           Professional Mastery
 
 ---
 
+### 📚 MODULE 2 — PAST TENSE (DAYS 41–52)
+
+---
+
 ### DAY 41
 **Topic:** Must / Should / Have To
 - You must study. / You should sleep early. / I have to go now.
@@ -453,8 +521,8 @@ Speaking & Listening      Advanced English           Professional Mastery
 
 ---
 
-### DAY 50 — PHASE 1 COMPLETE
-**Topic:** Phase 1 Grammar Basics Revision (Days 1-49) + Common Beginner Mistakes
+### DAY 50 — LEVEL 2 MODULE 2 MILESTONE ✅
+**Topic:** Grammar Basics Revision (Days 31-49) + Common Beginner Mistakes
 - Abhi tak padhay hue tenses ka revision: Present Simple, Present Continuous, Past Simple, Future Simple
 - Modal verbs (can, may, must, should), adjectives, adverbs, conjunctions, prepositions ka revision
 - **Common Mistakes — Abhi Se Theek Karo:**
@@ -468,12 +536,11 @@ Speaking & Listening      Advanced English           Professional Mastery
 - **Test:** 50-question comprehensive test
 - **Speaking Practice:** 5-minute self-introduction aur daily routine bolo
 - **Companion File:** `english_course_complete.md` Modules 1–10 (Alphabets se Daily Conversations tak) mein har topic ka full explanation aur exercises hain
-- **Achievement:** Phase 1 — Foundation Complete!
+- **Achievement:** ✅ Level 2 — Module 2 (Past Tense) Complete! Agle module mein Future Tense seekhenge.
 
 ---
 
-## PHASE 2 — GRAMMAR MASTERY (DAYS 51–100)
-### Advanced Grammar, Vocabulary, aur Conversations
+### 📚 MODULE 3 — FUTURE TENSE (DAYS 51–62)
 
 ---
 
@@ -523,7 +590,7 @@ Speaking & Listening      Advanced English           Professional Mastery
 
 ### DAY 56
 **Topic:** Tenses — Ab Tak Ka Mukammal Jaiza (9 Tenses + 3 Aane Wale)
-- Abhi tak padhay hue tenses revise karo, aur 3 tenses pehchano jo Phase 4 mein aayenge:
+- Abhi tak padhay hue tenses revise karo, aur 3 tenses pehchano jo Level 5 (Capital) mein aayenge:
   1. Present Simple          → I eat. / He eats. ✓
   2. Present Continuous      → I am eating. / She is eating. ✓
   3. Present Perfect         → I have eaten. / She has gone. ✓
@@ -531,12 +598,12 @@ Speaking & Listening      Advanced English           Professional Mastery
   5. Past Simple             → I ate. / She went. ✓
   6. Past Continuous         → I was eating. / They were playing. ✓ (Day 36 mein seekha)
   7. Past Perfect            → I had eaten before he came. ✓
-  8. ★ Past Perfect Cont.    → She had been waiting for an hour. (Phase 4, Day 182 mein aayega)
+  8. ★ Past Perfect Cont.    → She had been waiting for an hour. (Level 5, Day 182 mein aayega)
   9. Future Simple           → I will eat. / She will come. ✓
-  10. ★ Future Continuous    → I will be eating at 8pm. (Phase 4, Day 181 mein aayega)
+  10. ★ Future Continuous    → I will be eating at 8pm. (Level 5, Day 181 mein aayega)
   11. Future Perfect         → I will have finished by tomorrow. ✓
-  12. ★ Future Perf. Cont.   → I will have been studying for 3 hours. (Phase 4, Day 182 mein aayega)
-- Note: ★ = Abhi tak nahi seekha — Phase 4 mein in par complete lessons honge
+  12. ★ Future Perf. Cont.   → I will have been studying for 3 hours. (Level 5, Day 182 mein aayega)
+- Note: ★ = Abhi tak nahi seekha — Level 5 (Capital) mein in par complete lessons honge
 - Sab tenses ka detail content `english_course_complete.md` Module 11 mein hai
 - **Practice:** Ek verb "eat" ke padhay hue 9 tenses ka chart banao
 - **Homework:** "Go" verb ke 9 seekhe hue tenses positive form mein likho
@@ -596,6 +663,10 @@ Speaking & Listening      Advanced English           Professional Mastery
 - The book which I bought is good.
 - **Practice:** 10 sentences
 - **Homework:** 5 relative clause sentences
+
+---
+
+### 📚 MODULE 4 — DAILY CONVERSATIONS (DAYS 63–70)
 
 ---
 
@@ -666,6 +737,12 @@ Speaking & Listening      Advanced English           Professional Mastery
 
 ---
 
+### 📚 MODULE 5 — LEVEL 2 GATE (DAYS 71–75)
+
+> **EnglishOS:** Yeh gate test pass karna zaroori hai Level 3 (Town) unlock karne ke liye!
+
+---
+
 ### DAY 71
 **Topic:** 100 Most Common English Words — Part 1
 - The, of, and, a, to, in, is, you, that, it
@@ -703,11 +780,37 @@ Speaking & Listening      Advanced English           Professional Mastery
 
 ---
 
-### DAY 75
-**Topic:** Punctuation — Full Stop, Comma, Question Mark, Exclamation
+### DAY 75 — LEVEL 2 COMPLETE! 🏘️ → 🏙️
+**Topic:** Level 2 Gate Test — Grammar Foundations Revision
+- Punctuation — Full Stop, Comma, Question Mark, Exclamation
 - I am happy. / Are you coming? / What a day!
+- **Revision:** All tenses (Present, Past, Future), Modals, Phrasal Verbs, Common Words
 - **Practice:** Ek paragraph punctuation ke saath likho
-- **Homework:** Punctuation errors dhoondo aur theek karo
+- **Gate Test:** 50-question comprehensive grammar test
+- **EnglishOS Gate:** Level 2 Gate pass karo → Level 3 (Town) unlock hoga!
+- **Achievement:** 🏘️ Village Complete! Level 3 — Town unlock!
+
+---
+
+---
+
+## 🏙️ LEVEL 3 — TOWN (DAYS 76–120)
+### All 12 Tenses, 500 Words, Short Stories, aur Reading Practice
+
+> **EnglishOS:** Level 2 Gate pass karne ke baad yeh level unlock hoga.
+> **Modules:** 5 modules | **Total:** 45 din | **Goal:** Tenses master karna aur reading/writing start karna
+
+| Module | Naam | Din (Absolute) | Focus |
+|--------|------|----------------|-------|
+| Module 1 | All 12 Tenses | Days 76–87 | Complete tense system revision |
+| Module 2 | 500 Core Words | Days 88–99 | Expand vocabulary to 500 words |
+| Module 3 | Short Stories | Days 100–108 | Read & retell South Asian life stories |
+| Module 4 | Reading Practice | Days 109–116 | Comprehension, summaries, writing types |
+| Module 5 | Level 3 Gate | Days 117–120 | Revision & Gate Test |
+
+---
+
+### 📚 MODULE 1 — ALL 12 TENSES (DAYS 76–87)
 
 ---
 
@@ -816,6 +919,10 @@ Speaking & Listening      Advanced English           Professional Mastery
 
 ---
 
+### 📚 MODULE 2 — 500 CORE WORDS (DAYS 88–99)
+
+---
+
 ### DAY 88
 **Topic:** Vocabulary — Health aur Fitness
 - Exercise, Diet, Medicine, Hospital, Doctor, Nurse, Healthy, Sick, Recovery, Surgery
@@ -915,18 +1022,17 @@ Speaking & Listening      Advanced English           Professional Mastery
 
 ---
 
-### DAY 100 — PHASE 2 COMPLETE
+### DAY 100 — LEVEL 3 MODULE 2 COMPLETE ✅
 **Topic:** Grammar Mastery Full Revision
 - All tenses, passive, conditionals, vocabulary
 - **Test:** 100-question comprehensive test
 - **Speaking:** 3-minute topic speech (My Life / My Dream)
 - **Companion File:** `english_course_complete.md` Modules 6–10-B (Present/Past/Future Tenses, Articles, Daily Conversations, Passive Voice, Reported Speech) zaroor review karo — wahan full sentences, exercises aur common mistakes hain
-- **Achievement:** Phase 2 — Grammar Mastery Complete!
+- **Achievement:** ✅ Level 3 — Module 2 (500 Core Words) Complete!
 
 ---
 
-## PHASE 3 — READING, WRITING & LANGUAGE SKILLS (DAYS 101–150)
-### Essay Writing, Comprehension, Vocabulary Enrichment, Pronunciation & Listening Foundations
+### 📚 MODULE 3 — SHORT STORIES (DAYS 100–108)
 
 ---
 
@@ -996,6 +1102,10 @@ Speaking & Listening      Advanced English           Professional Mastery
 
 ---
 
+### 📚 MODULE 4 — READING PRACTICE (DAYS 109–116)
+
+---
+
 ### DAY 109
 **Topic:** Cause and Effect Essay
 - Because of / As a result / Therefore / Consequently
@@ -1061,6 +1171,12 @@ Speaking & Listening      Advanced English           Professional Mastery
 
 ---
 
+### 📚 MODULE 5 — LEVEL 3 GATE (DAYS 117–120)
+
+> **EnglishOS:** Yeh gate test pass karna zaroori hai Level 4 (City) unlock karne ke liye!
+
+---
+
 ### DAY 117
 **Topic:** Diary / Journal Writing
 - Personal, First person, Feelings and events
@@ -1085,11 +1201,37 @@ Speaking & Listening      Advanced English           Professional Mastery
 
 ---
 
-### DAY 120
+### DAY 120 — LEVEL 3 COMPLETE! 🏙️ → 🌆
 **Topic:** Reading — Newspaper Article
 - Headline, Lead paragraph, Body, Conclusion
 - **Practice:** Read an English news article, summarize it
 - **Homework:** Write your own short news article
+- **Gate Test:** Full reading + writing + tenses test
+- **EnglishOS Gate:** Level 3 Gate pass karo → Level 4 (City) unlock hoga!
+- **Achievement:** 🏙️ Town Complete! Level 4 — City unlock!
+
+---
+
+---
+
+## 🌆 LEVEL 4 — CITY (DAYS 121–180)
+### Advanced Writing, Letter Writing, Speaking Confidence, aur Idioms
+
+> **EnglishOS:** Level 3 Gate pass karne ke baad yeh level unlock hoga.
+> **Modules:** 6 modules | **Total:** 60 din | **Goal:** Professional writing aur confident speaking
+
+| Module | Naam | Din (Absolute) | Focus |
+|--------|------|----------------|-------|
+| Module 1 | Writing Skills | Days 121–130 | Paragraphs, essays, linking words |
+| Module 2 | Letter Writing | Days 131–140 | Formal & informal letters, emails |
+| Module 3 | Complex Sentences | Days 141–150 | Clauses, connectors, advanced structures |
+| Module 4 | Speaking Confidence | Days 151–160 | Speaking drills, self-talk, storytelling |
+| Module 5 | Idioms & Phrases | Days 161–170 | Top idioms and fixed expressions |
+| Module 6 | Level 4 Gate | Days 171–180 | Revision & Gate Test |
+
+---
+
+### 📚 MODULE 1 — WRITING SKILLS (DAYS 121–130)
 
 ---
 
@@ -1175,6 +1317,10 @@ Speaking & Listening      Advanced English           Professional Mastery
 - Bat (chamgadar / cricket bat)
 - **Practice:** 10 homonym sentences
 - **Homework:** 5 homonym pairs with two sentences each
+
+---
+
+### 📚 MODULE 2 — LETTER WRITING (DAYS 131–140)
 
 ---
 
@@ -1264,6 +1410,10 @@ Speaking & Listening      Advanced English           Professional Mastery
 
 ---
 
+### 📚 MODULE 3 — COMPLEX SENTENCES (DAYS 141–150)
+
+---
+
 ### DAY 141
 **Topic:** Intonation — Rising aur Falling
 - Questions: rising intonation?
@@ -1341,18 +1491,17 @@ Speaking & Listening      Advanced English           Professional Mastery
 
 ---
 
-### DAY 150 — PHASE 3 COMPLETE
+### DAY 150 — LEVEL 4 MODULE 3 COMPLETE ✅
 **Topic:** Reading, Writing & Language Skills Full Assessment
 - Essay (300 words), Letter, Summary, Comprehension, Idioms revision
 - **Test:** Full writing portfolio + vocabulary/idioms test
 - **Speaking:** Present a 3-minute prepared topic
 - **Companion File:** `english_course_complete.md` Modules 11–15 (Sare Tenses, 500 Core Words, Short Stories, Paragraph & Letter Writing) mein full content aur sample paragraphs/letters hain — in ka zaroor mutaala karo
-- **Achievement:** Phase 3 — Reading, Writing & Language Skills Complete!
+- **Achievement:** ✅ Level 4 — Module 3 (Complex Sentences) Complete!
 
 ---
 
-## PHASE 4 — SPEAKING & LISTENING (DAYS 151–200)
-### Confident Speaking, Listening Skills, aur Conversation Mastery
+### 📚 MODULE 4 — SPEAKING CONFIDENCE (DAYS 151–160)
 
 ---
 
@@ -1442,6 +1591,10 @@ Speaking & Listening      Advanced English           Professional Mastery
 - End: Finally / In the end...
 - **Practice:** Tell a personal story in 2 minutes
 - **Homework:** Record a 2-minute story
+
+---
+
+### 📚 MODULE 5 — IDIOMS & PHRASES (DAYS 161–170)
 
 ---
 
@@ -1535,6 +1688,12 @@ Speaking & Listening      Advanced English           Professional Mastery
 
 ---
 
+### 📚 MODULE 6 — LEVEL 4 GATE (DAYS 171–180)
+
+> **EnglishOS:** Yeh gate test pass karna zaroori hai Level 5 (Capital) unlock karne ke liye!
+
+---
+
 ### DAY 171
 **Topic:** Pronunciation — Common Mistakes
 - Pakistani/Indian English common errors
@@ -1616,12 +1775,37 @@ Speaking & Listening      Advanced English           Professional Mastery
 
 ---
 
-### DAY 180
-**Topic:** Speaking with Confidence — Full Assessment
+### DAY 180 — LEVEL 4 COMPLETE! 🌆 → 🏛️
+**Topic:** Level 4 Gate Test — Speaking with Confidence Full Assessment
 - 5-minute speech on a chosen topic
 - No preparation notes allowed
 - **Practice:** Record yourself speaking
-- **Achievement:** Speaking Core Module — 30-Day Milestone Complete!
+- **Gate Test:** Full writing + speaking + idioms assessment
+- **EnglishOS Gate:** Level 4 Gate pass karo → Level 5 (Capital) unlock hoga!
+- **Achievement:** 🌆 City Complete! Level 5 — Capital unlock!
+
+---
+
+---
+
+## 🏛️ LEVEL 5 — CAPITAL (DAYS 181–240)
+### Expert Grammar, Idioms, Phrasal Verbs, aur Business English
+
+> **EnglishOS:** Level 4 Gate pass karne ke baad yeh level unlock hoga.
+> **Modules:** 6 modules | **Total:** 60 din | **Goal:** Advanced English mastery
+
+| Module | Naam | Din (Absolute) | Focus |
+|--------|------|----------------|-------|
+| Module 1 | Advanced Grammar | Days 181–190 | Future Continuous, Mixed Conditionals, Inversions |
+| Module 2 | Passive Voice | Days 191–200 | Academic writing, formal register |
+| Module 3 | Idioms & Expressions | Days 201–210 | Top idioms native speakers use |
+| Module 4 | Phrasal Verbs | Days 211–220 | Top 20 phrasal verbs in context |
+| Module 5 | Business English | Days 221–230 | Meetings, presentations, IELTS prep |
+| Module 6 | Level 5 Gate | Days 231–240 | Revision & Gate Test |
+
+---
+
+### 📚 MODULE 1 — ADVANCED GRAMMAR (DAYS 181–190)
 
 ---
 
@@ -1718,6 +1902,10 @@ Speaking & Listening      Advanced English           Professional Mastery
 
 ---
 
+### 📚 MODULE 2 — PASSIVE VOICE (DAYS 191–200)
+
+---
+
 ### DAY 191
 **Topic:** Critical Reading — Identifying Argument
 - Main claim / Supporting evidence / Counterargument
@@ -1791,18 +1979,17 @@ Speaking & Listening      Advanced English           Professional Mastery
 
 ---
 
-### DAY 200 — PHASE 4 COMPLETE
+### DAY 200 — LEVEL 5 MODULE 2 COMPLETE ✅
 **Topic:** Advanced Speaking — Monologue Practice
 - 5-minute monologue with no preparation
 - Smooth transitions, varied vocabulary
 - **Practice:** Record yourself on any topic
 - **Companion File:** `english_course_complete.md` Module 16 (Speaking Practice, Scripts, Public Speaking Tips) mein bolne ke templates aur common mistakes ka full list hai — yeh zaroor dekho
-- **Achievement:** Phase 4 — Speaking & Listening Complete!
+- **Achievement:** ✅ Level 5 — Module 2 (Passive Voice) Complete!
 
 ---
 
-## PHASE 5 — ADVANCED ENGLISH (DAYS 201–250)
-### Advanced Grammar, Idioms, Critical Thinking, aur Academic Skills
+### 📚 MODULE 3 — IDIOMS & EXPRESSIONS (DAYS 201–210)
 
 ---
 
@@ -1887,6 +2074,10 @@ Speaking & Listening      Advanced English           Professional Mastery
 - Balanced: positives + negatives + recommendation
 - **Practice:** Review your favourite movie
 - **Homework:** Review a book you've read
+
+---
+
+### 📚 MODULE 4 — PHRASAL VERBS (DAYS 211–220)
 
 ---
 
@@ -1975,6 +2166,10 @@ Speaking & Listening      Advanced English           Professional Mastery
 
 ---
 
+### 📚 MODULE 5 — BUSINESS ENGLISH (DAYS 221–230)
+
+---
+
 ### DAY 221
 **Topic:** English for Social Media
 - Twitter/X: short, punchy, hashtags
@@ -2058,6 +2253,12 @@ Speaking & Listening      Advanced English           Professional Mastery
 
 ---
 
+### 📚 MODULE 6 — LEVEL 5 GATE (DAYS 231–240)
+
+> **EnglishOS:** Yeh gate test pass karna zaroori hai Level 6 (World Stage) unlock karne ke liye!
+
+---
+
 ### DAY 231
 **Topic:** IELTS Writing Task 1 — Overview
 - Describe a graph/chart/map/diagram
@@ -2137,12 +2338,37 @@ Speaking & Listening      Advanced English           Professional Mastery
 
 ---
 
-### DAY 240
-**Topic:** Common English Mistakes — Part 2
+### DAY 240 — LEVEL 5 COMPLETE! 🏛️ → 🌍
+**Topic:** Common English Mistakes — Level 5 Gate Test
 - Fewer vs Less / Who vs Whom / Lay vs Lie
 - Then vs Than / Good vs Well
 - **Practice:** 20 correction sentences
-- **Homework:** Grammar audit of your writing
+- **Gate Test:** Advanced grammar + idioms + business English comprehensive test
+- **EnglishOS Gate:** Level 5 Gate pass karo → Level 6 (World Stage) unlock hoga!
+- **Achievement:** 🏛️ Capital Complete! Level 6 — World Stage unlock!
+
+---
+
+---
+
+## 🌍 LEVEL 6 — WORLD STAGE (DAYS 241–300)
+### Professional Emails, Interviews, Advanced Vocabulary, IELTS, aur Final Mastery
+
+> **EnglishOS:** Level 5 Gate pass karne ke baad yeh level unlock hoga. Yeh aakhri level hai!
+> **Modules:** 6 modules | **Total:** 60 din | **Goal:** Professional English fluency — interview-ready, exam-ready
+
+| Module | Naam | Din (Absolute) | Focus |
+|--------|------|----------------|-------|
+| Module 1 | Professional Emails | Days 241–250 | Job applications, cover letters, formal emails |
+| Module 2 | Interview English | Days 251–260 | HR questions, STAR method, mock interviews |
+| Module 3 | Advanced Vocabulary | Days 261–270 | Power words, academic vocab, word upgrades |
+| Module 4 | IELTS / Exam Prep | Days 271–280 | IELTS Writing, Speaking, Reading, Listening |
+| Module 5 | Accent & Delivery | Days 281–290 | Pronunciation polish, stress, intonation |
+| Module 6 | Final Gate | Days 291–300 | 300-Day Final Assessment & Graduation |
+
+---
+
+### 📚 MODULE 1 — PROFESSIONAL EMAILS (DAYS 241–250)
 
 ---
 
@@ -2218,18 +2444,17 @@ Speaking & Listening      Advanced English           Professional Mastery
 
 ---
 
-### DAY 250 — PHASE 5 COMPLETE
-**Topic:** Advanced English Full Assessment
+### DAY 250 — LEVEL 6 MODULE 1 COMPLETE ✅
+**Topic:** Level 6 Module 1 Full Assessment — Professional Emails
 - Academic essay (500 words)
 - 10-minute prepared speech
 - Reading comprehension — advanced passage
 - **Companion File:** `english_course_complete.md` Modules 17–21 (Conditionals, Idioms, Advanced Essays) mein advanced grammar ke formulas aur full idiom lists hain — in ka dobaara mutaala karo
-- **Achievement:** Phase 5 — Advanced English Complete!
+- **Achievement:** ✅ Level 6 — Module 1 (Professional Emails) Complete!
 
 ---
 
-## PHASE 6 — PROFESSIONAL MASTERY (DAYS 251–300)
-### Job Interviews, Academic Excellence, aur Fluency Mastery
+### 📚 MODULE 2 — INTERVIEW ENGLISH (DAYS 251–260)
 
 ---
 
@@ -2312,6 +2537,10 @@ Speaking & Listening      Advanced English           Professional Mastery
 - Synthesizing sources, Identifying gaps
 - **Practice:** Short literature review (200 words)
 - **Homework:** Literature review on technology in education
+
+---
+
+### 📚 MODULE 3 — ADVANCED VOCABULARY (DAYS 261–270)
 
 ---
 
@@ -2398,6 +2627,10 @@ Speaking & Listening      Advanced English           Professional Mastery
 
 ---
 
+### 📚 MODULE 4 — IELTS / EXAM PREP (DAYS 271–280)
+
+---
+
 ### DAY 271
 **Topic:** Advanced Grammar — Review aur Gap Filling
 - All grammar points revision
@@ -2478,6 +2711,10 @@ Speaking & Listening      Advanced English           Professional Mastery
 - Listening (40 min) + Reading (60 min) + Writing (60 min)
 - **Practice:** Full timed IELTS practice test
 - **Homework:** Analyze scores, improve weak areas
+
+---
+
+### 📚 MODULE 5 — ACCENT & DELIVERY (DAYS 281–290)
 
 ---
 
@@ -2566,6 +2803,12 @@ Speaking & Listening      Advanced English           Professional Mastery
 
 ---
 
+### 📚 MODULE 6 — FINAL GATE (DAYS 291–300)
+
+> **EnglishOS:** Yeh aakhri module hai! 300 din ka safar khatam hone wala hai — Final Gate test dena zaroori hai!
+
+---
+
 ### DAY 291
 **Topic:** Comprehensive Review — All Skills
 - Writing + Speaking + Reading + Listening
@@ -2641,62 +2884,77 @@ Speaking & Listening      Advanced English           Professional Mastery
 
 ---
 
-### DAY 300 — COURSE COMPLETE!
-**Topic:** FINAL GRADUATION — FLUENT ENGLISH ACHIEVED
+### DAY 300 — 🌍 WORLD STAGE COMPLETE! GRADUATION DAY!
+**Topic:** FINAL GATE — ENGLISHOS 300-DAY MASTERY ACHIEVED
 
-**Final Assessment:**
+**EnglishOS Final Gate Assessment:**
 - Writing: 500-word essay on any topic (no dictionary)
-- Speaking: 10-minute unscripted speech
-- Reading: Advanced academic passage + questions
-- Listening: Complex audio + full comprehension
+- Speaking: 10-minute unscripted speech on any topic
+- Reading: Advanced academic passage + comprehension questions
+- Listening: Complex audio + full comprehension test
 - **Companion File:** `english_course_complete.md` ke aakhir mein "Quick Reference Card" hai jisme sab formulas ek jagah hain — is card ko apne paas rakhna aur roz dekhna
+- **EnglishOS:** Final Gate pass karo — EnglishOS Fluency Certificate unlock hoga!
 
 **Certificate of Completion**
 ```
-=====================================
-   ENGLISH FLUENCY CERTIFICATE
-=====================================
+=============================================
+   🌍 ENGLISHOS — FLUENCY CERTIFICATE 🌍
+=============================================
 This certifies that on completion of
-the 300-Day English Mastery Course,
-[Your Name] has achieved:
+the EnglishOS 300-Day Mastery Course,
+
+[Your Name]
+
+has successfully progressed from:
+Base Camp → Village → Town →
+City → Capital → World Stage
 
 ✓ Fluent Speaking Ability
 ✓ Advanced Writing Skills
 ✓ Strong Reading Comprehension
 ✓ Excellent Listening Skills
 ✓ Professional English Proficiency
-=====================================
+✓ IELTS / Exam Ready
+✓ Interview Ready
+
+300 Din — 300 Missions — 1 Goal: English Mastery
+=============================================
 ```
+
+> **Mubarak Ho!** 300 din ka safar poora hua — aap ab World Stage par hain!
+> *Yeh sirf shuruwaat thi — ab duniya aapki hai!*
 
 ---
 
-## FINAL SUMMARY TABLE
+## FINAL SUMMARY TABLE — 6 LEVELS
 
-| Phase | Days | Focus | Outcome |
-|-------|------|-------|---------|
-| Phase 1 | 1–50 | Foundation & Basics | Beginner Level |
-| Phase 2 | 51–100 | Grammar Mastery | Elementary-Intermediate |
-| Phase 3 | 101–150 | Reading, Writing & Language Skills | Intermediate |
-| Phase 4 | 151–200 | Speaking & Listening | Upper-Intermediate |
-| Phase 5 | 201–250 | Advanced English | Advanced |
-| Phase 6 | 251–300 | Professional Mastery | Fluent/Professional |
+| Level | EnglishOS Name | Days | Din | Focus | Outcome |
+|-------|---------------|------|-----|-------|---------|
+| 1 | 🏕️ Base Camp | 1–30 | 30 | Alphabets, Core Words, Basic Sentences | Bilkul Beginner → Elementary |
+| 2 | 🏘️ Village | 31–75 | 45 | Grammar Foundations, Tenses, Conversations | Elementary → Pre-Intermediate |
+| 3 | 🏙️ Town | 76–120 | 45 | All 12 Tenses, 500 Words, Reading & Writing | Pre-Intermediate → Intermediate |
+| 4 | 🌆 City | 121–180 | 60 | Advanced Writing, Letters, Speaking Confidence | Intermediate → Upper-Intermediate |
+| 5 | 🏛️ Capital | 181–240 | 60 | Expert Grammar, Idioms, Business English | Upper-Intermediate → Advanced |
+| 6 | 🌍 World Stage | 241–300 | 60 | Professional English, IELTS, Interviews | Advanced → Fluent / Professional |
 
 ---
 
-## DAILY SCHEDULE TEMPLATE
+## ENGLISHOS DAILY SCHEDULE
 
 ```
-MORNING (20 minutes)
-├── 5 min  — Yesterday's vocabulary review
-├── 10 min — Today's main lesson
-└── 5 min  — Writing practice
+☀️ MORNING MISSION (20 minutes)
+├── 5 min  — Spaced Repetition Review (WarmupFlash)
+├── 10 min — Today's Main Lesson (CoreDrop Cards)
+└── 5 min  — Quick Writing / Apply Practice
 
-EVENING (40 minutes)
-├── 10 min — Reading practice
-├── 15 min — Speaking/listening practice
-├── 10 min — Grammar exercise
-└── 5 min  — New vocabulary (5 words)
+🌙 EVENING MISSION (40 minutes)
+├── 10 min — Reading practice / Feynman Moment
+├── 15 min — Speaking / Listening practice
+├── 10 min — Grammar exercise (SentenceBuilder)
+└── 5 min  — New vocabulary (5 words, note karo)
 ```
+
+> **EnglishOS Tip:** Roz Morning aur Evening Mission complete karo — XP kamao, streak barqarar rakho, aur leaderboard pe upar aao!
 
 ---
 
