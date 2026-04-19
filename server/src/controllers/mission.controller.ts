@@ -10,12 +10,20 @@ import { initializeSRQueue } from '../services/srEngine'
 // How many evening sessions must be completed in a module before it auto-unlocks
 // the next module. Based on the 300-day course structure.
 const MODULE_DAY_THRESHOLDS: Record<string, number> = {
-  '1_1': 7,   // Level 1, Module 1: Alphabets (Days 1–7)
-  '1_2': 10,  // Level 1, Module 2: Core 100 Words (Days 8–17)
-  '1_3': 7,   // Level 1, Module 3: Grammar/SVO (Days 18–24)
-  '1_4': 6,   // Level 1, Module 4: Speaking (Days 25–30)
-  '2_1': 9, '2_2': 9, '2_3': 9, '2_4': 9, '2_5': 9,
-  '3_1': 9, '3_2': 9, '3_3': 9, '3_4': 9, '3_5': 9,
+  '1_1': 5,   // Level 1, Module 1: Alphabets & Sounds (Days 1–5)
+  '1_2': 7,   // Level 1, Module 2: Core 100 Words (Days 6–12)
+  '1_3': 8,   // Level 1, Module 3: Basic Sentences / SVO (Days 13–20)
+  '1_4': 10,  // Level 1, Module 4: Numbers, Days & Speaking (Days 21–30)
+  '2_1': 10,  // Level 2, Module 1: Present Tense (Days 1–10)
+  '2_2': 12,  // Level 2, Module 2: Past Tense (Days 11–22)
+  '2_3': 8,   // Level 2, Module 3: Future Tense + Articles (Days 23–30)
+  '2_4': 10,  // Level 2, Module 4: Daily Conversations (Days 31–40)
+  '2_5': 5,   // Level 2, Module 5: Level 2 Gate (Days 41–45)
+  '3_1': 12,  // Level 3, Module 1: All 12 Tenses (Days 1–12)
+  '3_2': 12,  // Level 3, Module 2: 500 Core Words (Days 13–24)
+  '3_3': 9,   // Level 3, Module 3: Short Stories (Days 25–33)
+  '3_4': 8,   // Level 3, Module 4: Reading Practice (Days 34–41)
+  '3_5': 4,   // Level 3, Module 5: Level 3 Gate (Days 42–45)
   '4_1': 10, '4_2': 10, '4_3': 10, '4_4': 10, '4_5': 10, '4_6': 10,
   '5_1': 10, '5_2': 10, '5_3': 10, '5_4': 10, '5_5': 10, '5_6': 10,
   '6_1': 10, '6_2': 10, '6_3': 10, '6_4': 10, '6_5': 10, '6_6': 10,
