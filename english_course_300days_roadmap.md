@@ -12,7 +12,7 @@
 
 ```
 PHASE 1 (Days 001-050)    PHASE 2 (Days 051-100)    PHASE 3 (Days 101-150)
-Foundation & Basics       Grammar & Sentences        Reading & Writing
+Foundation & Basics       Grammar Mastery            Reading & Writing
 
 PHASE 4 (Days 151-200)    PHASE 5 (Days 201-250)    PHASE 6 (Days 251-300)
 Speaking & Listening      Advanced English           Professional Mastery
@@ -279,7 +279,7 @@ Speaking & Listening      Advanced English           Professional Mastery
 - Pronouns, Verb To Be, Simple Present Tense
 - Adjectives, Articles, Prepositions, Question Words
 - **Test:** 30 questions (MCQ + Fill in the blanks + Short sentences)
-- **Achievement:** Month 1 Complete! (Phase 1 ends at Day 50)
+- **Achievement:** Month 1 Complete! (Phase 1 — Days 1-50 — Day 50 tak jaari rahega)
 
 ---
 
@@ -329,12 +329,15 @@ Speaking & Listening      Advanced English           Professional Mastery
 ---
 
 ### DAY 36
-**Topic:** Past Simple — Negative aur Questions + Past Continuous Intro
-- Negative: I did not eat. / She did not go to school.
-- Questions: Did you eat breakfast? / What did you do yesterday?
-- Past Continuous (Bonus): I was eating. / She was sleeping. / They were playing.
-- Formula: Subject + was/were + V+ing (koi kaam chal raha tha)
-- Use: "I was studying when he called." — ek kaam chal raha tha, doosra hua
+**Topic:** Past Simple — Negative aur Questions | Past Continuous — Pehla Taaruf
+- **Past Simple — Negative aur Questions:**
+  - Negative: I did not eat. / She did not go to school.
+  - Questions: Did you eat breakfast? / What did you do yesterday?
+- **Past Continuous — Pehla Taaruf (Introduction):**
+  - Formula: Subject + was/were + V+ing
+  - I was eating. / She was sleeping. / They were playing.
+  - Use: Ek kaam chal raha tha jab doosra hua — "I was studying when he called."
+  - Note: Yeh sirf taaruf hai — in sab tenses ka mukammal revision Day 56 par hoga. Detail content `english_course_complete.md` Module 11 mein hai.
 - **Practice:** 5 negative + 5 Past Continuous sentences
 - **Homework:** "I was doing X when Y happened" — 5 aise sentences likho
 
@@ -463,6 +466,7 @@ Speaking & Listening      Advanced English           Professional Mastery
   - "Return back" — GALAT / "Return" — SAHI (back pehle se shamil hai)
 - **Test:** 50-question comprehensive test
 - **Speaking Practice:** 5-minute self-introduction aur daily routine bolo
+- **Companion File:** `english_course_complete.md` Step 1 Final Test (Day 30) aur Step 2 content zaroor dekho — wahan har topic ka full explanation aur exercises hain
 - **Achievement:** Phase 1 — Foundation Complete!
 
 ---
@@ -517,22 +521,24 @@ Speaking & Listening      Advanced English           Professional Mastery
 ---
 
 ### DAY 56
-**Topic:** All Tenses — Complete 12-Tense Summary Table
-- 12 tenses ek saath revise karo:
-  1. Present Simple          → I eat. / He eats.
-  2. Present Continuous      → I am eating. / She is eating.
-  3. Present Perfect         → I have eaten. / She has gone.
-  4. Present Perfect Cont.   → I have been eating.
-  5. Past Simple             → I ate. / She went.
-  6. Past Continuous         → I was eating. / They were playing.
-  7. Past Perfect            → I had eaten before he came.
-  8. Past Perfect Cont.      → She had been waiting for an hour.
-  9. Future Simple           → I will eat. / She will come.
-  10. Future Continuous      → I will be eating at 8pm.
-  11. Future Perfect         → I will have finished by tomorrow.
-  12. Future Perfect Cont.   → I will have been studying for 3 hours.
-- **Practice:** Ek verb (eat) ke sab 12 tenses ka full chart banao
-- **Homework:** "Go" verb ke saare 12 tenses likho — positive form mein
+**Topic:** Tenses — Ab Tak Ka Mukammal Jaiza (9 Tenses + 3 Aane Wale)
+- Abhi tak padhay hue tenses revise karo, aur 3 tenses pehchano jo Phase 4 mein aayenge:
+  1. Present Simple          → I eat. / He eats. ✓
+  2. Present Continuous      → I am eating. / She is eating. ✓
+  3. Present Perfect         → I have eaten. / She has gone. ✓
+  4. Present Perfect Cont.   → I have been eating. ✓
+  5. Past Simple             → I ate. / She went. ✓
+  6. Past Continuous         → I was eating. / They were playing. ✓ (Day 36 mein seekha)
+  7. Past Perfect            → I had eaten before he came. ✓
+  8. ★ Past Perfect Cont.    → She had been waiting for an hour. (Phase 4, Day 182 mein aayega)
+  9. Future Simple           → I will eat. / She will come. ✓
+  10. ★ Future Continuous    → I will be eating at 8pm. (Phase 4, Day 181 mein aayega)
+  11. Future Perfect         → I will have finished by tomorrow. ✓
+  12. ★ Future Perf. Cont.   → I will have been studying for 3 hours. (Phase 4, Day 182 mein aayega)
+- Note: ★ = Abhi tak nahi seekha — Phase 4 mein in par complete lessons honge
+- Sab tenses ka detail content `english_course_complete.md` Module 11 mein hai
+- **Practice:** Ek verb "eat" ke padhay hue 9 tenses ka chart banao
+- **Homework:** "Go" verb ke 9 seekhe hue tenses positive form mein likho
 
 ---
 
@@ -910,6 +916,7 @@ Speaking & Listening      Advanced English           Professional Mastery
 - All tenses, passive, conditionals, vocabulary
 - **Test:** 100-question comprehensive test
 - **Speaking:** 3-minute topic speech (My Life / My Dream)
+- **Companion File:** `english_course_complete.md` Modules 6–10 (Present/Past/Future Tenses, Articles, Daily Conversations) zaroor review karo — wahan full sentences, exercises aur common mistakes hain
 - **Achievement:** Phase 2 — Grammar Mastery Complete!
 
 ---
@@ -1335,6 +1342,7 @@ Speaking & Listening      Advanced English           Professional Mastery
 - Essay (300 words), Letter, Summary, Comprehension
 - **Test:** Full writing portfolio
 - **Speaking:** Present a 3-minute prepared topic
+- **Companion File:** `english_course_complete.md` Modules 11–15 (Tenses, 500 Core Words, Short Stories, Paragraph & Letter Writing) mein full content aur sample paragraphs/letters hain — in ka zaroor mutaala karo
 - **Achievement:** Phase 3 — Reading & Writing Complete!
 
 ---
@@ -1615,17 +1623,28 @@ Speaking & Listening      Advanced English           Professional Mastery
 
 ### DAY 181
 **Topic:** Advanced Tenses — Future Continuous
-- I will be studying at 8pm.
+- Formula: Subject + will be + V+ing
+- I will be studying at 8pm. / She will be sleeping when you call.
+- Use: Future mein ek kaam kisi waqt chal raha hoga
+- Note: Yeh Day 56 ka ★ tense #10 hai — ab poora ho gaya!
 - **Practice:** 10 sentences
-- **Homework:** Your schedule for tomorrow
+- **Homework:** Your schedule for tomorrow — "At 8pm, I will be..."
 
 ---
 
 ### DAY 182
-**Topic:** Advanced Tenses — Past Perfect Continuous
-- She had been waiting for an hour when he arrived.
-- **Practice:** 10 sentences
-- **Homework:** Story using past perfect continuous
+**Topic:** Advanced Tenses — Past Perfect Continuous aur Future Perfect Continuous
+- **Past Perfect Continuous:** Koi kaam chal raha tha aur khatam hua phir kuch aur hua
+  - Formula: Subject + had been + V+ing
+  - She had been waiting for an hour when he arrived.
+  - They had been studying for 2 hours before the test.
+- **Future Perfect Continuous:** Future mein koi kaam ek waqt tak chal raha hoga
+  - Formula: Subject + will have been + V+ing
+  - By 9pm, I will have been studying for 3 hours.
+  - She will have been working here for 10 years by December.
+- Note: Yeh Day 56 ke ★ tenses (#8 aur #12) hain — ab poore ho gaye!
+- **Practice:** 5 sentences (Past Perfect Continuous) + 5 sentences (Future Perfect Continuous)
+- **Homework:** Story using both tenses — ek paragraph mein dono use karo
 
 ---
 
@@ -1773,6 +1792,7 @@ Speaking & Listening      Advanced English           Professional Mastery
 - 5-minute monologue with no preparation
 - Smooth transitions, varied vocabulary
 - **Practice:** Record yourself on any topic
+- **Companion File:** `english_course_complete.md` Module 16 (Speaking Practice, Scripts, Public Speaking Tips) mein bolne ke templates aur common mistakes ka full list hai — yeh zaroor dekho
 - **Achievement:** Phase 4 — Speaking & Listening Complete!
 
 ---
@@ -2199,6 +2219,7 @@ Speaking & Listening      Advanced English           Professional Mastery
 - Academic essay (500 words)
 - 10-minute prepared speech
 - Reading comprehension — advanced passage
+- **Companion File:** `english_course_complete.md` Modules 17–21 (Conditionals, Idioms, Advanced Essays) mein advanced grammar ke formulas aur full idiom lists hain — in ka dobaara mutaala karo
 - **Achievement:** Phase 5 — Advanced English Complete!
 
 ---
@@ -2624,6 +2645,7 @@ Speaking & Listening      Advanced English           Professional Mastery
 - Speaking: 10-minute unscripted speech
 - Reading: Advanced academic passage + questions
 - Listening: Complex audio + full comprehension
+- **Companion File:** `english_course_complete.md` ke aakhir mein "Quick Reference Card" hai jisme sab formulas ek jagah hain — is card ko apne paas rakhna aur roz dekhna
 
 **Certificate of Completion**
 ```
