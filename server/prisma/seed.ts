@@ -287,6 +287,106 @@ async function main() {
     });
   });
 
+  // Group G — Colors (Rang) — from roadmap Days 7-8
+  const groupG = [
+    { english: 'Red',    urduRoman: 'Laal',       exampleSentence: 'The rose is red.' },
+    { english: 'Blue',   urduRoman: 'Neela',      exampleSentence: 'The sky is blue.' },
+    { english: 'Green',  urduRoman: 'Hara',       exampleSentence: 'Grass is green.' },
+    { english: 'Yellow', urduRoman: 'Peela',      exampleSentence: 'The sun is yellow.' },
+    { english: 'White',  urduRoman: 'Safed',      exampleSentence: 'Snow is white.' },
+    { english: 'Black',  urduRoman: 'Kaala',      exampleSentence: 'My bag is black.' },
+    { english: 'Orange', urduRoman: 'Narangi',    exampleSentence: 'I like orange colour.' },
+    { english: 'Pink',   urduRoman: 'Gulabi',     exampleSentence: 'She wears a pink shirt.' },
+    { english: 'Purple', urduRoman: 'Baingani',   exampleSentence: 'The grapes are purple.' },
+    { english: 'Brown',  urduRoman: 'Bhoora',     exampleSentence: 'The door is brown.' },
+  ];
+  groupG.forEach((w, i) => {
+    items.push({ level: 1, module: 2, groupName: 'Group G — Colors', type: ContentType.VOCAB, english: w.english, urduRoman: w.urduRoman, exampleSentence: w.exampleSentence, isPowerPack: true, sortOrder: 136 + i });
+  });
+
+  // Group H — Body Parts (Jism ke Azaa) — from roadmap Day 9
+  const groupH = [
+    { english: 'Head',     urduRoman: 'Sir',        exampleSentence: 'My head is aching.' },
+    { english: 'Eye',      urduRoman: 'Aankh',      exampleSentence: 'She has beautiful eyes.' },
+    { english: 'Ear',      urduRoman: 'Kaan',       exampleSentence: 'Please clean your ears.' },
+    { english: 'Nose',     urduRoman: 'Naak',       exampleSentence: 'My nose is running.' },
+    { english: 'Mouth',    urduRoman: 'Munh',       exampleSentence: 'Open your mouth.' },
+    { english: 'Neck',     urduRoman: 'Gardan',     exampleSentence: 'I have neck pain.' },
+    { english: 'Shoulder', urduRoman: 'Kandha',     exampleSentence: 'He patted my shoulder.' },
+    { english: 'Hand',     urduRoman: 'Haath',      exampleSentence: 'Wash your hands.' },
+    { english: 'Finger',   urduRoman: 'Ungli',      exampleSentence: 'I cut my finger.' },
+    { english: 'Leg',      urduRoman: 'Taang',      exampleSentence: 'My leg is hurt.' },
+    { english: 'Foot',     urduRoman: 'Pair',       exampleSentence: 'My foot is sore.' },
+    { english: 'Back',     urduRoman: 'Peeth',      exampleSentence: 'I have back pain.' },
+  ];
+  groupH.forEach((w, i) => {
+    items.push({ level: 1, module: 2, groupName: 'Group H — Body Parts', type: ContentType.VOCAB, english: w.english, urduRoman: w.urduRoman, exampleSentence: w.exampleSentence, isPowerPack: false, sortOrder: 146 + i });
+  });
+
+  // Group I — Common Animals (Jaanwar) — from roadmap Day 10
+  const groupI = [
+    { english: 'Dog',      urduRoman: 'Kutta',      exampleSentence: 'The dog is barking.' },
+    { english: 'Cat',      urduRoman: 'Billi',      exampleSentence: 'A cat is sleeping.' },
+    { english: 'Cow',      urduRoman: 'Gaay',       exampleSentence: 'The cow gives milk.' },
+    { english: 'Goat',     urduRoman: 'Bakri',      exampleSentence: 'We have two goats.' },
+    { english: 'Horse',    urduRoman: 'Ghora',      exampleSentence: 'The horse runs fast.' },
+    { english: 'Lion',     urduRoman: 'Sher',       exampleSentence: 'The lion is the king.' },
+    { english: 'Elephant', urduRoman: 'Haathi',     exampleSentence: 'Elephants are very big.' },
+    { english: 'Bird',     urduRoman: 'Parinda',    exampleSentence: 'A bird is singing.' },
+    { english: 'Fish',     urduRoman: 'Machli',     exampleSentence: 'I eat fish on Fridays.' },
+    { english: 'Monkey',   urduRoman: 'Bandar',     exampleSentence: 'Monkeys live in trees.' },
+  ];
+  groupI.forEach((w, i) => {
+    items.push({ level: 1, module: 2, groupName: 'Group I — Common Animals', type: ContentType.VOCAB, english: w.english, urduRoman: w.urduRoman, exampleSentence: w.exampleSentence, isPowerPack: false, sortOrder: 158 + i });
+  });
+
+  // Group J — Fruits (Phal) — from roadmap Day 11
+  const groupJ = [
+    { english: 'Apple',      urduRoman: 'Seb',        exampleSentence: 'An apple a day keeps the doctor away.' },
+    { english: 'Mango',      urduRoman: 'Aam',        exampleSentence: 'Mango is my favourite fruit.' },
+    { english: 'Banana',     urduRoman: 'Kela',       exampleSentence: 'Eat a banana for energy.' },
+    { english: 'Orange',     urduRoman: 'Narangi',    exampleSentence: 'Orange juice is healthy.' },
+    { english: 'Grapes',     urduRoman: 'Angoor',     exampleSentence: 'I love eating grapes.' },
+    { english: 'Watermelon', urduRoman: 'Tarbuz',     exampleSentence: 'Watermelon is cool in summer.' },
+    { english: 'Strawberry', urduRoman: 'Frauli',     exampleSentence: 'Strawberries are red and sweet.' },
+    { english: 'Guava',      urduRoman: 'Amrood',     exampleSentence: 'Guava is a common Pakistani fruit.' },
+  ];
+  groupJ.forEach((w, i) => {
+    items.push({ level: 1, module: 2, groupName: 'Group J — Fruits', type: ContentType.VOCAB, english: w.english, urduRoman: w.urduRoman, exampleSentence: w.exampleSentence, isPowerPack: false, sortOrder: 168 + i });
+  });
+
+  // Group K — Vegetables (Sabziyan) — from roadmap Day 12
+  const groupK = [
+    { english: 'Tomato',    urduRoman: 'Tamatar',    exampleSentence: 'Tomatoes are used in cooking.' },
+    { english: 'Potato',    urduRoman: 'Aloo',       exampleSentence: 'I like potato chips.' },
+    { english: 'Onion',     urduRoman: 'Pyaaz',      exampleSentence: 'Onion makes you cry.' },
+    { english: 'Carrot',    urduRoman: 'Gajar',      exampleSentence: 'Carrots are good for eyes.' },
+    { english: 'Spinach',   urduRoman: 'Palak',      exampleSentence: 'Spinach is very healthy.' },
+    { english: 'Cabbage',   urduRoman: 'Band Gobhi', exampleSentence: 'Cabbage soup is delicious.' },
+    { english: 'Cucumber',  urduRoman: 'Kheera',     exampleSentence: 'Cucumbers are cool and fresh.' },
+    { english: 'Peas',      urduRoman: 'Matar',      exampleSentence: 'I love peas in rice.' },
+  ];
+  groupK.forEach((w, i) => {
+    items.push({ level: 1, module: 2, groupName: 'Group K — Vegetables', type: ContentType.VOCAB, english: w.english, urduRoman: w.urduRoman, exampleSentence: w.exampleSentence, isPowerPack: false, sortOrder: 176 + i });
+  });
+
+  // Group L — Home Objects (Ghar ki Cheezein) — from roadmap Day 13-14
+  const groupL = [
+    { english: 'Chair',   urduRoman: 'Kursi',      exampleSentence: 'Please sit on the chair.' },
+    { english: 'Table',   urduRoman: 'Mez',        exampleSentence: 'The book is on the table.' },
+    { english: 'Bed',     urduRoman: 'Palang',     exampleSentence: 'I sleep on a soft bed.' },
+    { english: 'Door',    urduRoman: 'Darwaza',    exampleSentence: 'Please close the door.' },
+    { english: 'Window',  urduRoman: 'Khirki',     exampleSentence: 'Open the window please.' },
+    { english: 'Fan',     urduRoman: 'Pankha',     exampleSentence: 'Turn on the fan.' },
+    { english: 'Light',   urduRoman: 'Batti',      exampleSentence: 'Switch off the light.' },
+    { english: 'Bag',     urduRoman: 'Jhola/Bag',  exampleSentence: 'My bag is heavy.' },
+    { english: 'Clock',   urduRoman: 'Ghadi',      exampleSentence: 'The clock shows 5 o\'clock.' },
+    { english: 'Mirror',  urduRoman: 'Aaina',      exampleSentence: 'She looked in the mirror.' },
+  ];
+  groupL.forEach((w, i) => {
+    items.push({ level: 1, module: 2, groupName: 'Group L — Home Objects', type: ContentType.VOCAB, english: w.english, urduRoman: w.urduRoman, exampleSentence: w.exampleSentence, isPowerPack: false, sortOrder: 184 + i });
+  });
+
   // ── MODULE 3: BASIC SENTENCES ────────────────────────────────────────────
   // Din 13–20 — SVO Formula, Positive / Negative / Question sentences
 
@@ -653,6 +753,24 @@ async function main() {
     items.push({ level: 2, module: 1, groupName: 'Present Time Expressions', type: ContentType.VOCAB, english: w.english, urduRoman: w.urduRoman, exampleSentence: w.exampleSentence, isPowerPack: false, sortOrder: 13 + i });
   });
 
+  // Modal Verbs — from roadmap Days 39-41 (can, may, might, must, should)
+  const modalVerbs = [
+    { english: 'can', urduRoman: 'Sak sakna / qudrat hona', exampleSentence: 'I can speak English.', isPowerPack: true },
+    { english: 'cannot / can\'t', urduRoman: 'Nahi kar sakta', exampleSentence: 'She cannot come today.', isPowerPack: true },
+    { english: 'could', urduRoman: 'Sak sakta tha (past) / polite request', exampleSentence: 'Could you help me please?', isPowerPack: true },
+    { english: 'should', urduRoman: 'Chahiye — salah ya zimmedaari', exampleSentence: 'You should study every day.', isPowerPack: true },
+    { english: 'should not / shouldn\'t', urduRoman: 'Nahi karna chahiye', exampleSentence: 'You shouldn\'t eat too much junk food.', isPowerPack: true },
+    { english: 'must', urduRoman: 'Zaroor karna hai — strict zaroorat', exampleSentence: 'You must wear a helmet.', isPowerPack: true },
+    { english: 'must not / mustn\'t', urduRoman: 'Bilkul nahi karna chahiye', exampleSentence: 'You mustn\'t lie.', isPowerPack: true },
+    { english: 'may', urduRoman: 'Shayad / Ijazat maangna', exampleSentence: 'May I come in?', isPowerPack: false },
+    { english: 'might', urduRoman: 'Shayad — kam imkaan', exampleSentence: 'It might rain today.', isPowerPack: false },
+    { english: 'have to', urduRoman: 'Karna zaroor hai (bahari zaroorat)', exampleSentence: 'I have to wake up early tomorrow.', isPowerPack: false },
+    { english: 'would like to', urduRoman: 'Chahna hoon — polite tarika', exampleSentence: 'I would like to order a coffee please.', isPowerPack: false },
+  ];
+  modalVerbs.forEach((m, i) => {
+    items.push({ level: 2, module: 1, groupName: 'Modal Verbs', type: ContentType.GRAMMAR, english: m.english, urduRoman: m.urduRoman, exampleSentence: m.exampleSentence, isPowerPack: m.isPowerPack, sortOrder: 21 + i });
+  });
+
   // ── LEVEL 2, MODULE 2: Past Tense ───────────────────────────────────────
 
   const pastTenseGrammar = [
@@ -807,6 +925,23 @@ async function main() {
     items.push({ level: 2, module: 3, groupName: 'Future Time Expressions', type: ContentType.VOCAB, english: w.english, urduRoman: w.urduRoman, exampleSentence: w.exampleSentence, isPowerPack: false, sortOrder: 11 + i });
   });
 
+  // Comparatives & Superlatives — from roadmap Days 45-46
+  const comparatives = [
+    { english: 'Comparative Rule 1: short adj + er (bigger, faster)', urduRoman: 'Chhotay adjective mein "-er" lagao', exampleSentence: 'He is taller than me.', isPowerPack: true },
+    { english: 'Comparative Rule 2: long adj → more + adj (more beautiful)', urduRoman: 'Bade adjective ke aage "more" lagao', exampleSentence: 'This test is more difficult than the last one.', isPowerPack: true },
+    { english: 'Superlative Rule 1: short adj + est (the biggest, the fastest)', urduRoman: 'Chhotay adjective mein "the ___est" lagao', exampleSentence: 'He is the tallest boy in class.', isPowerPack: true },
+    { english: 'Superlative Rule 2: long adj → the most + adj', urduRoman: 'Bade adjective ke aage "the most" lagao', exampleSentence: 'She is the most intelligent student.', isPowerPack: true },
+    { english: 'good → better → the best', urduRoman: 'Acha → behtar → sabse behtar (irregular)', exampleSentence: 'Your English is good but you can do better. She is the best!', isPowerPack: true },
+    { english: 'bad → worse → the worst', urduRoman: 'Bura → bura tar → sabse bura (irregular)', exampleSentence: 'This is bad, but that idea is even worse.', isPowerPack: true },
+    { english: 'big → bigger → the biggest', urduRoman: 'Bada → bara → sabse bada', exampleSentence: 'Karachi is bigger than Lahore. It is the biggest city.', isPowerPack: false },
+    { english: 'fast → faster → the fastest', urduRoman: 'Tez → tez tar → sabse tez', exampleSentence: 'She runs faster than him. He is the fastest runner.', isPowerPack: false },
+    { english: 'tall → taller → the tallest', urduRoman: 'Lamba → lamba tar → sabse lamba', exampleSentence: 'Ahmed is taller than Ali. Hassan is the tallest.', isPowerPack: false },
+    { english: 'Comparing with "than": A is bigger than B.', urduRoman: '"than" = se zyada — A, B se bada hai.', exampleSentence: 'English is easier than I thought.', isPowerPack: false },
+  ];
+  comparatives.forEach((c, i) => {
+    items.push({ level: 2, module: 3, groupName: 'Comparatives & Superlatives', type: ContentType.GRAMMAR, english: c.english, urduRoman: c.urduRoman, exampleSentence: c.exampleSentence, isPowerPack: c.isPowerPack, sortOrder: 17 + i });
+  });
+
   // ── LEVEL 2, MODULE 4: Daily Conversation Topics ────────────────────────
 
   const shoppingPhrases = [
@@ -893,6 +1028,31 @@ async function main() {
   ];
   ppTriggers.forEach((w, i) => {
     items.push({ level: 3, module: 1, groupName: 'Present Perfect Triggers', type: ContentType.VOCAB, english: w.english, urduRoman: w.urduRoman, exampleSentence: w.exampleSentence, isPowerPack: true, sortOrder: 13 + i });
+  });
+
+  // Relative Clauses — from roadmap Day 62 (who, which, that, where)
+  const relativeClauses = [
+    { english: 'who (for people)', urduRoman: 'Jo — insanon ke liye', exampleSentence: 'The man who called you is my uncle.', isPowerPack: true },
+    { english: 'which (for things)', urduRoman: 'Jo — cheezon ke liye', exampleSentence: 'The book which I bought is very good.', isPowerPack: true },
+    { english: 'that (for people or things)', urduRoman: 'Jo — insanon ya cheezon ke liye', exampleSentence: 'The phone that I lost was expensive.', isPowerPack: true },
+    { english: 'where (for places)', urduRoman: 'Jahan — jaghon ke liye', exampleSentence: 'This is the school where I studied.', isPowerPack: true },
+    { english: 'whose (for possession)', urduRoman: 'Jiska — maliki ke liye', exampleSentence: 'The student whose bag was lost came to the office.', isPowerPack: false },
+    { english: 'Relative clause joins two sentences about same thing.', urduRoman: 'Relative clause do sentences ko jod deta hai jo ek hi cheez ke baare mein hain.', exampleSentence: 'I know the teacher. She teaches English. → I know the teacher who teaches English.', isPowerPack: false },
+  ];
+  relativeClauses.forEach((r, i) => {
+    items.push({ level: 3, module: 1, groupName: 'Relative Clauses', type: ContentType.GRAMMAR, english: r.english, urduRoman: r.urduRoman, exampleSentence: r.exampleSentence, isPowerPack: r.isPowerPack, sortOrder: 19 + i });
+  });
+
+  // Gerunds & Infinitives — from roadmap Day 63
+  const gerundsInfinitives = [
+    { english: 'Gerund: Verb + ing used as noun (Swimming is fun.)', urduRoman: 'Gerund: Verb+ing ko noun ki jagah use karein', exampleSentence: 'Swimming is good exercise. I enjoy reading books.', isPowerPack: true },
+    { english: 'Infinitive: to + base verb (I want to eat.)', urduRoman: 'Infinitive: to + verb (mujhe khaana hai)', exampleSentence: 'I want to learn English. She hopes to become a doctor.', isPowerPack: true },
+    { english: 'Verbs followed by Gerund: enjoy, avoid, finish, keep, mind', urduRoman: 'Yeh verbs ke baad gerund (V+ing) aata hai', exampleSentence: 'I enjoy reading. She avoids eating junk food. He finished working.', isPowerPack: true },
+    { english: 'Verbs followed by Infinitive: want, hope, plan, decide, need', urduRoman: 'Yeh verbs ke baad infinitive (to+verb) aata hai', exampleSentence: 'I want to go. She plans to study. He decided to leave.', isPowerPack: true },
+    { english: 'Verbs followed by both: like, love, hate, start, begin', urduRoman: 'Yeh verbs ke baad dono aa sakte hain — matlab same rehta hai', exampleSentence: 'I like reading. / I like to read. (dono sahi hain)', isPowerPack: false },
+  ];
+  gerundsInfinitives.forEach((g, i) => {
+    items.push({ level: 3, module: 1, groupName: 'Gerunds & Infinitives', type: ContentType.GRAMMAR, english: g.english, urduRoman: g.urduRoman, exampleSentence: g.exampleSentence, isPowerPack: g.isPowerPack, sortOrder: 25 + i });
   });
 
   // Module 2 — 500 Core Words (5 categories × 20 words)
@@ -1063,6 +1223,19 @@ async function main() {
     items.push({ level: 3, module: 4, groupName: 'Reading Comprehension', type: ContentType.SENTENCE, english: p.english, urduRoman: p.urduRoman, exampleSentence: p.exampleSentence, isPowerPack: true, sortOrder: i + 1 });
   });
 
+  // Reported Speech — from roadmap Day 59 / complete course Module 19
+  const reportedSpeech = [
+    { english: 'Direct: He said, "I am happy." → Reported: He said (that) he was happy.', urduRoman: 'Direct speech mein jo kaha, Reported mein "was/were/had" ban jaata hai', exampleSentence: 'He said he was happy. She said she was tired.', isPowerPack: true },
+    { english: 'Direct: She said, "I will come." → Reported: She said she would come.', urduRoman: '"will" → "would" ban jaata hai reported mein', exampleSentence: 'She said she would come the next day.', isPowerPack: true },
+    { english: 'Direct: He asked, "Do you like tea?" → Reported: He asked if I liked tea.', urduRoman: 'Question mein "if/whether" lagao aur word order badlo', exampleSentence: 'She asked if I could help her.', isPowerPack: true },
+    { english: 'said / told / asked / replied / explained', urduRoman: 'Reporting verbs — Keh diya / Bataya / Poocha / Jawab diya / Samjhaya', exampleSentence: 'He told me he was leaving. She explained that she was busy.', isPowerPack: true },
+    { english: 'Time changes: today → that day, tomorrow → the next day, now → then', urduRoman: 'Reported speech mein waqt ke words bhi badal jaate hain', exampleSentence: 'He said he would come the next day. (NOT: tomorrow)', isPowerPack: false },
+    { english: 'Place changes: here → there, this → that, these → those', urduRoman: 'Jagah ke words bhi badal jaate hain reported mein', exampleSentence: 'She said that was her book. (NOT: this is my book)', isPowerPack: false },
+  ];
+  reportedSpeech.forEach((r, i) => {
+    items.push({ level: 3, module: 4, groupName: 'Reported Speech', type: ContentType.GRAMMAR, english: r.english, urduRoman: r.urduRoman, exampleSentence: r.exampleSentence, isPowerPack: r.isPowerPack, sortOrder: 6 + i });
+  });
+
   // ── LEVEL 4 — INTERMEDIATE (Days 121–180) ──────────────────────────────
 
   // Module 1 — Writing Skills
@@ -1095,6 +1268,21 @@ async function main() {
     items.push({ level: 4, module: 1, groupName: 'Writing Practice Topics', type: ContentType.PHRASE, english: t.english, urduRoman: t.urduRoman, exampleSentence: t.exampleSentence, isPowerPack: true, sortOrder: 13 + i });
   });
 
+  // Essay Types — from roadmap Days 101-110 (narrative, descriptive, expository, persuasive, etc.)
+  const essayTypes4 = [
+    { english: 'Narrative Essay — Personal story (kahani)', urduRoman: 'Apna waqia sunao — Beginning, Middle, End structure', exampleSentence: 'The best day of my life was when I passed my final exams.', isPowerPack: true },
+    { english: 'Descriptive Essay — Describe vividly (tafaseel)', urduRoman: 'Cheez ya jagah ko itna describe karo ke reader dekh sake', exampleSentence: 'The busy Lahore market was full of colour, sound, and the smell of food.', isPowerPack: true },
+    { english: 'Expository Essay — Give information (malumat)', urduRoman: 'Factual information do — Topic, Explanation, Examples, Conclusion', exampleSentence: 'Education is the process of acquiring knowledge, skills, and values through learning.', isPowerPack: true },
+    { english: 'Persuasive Essay — Convince the reader', urduRoman: 'Apni raay dena aur reader ko manaana — Argument + Evidence', exampleSentence: 'Exercise should be made compulsory in schools because it improves both physical and mental health.', isPowerPack: true },
+    { english: 'Opinion Essay: I believe / In my opinion / I think / It seems to me', urduRoman: 'Apni raay batao — In my opinion, I believe, It seems to me', exampleSentence: 'In my opinion, social media does more harm than good.', isPowerPack: true },
+    { english: 'Cause & Effect: Because of / As a result / Therefore / Consequently', urduRoman: 'Wajah aur nateeja — "because of", "as a result", "therefore"', exampleSentence: 'As a result of poor study habits, many students fail their exams.', isPowerPack: false },
+    { english: 'Compare & Contrast: Similarly / On the other hand / In contrast / Unlike', urduRoman: 'Do cheezein compare karo — Similarly, On the other hand, In contrast', exampleSentence: 'City life offers more opportunities. On the other hand, village life is peaceful.', isPowerPack: false },
+    { english: 'Essay structure: Introduction → Body (2-3 paragraphs) → Conclusion', urduRoman: 'Muqaddimah → Mazmoon (2-3 paragraphs) → Khulaasa', exampleSentence: 'Introduction: hook + background + thesis. Body: main points. Conclusion: summary + final thought.', isPowerPack: true },
+  ];
+  essayTypes4.forEach((e, i) => {
+    items.push({ level: 4, module: 1, groupName: 'Essay Types & Structures', type: ContentType.PHRASE, english: e.english, urduRoman: e.urduRoman, exampleSentence: e.exampleSentence, isPowerPack: e.isPowerPack, sortOrder: 18 + i });
+  });
+
   // Module 2 — Letter Writing
   const letterPhrases4 = [
     { english: 'Dear ___,', urduRoman: 'Aziz ___ / Muhtaram ___', exampleSentence: 'Dear Ahmed, I hope you are doing well.', isPowerPack: true },
@@ -1112,6 +1300,31 @@ async function main() {
     items.push({ level: 4, module: 2, groupName: 'Letter Writing Phrases', type: ContentType.PHRASE, english: p.english, urduRoman: p.urduRoman, exampleSentence: p.exampleSentence, isPowerPack: p.isPowerPack, sortOrder: i + 1 });
   });
 
+  // Informal Letter Patterns — from complete course Module 15 / roadmap Day 114
+  const informalLetter4 = [
+    { english: 'Dear [Name], / Hi [Name],', urduRoman: 'Dost ya rishtedaar ko informal khat — "Dear Ahmed," ya "Hi Sara,"', exampleSentence: 'Dear Ahmed, Assalam-o-Alaikum! I hope you are doing well.', isPowerPack: true },
+    { english: 'I am writing to share some exciting news with you.', urduRoman: 'Kuch khaas baat share karne ke liye likh raha hoon.', exampleSentence: 'I am writing to share some exciting news about my new job.', isPowerPack: true },
+    { english: 'Please give my salaam / regards to your family.', urduRoman: 'Apne gharwalon ko mera salam kehna.', exampleSentence: 'Please give my salaam to Uncle, Aunty, and your siblings.', isPowerPack: false },
+    { english: 'I am looking forward to meeting you soon.', urduRoman: 'Umeed hai jald milenge.', exampleSentence: 'I am looking forward to seeing you at Eid.', isPowerPack: false },
+    { english: 'Your friend, / With love, / Take care,', urduRoman: 'Informal khat ka aakhri hissa — dost waala tone', exampleSentence: 'Your friend, Ali. / With love, Sara. / Take care, Ahmed.', isPowerPack: true },
+  ];
+  informalLetter4.forEach((p, i) => {
+    items.push({ level: 4, module: 2, groupName: 'Informal Letter Patterns', type: ContentType.PHRASE, english: p.english, urduRoman: p.urduRoman, exampleSentence: p.exampleSentence, isPowerPack: p.isPowerPack, sortOrder: 11 + i });
+  });
+
+  // Email Writing — from roadmap Days 115-116
+  const emailWriting4 = [
+    { english: 'Subject: [Clear, short summary of the email]', urduRoman: 'Subject line — email ka maqsad ek line mein', exampleSentence: 'Subject: Application for Leave on Friday', isPowerPack: true },
+    { english: 'Dear Mr. / Ms. [Last Name], (formal email)', urduRoman: 'Formal email ki shuruwaat', exampleSentence: 'Dear Ms. Khan, I hope this email finds you well.', isPowerPack: true },
+    { english: 'Hi [Name], / Hello [Name], (informal email)', urduRoman: 'Informal email ki shuruwaat', exampleSentence: 'Hi Sara, How are you doing?', isPowerPack: false },
+    { english: 'I am writing regarding ___ / I am writing to ___', urduRoman: 'Email ka maqsad batana', exampleSentence: 'I am writing regarding the meeting scheduled for Monday.', isPowerPack: true },
+    { english: 'Please find attached ___ / I have attached ___', urduRoman: 'Attachment ka zikr', exampleSentence: 'Please find attached my CV for your review.', isPowerPack: false },
+    { english: 'Best regards, / Yours sincerely, / Thanks,', urduRoman: 'Email khatam karne ke tarike', exampleSentence: 'Best regards, Ali Hassan.', isPowerPack: true },
+  ];
+  emailWriting4.forEach((e, i) => {
+    items.push({ level: 4, module: 2, groupName: 'Email Writing', type: ContentType.PHRASE, english: e.english, urduRoman: e.urduRoman, exampleSentence: e.exampleSentence, isPowerPack: e.isPowerPack, sortOrder: 16 + i });
+  });
+
   // Module 3 — Complex Sentences
   const complexSentences4 = [
     { english: 'Although / Even though', urduRoman: 'Haalaanki', exampleSentence: 'Although it was raining, she went to school.', isPowerPack: true },
@@ -1125,6 +1338,77 @@ async function main() {
   ];
   complexSentences4.forEach((s, i) => {
     items.push({ level: 4, module: 3, groupName: 'Complex Sentence Structures', type: ContentType.GRAMMAR, english: s.english, urduRoman: s.urduRoman, exampleSentence: s.exampleSentence, isPowerPack: s.isPowerPack, sortOrder: i + 1 });
+  });
+
+  // Synonyms — from roadmap Day 128 (hum ma'ana alfaaz)
+  const synonyms4 = [
+    { english: 'happy → joyful, glad, delighted, content', urduRoman: '"Happy" ke hum ma\'ana: Joyful (khushi bhara), Glad (khush), Delighted (bahut khush)', exampleSentence: 'She was delighted to hear the good news.', isPowerPack: true },
+    { english: 'sad → unhappy, miserable, gloomy, sorrowful', urduRoman: '"Sad" ke hum ma\'ana: Miserable, Gloomy, Sorrowful', exampleSentence: 'He felt miserable after losing the match.', isPowerPack: true },
+    { english: 'big → large, huge, enormous, massive, vast', urduRoman: '"Big" ke hum ma\'ana: Large, Huge, Enormous, Massive', exampleSentence: 'The crowd was enormous at the cricket match.', isPowerPack: true },
+    { english: 'fast → quick, rapid, swift, speedy', urduRoman: '"Fast" ke hum ma\'ana: Quick, Rapid, Swift', exampleSentence: 'She is a quick learner.', isPowerPack: true },
+    { english: 'good → excellent, wonderful, great, fine, superb', urduRoman: '"Good" ke hum ma\'ana: Excellent, Wonderful, Superb', exampleSentence: 'The presentation was excellent.', isPowerPack: true },
+    { english: 'bad → terrible, awful, dreadful, poor', urduRoman: '"Bad" ke hum ma\'ana: Terrible, Awful, Dreadful', exampleSentence: 'The weather was dreadful yesterday.', isPowerPack: false },
+    { english: 'smart → intelligent, clever, bright, sharp', urduRoman: '"Smart" ke hum ma\'ana: Intelligent, Clever, Bright', exampleSentence: 'She is a very clever student.', isPowerPack: false },
+  ];
+  synonyms4.forEach((s, i) => {
+    items.push({ level: 4, module: 3, groupName: 'Synonyms (Hum Ma\'ana)', type: ContentType.VOCAB, english: s.english, urduRoman: s.urduRoman, exampleSentence: s.exampleSentence, isPowerPack: s.isPowerPack, sortOrder: 9 + i });
+  });
+
+  // Antonyms — from roadmap Day 129 (mutazaad alfaaz)
+  const antonyms4 = [
+    { english: 'hot ↔ cold', urduRoman: 'Garam ↔ Thanda', exampleSentence: 'The tea is hot but the water is cold.', isPowerPack: true },
+    { english: 'happy ↔ sad', urduRoman: 'Khush ↔ Udaas', exampleSentence: 'I was happy yesterday but sad today.', isPowerPack: true },
+    { english: 'rich ↔ poor', urduRoman: 'Ameer ↔ Ghareeb', exampleSentence: 'He was once poor but now he is rich.', isPowerPack: true },
+    { english: 'early ↔ late', urduRoman: 'Jaldi ↔ Der se', exampleSentence: 'She came early but he was late.', isPowerPack: true },
+    { english: 'strong ↔ weak', urduRoman: 'Mazboot ↔ Kamzor', exampleSentence: 'Exercise makes you strong; laziness makes you weak.', isPowerPack: false },
+    { english: 'easy ↔ difficult / hard', urduRoman: 'Aasaan ↔ Mushkil', exampleSentence: 'The first test was easy but the second was difficult.', isPowerPack: false },
+    { english: 'begin ↔ end / finish', urduRoman: 'Shuru karna ↔ Khatam karna', exampleSentence: 'We begin at 9 and finish at 5.', isPowerPack: false },
+  ];
+  antonyms4.forEach((a, i) => {
+    items.push({ level: 4, module: 3, groupName: 'Antonyms (Mutazaad)', type: ContentType.VOCAB, english: a.english, urduRoman: a.urduRoman, exampleSentence: a.exampleSentence, isPowerPack: a.isPowerPack, sortOrder: 16 + i });
+  });
+
+  // Homonyms & Homophones — from roadmap Days 130-131
+  const wordConfusions4 = [
+    { english: 'bank: (1) naddi ka kinara / (2) paisa rakhne ki jagah', urduRoman: 'Homonym — ek word ke alag matlab', exampleSentence: 'We sat on the bank of the river. I went to the bank to withdraw money.', isPowerPack: true },
+    { english: 'bat: (1) cricket bat / (2) chamgadar', urduRoman: 'Homonym — ek word, do cheezein', exampleSentence: 'He hit the ball with a bat. A bat flew out of the cave.', isPowerPack: true },
+    { english: 'their / there / they\'re', urduRoman: 'Homophone — same sound, different spelling & meaning', exampleSentence: 'They\'re going to their school over there.', isPowerPack: true },
+    { english: 'your / you\'re', urduRoman: 'your = tumhara | you\'re = tum hain (you are)', exampleSentence: 'You\'re my best friend. Is this your book?', isPowerPack: true },
+    { english: 'to / too / two', urduRoman: 'to = ko/taraf | too = bhi/zyada | two = 2', exampleSentence: 'I want to go too. There are two books.', isPowerPack: false },
+    { english: 'right / write / rite', urduRoman: 'right=sahi/seedha | write=likhna | rite=rasm', exampleSentence: 'Turn right. Write your name. It is right to be honest.', isPowerPack: false },
+  ];
+  wordConfusions4.forEach((w, i) => {
+    items.push({ level: 4, module: 3, groupName: 'Homonyms & Homophones', type: ContentType.VOCAB, english: w.english, urduRoman: w.urduRoman, exampleSentence: w.exampleSentence, isPowerPack: w.isPowerPack, sortOrder: 23 + i });
+  });
+
+  // Prefixes & Suffixes — from roadmap Days 132-133
+  const wordFormation4 = [
+    { english: 'Prefix un-: unhappy, unfair, unknown, uncomfortable', urduRoman: '"un-" = nahi / ulta — unhappy = na-khush', exampleSentence: 'The result was unfair. She felt uncomfortable.', isPowerPack: true },
+    { english: 'Prefix dis-: disagree, disappear, dishonest, dislike', urduRoman: '"dis-" = nahi / ulta — disagree = na-ittifaqi', exampleSentence: 'I disagree with your opinion. He disappeared suddenly.', isPowerPack: true },
+    { english: 'Prefix re-: redo, restart, review, rewrite', urduRoman: '"re-" = dobara — restart = dobara shuru', exampleSentence: 'Please restart the computer. I need to review my notes.', isPowerPack: true },
+    { english: 'Prefix over-: overwork, overconfident, overcooked', urduRoman: '"over-" = zyada — overwork = bahut zyada kaam', exampleSentence: 'Don\'t overwork yourself. The rice is overcooked.', isPowerPack: false },
+    { english: 'Suffix -ful: hopeful, beautiful, helpful, powerful', urduRoman: '"-ful" = bhara hua — hopeful = umeed waala', exampleSentence: 'She is very hopeful about the results.', isPowerPack: true },
+    { english: 'Suffix -less: helpless, useless, careless, hopeless', urduRoman: '"-less" = ke bina — helpless = be-bas', exampleSentence: 'He felt helpless in that situation.', isPowerPack: true },
+    { english: 'Suffix -ness: happiness, sadness, kindness, darkness', urduRoman: '"-ness" lagao to adjective noun ban jaata hai', exampleSentence: 'Her kindness is known to everyone.', isPowerPack: false },
+    { english: 'Suffix -ment: development, improvement, achievement, movement', urduRoman: '"-ment" lagao to verb noun ban jaata hai', exampleSentence: 'The improvement in his English is remarkable.', isPowerPack: false },
+  ];
+  wordFormation4.forEach((w, i) => {
+    items.push({ level: 4, module: 3, groupName: 'Prefixes & Suffixes', type: ContentType.GRAMMAR, english: w.english, urduRoman: w.urduRoman, exampleSentence: w.exampleSentence, isPowerPack: w.isPowerPack, sortOrder: 29 + i });
+  });
+
+  // Collocations — from roadmap Days 134-135
+  const collocations4 = [
+    { english: 'make a decision', urduRoman: 'Faisla karna (make + decision)', exampleSentence: 'It is time to make a decision.', isPowerPack: true },
+    { english: 'do homework', urduRoman: 'Ghar ka kaam karna (do + homework)', exampleSentence: 'Always do your homework on time.', isPowerPack: true },
+    { english: 'take a break', urduRoman: 'Chhoti chutti lena (take + break)', exampleSentence: 'Let us take a break before continuing.', isPowerPack: true },
+    { english: 'have lunch / dinner / breakfast', urduRoman: 'Khaana khaana (have + meal)', exampleSentence: 'I had lunch with my colleague today.', isPowerPack: true },
+    { english: 'catch a cold / bus / train', urduRoman: 'Zukaam hona / bus/train pakarna (catch + noun)', exampleSentence: 'I caught a cold after the rain. Did you catch the bus?', isPowerPack: true },
+    { english: 'pay attention', urduRoman: 'Dhyan dena (pay + attention)', exampleSentence: 'Please pay attention to the teacher.', isPowerPack: false },
+    { english: 'keep a secret / promise / diary', urduRoman: 'Raaz rakhna / wada nibhaana (keep + noun)', exampleSentence: 'Can you keep a secret? He keeps his promises.', isPowerPack: false },
+    { english: 'break a rule / record / promise', urduRoman: 'Qanoon todhna / record todhna (break + noun)', exampleSentence: 'She broke the school record. Don\'t break the rules.', isPowerPack: false },
+  ];
+  collocations4.forEach((c, i) => {
+    items.push({ level: 4, module: 3, groupName: 'Collocations (Milte Julate Alfaaz)', type: ContentType.PHRASE, english: c.english, urduRoman: c.urduRoman, exampleSentence: c.exampleSentence, isPowerPack: c.isPowerPack, sortOrder: 37 + i });
   });
 
   // Module 4 — Common Mistakes + Speaking Confidence
@@ -1544,25 +1828,25 @@ async function main() {
   console.log(`Seeded ${result.count} ContentItems.`);
   console.log('LEVEL 1:');
   console.log('  Module 1 (Alphabets):          5 vowels + 21 consonants');
-  console.log('  Module 2 (Core Words):         135 words across 6 categories');
+  console.log('  Module 2 (Core Words):         194 words: Family, Food, Body, Clothes, Weather + Colors, Body Parts, Animals, Fruits, Veg, Home Objects');
   console.log('  Module 3 (Basic Sentences):    SVO + positive/negative/question patterns');
   console.log('  Module 4 (Numbers/Days/Time):  greetings + polite requests + numbers + days + months + time + self-intro + directions');
   console.log('LEVEL 2:');
-  console.log('  Module 1 (Present Tense):      grammar rules + example sentences + time expressions');
+  console.log('  Module 1 (Present Tense):      grammar rules + time expressions + 8 modal verbs (can/could/should/must/may/might/have to/would like)');
   console.log('  Module 2 (Past Tense):         grammar + 24 irregular verbs + time expressions');
-  console.log('  Module 3 (Future Tense):       will/going-to + articles + plurals');
+  console.log('  Module 3 (Future Tense):       will/going-to + articles + plurals + comparatives/superlatives');
   console.log('  Module 4 (Daily Convos):       shopping + restaurant + introductions + directions');
   console.log('  Module 5 (Level 2 Gate):       tense review + key phrases');
   console.log('LEVEL 3:');
-  console.log('  Module 1 (All 12 Tenses):      12 tense formulas + 6 PP trigger words');
+  console.log('  Module 1 (All 12 Tenses):      12 tense formulas + 6 PP trigger words + 6 relative clauses + 5 gerunds/infinitives');
   console.log('  Module 2 (500 Core Words):     100 words across 5 categories');
   console.log('  Module 3 (Short Stories):      8 vocab + 4 sentence patterns');
-  console.log('  Module 4 (Reading Practice):   5 comprehension patterns');
+  console.log('  Module 4 (Reading Practice):   5 comprehension patterns + 6 reported speech rules');
   console.log('  Module 5 (Level 3 Gate):       grammar & reading review + key phrases');
   console.log('LEVEL 4:');
-  console.log('  Module 1 (Writing Skills):     12 linking words + 5 topics');
-  console.log('  Module 2 (Letter Writing):     10 letter phrases');
-  console.log('  Module 3 (Complex Sentences):  8 complex structures');
+  console.log('  Module 1 (Writing Skills):     12 linking words + 5 topics + 8 essay types (narrative/descriptive/expository/persuasive/opinion/C&E/compare)');
+  console.log('  Module 2 (Letter Writing):     10 formal letter phrases + 5 informal letter patterns + 6 email writing phrases');
+  console.log('  Module 3 (Complex Sentences):  8 complex structures + 7 synonyms + 7 antonyms + 6 homonyms/homophones + 8 prefixes/suffixes + 8 collocations');
   console.log('  Module 4 (Speaking Confidence):8 common mistakes + 5 speaking scripts');
   console.log('  Module 5 (Idioms & Phrases):   15 everyday idioms');
   console.log('  Module 6 (Level 4 Gate):       key concepts + review phrases');
