@@ -6,6 +6,7 @@
 > **Level:** Complete Beginner → Advanced / Professional
 > **Companion File:** Har topic ka full lesson content `english_course_complete.md` mein hai — dono files saath use karein
 > **Site:** EnglishOS pe roz apni Morning aur Evening Missions complete karo — XP kamao, streak barqarar rakho!
+> **Learning Engine:** Yeh roadmap 4 proven frameworks pe bana hai: DiSS Method + Feynman Technique + Spaced Repetition + Serial Mastery
 
 ---
 
@@ -33,6 +34,85 @@ Speaking                  Business English            Interviews & Exams
 
 ---
 
+## 🧠 LEARNING SCIENCE FRAMEWORK — Yeh Roadmap Kaise Kaam Karta Hai
+
+> Yeh roadmap sirf ek syllabus nahi hai — yeh ek **scientifically designed learning engine** hai jisme 4 proven frameworks use hue hain. In frameworks ko samjho, phir English seekhna zyada tez aur asaan ho jaayega.
+
+---
+
+### Framework 1: DiSS Method (Har Level Pe Apply Hota Hai)
+
+> **D**econstruct → **i**Selection → **S**equence → **S**takes
+
+| Step | Matlab | English Mein |
+|------|--------|--------------|
+| **Deconstruct** | Skill ko chhote tukdon mein todo | English = Vocabulary + Grammar + Speaking + Listening + Writing |
+| **Selection** | 20% dhundho jo 80% kaam kare | Sirf 100 words seekho → 50% conversations samajh lo |
+| **Sequence** | Sahi order mein seekho | Pehle words → phir sentences → phir grammar → phir fluency |
+| **Stakes** | Chhodne ka option khatam karo | Har Level pe apne aap se commitment karo — notes mein likho |
+
+> **Har Level ke saath ek DiSS breakdown diya gaya hai** — woh padhna aur samjhna zaroori hai.
+
+---
+
+### Framework 2: Feynman Technique (Har Concept Ke Baad)
+
+> *"Agar tum kisi cheez ko ek 10 saal ke bache ko nahi samjha sakte, to tum khud us cheez ko theek se nahi jaante."*
+
+**Kaise Karo:**
+1. Aaj jo seekha — use apne words mein notebook mein likho (Roman Urdu ya English — koi bhi)
+2. Koi bhi fancy grammar term use mat karo — seedha samjhao
+3. Jahan ruk jao → wahi tumhara **knowledge gap** hai
+4. Us gap ko lesson se bharo → dobara simplify karo
+
+> 🧠 **Feynman Challenge** marker jo bhi din mein dikhe — us din sirf padhna kaafi nahi, **apne words mein explain karna bhi zaroori hai**.
+
+---
+
+### Framework 3: Spaced Repetition (Revision Schedule)
+
+> *Dimag ek bucket hai jisme hole hai — jo seekha woh dhire-dhire nikalta rehta hai. Solution: bhoolne se THEEK PEHLE revise karo.*
+
+**Revision Schedule — Har Nayi Cheez Ke Liye:**
+
+| Seekhi Kab | Pehli Revision | Doosri | Teesri | Chauthi |
+|------------|----------------|--------|--------|---------|
+| Aaj | 1 din baad | 3 din baad | 7 din baad | 21 din baad |
+
+**EnglishOS pe kaise hota hai:**
+- ☀️ **Morning Mission (WarmupFlash)** = Spaced Repetition automatically karta hai
+- 🔄 **Revision Day markers** (har 7 din ke baad) = Manual deep review
+
+> Roadmap mein **🔄 REVISION DAY** labels dekho — ye sab Spaced Repetition schedule pe hain. In ko skip mat karo.
+
+---
+
+### Framework 4: Serial Mastery (Ek Waqt Pe Ek Level)
+
+> *Polymaths ek saath 10 cheezein nahi seekhte — ek field mein ghuste hain, master karte hain, phir agle field pe jaate hain.*
+
+**Yeh Roadmap Serial Mastery Pe Hi Bana Hai:**
+- Ek Level poori tarah master karo → Gate Test pass karo → Agle Level pe jao
+- Pehle wala Level "maintenance mode" mein chala jaata hai (Morning WarmupFlash handle karta hai)
+- **Kabhi bhi Level 3 ka kaam Level 2 poori kiye baghair mat shuru karo**
+
+---
+
+### Meta Learning — Connections Table
+
+Yeh table dikhata hai ke har Level ka knowledge agle Level mein kaise kaam aata hai:
+
+| Pehle Seekha | Naya Level | Connection |
+|-------------|-----------|------------|
+| 26 Letters + 100 Words | Level 2 Grammar | Har grammar rule inhi words se samjhenge |
+| Present Tense | Past Tense | Ek baar "am/is/are" samjha to "was/were" aasaan hai |
+| 3 Simple Tenses | 12 Tenses (Level 3) | Pehle 3 tenses ki logic hi baaki 9 ko explain karti hai |
+| Basic Sentences | Advanced Writing (Level 4) | SVO formula hi complex sentences ka foundation hai |
+| Grammar Mastery | Idioms/Business (Level 5) | Rules jaante ho to exceptions bhi pakad sakte ho |
+| All Skills | IELTS/Interviews (Level 6) | Sab cheezein ek jagah connect hoti hain |
+
+---
+
 ---
 
 ## 🏕️ LEVEL 1 — BASE CAMP (DAYS 1–30)
@@ -47,6 +127,19 @@ Speaking                  Business English            Interviews & Exams
 | Module 2 | Core 100 Words | Days 6–12 | 100 zaroori words — 50% conversations |
 | Module 3 | Basic Sentences | Days 13–20 | SVO formula — har sentence ka master key |
 | Module 4 | Numbers, Days & Speaking | Days 21–30 | Numbers, calendar, greetings, self-intro |
+
+---
+
+### 🎯 DiSS BREAKDOWN — LEVEL 1
+
+| DiSS Step | Level 1 Mein Kaise Apply Hoga |
+|-----------|-------------------------------|
+| **Deconstruct** | English = Alphabets + Words + Sentences + Numbers + Basic Speaking — yahi hain Level 1 ke 4 modules |
+| **Selection (20%)** | Poori dictionary nahi — sirf **100 most common words** seekho → 50% conversations immediately samajh aayengi |
+| **Sequence** | Pehle letters (sounds), phir words (meanings), phir sentences (structure) — is order ko mat todna |
+| **Stakes** | Ab yeh likho apni notebook mein: *"Main 30 din mein Level 1 Gate pass karunga — agar nahi kiya to [apni koi cheez] chhodunga"* |
+
+> 🧠 **Meta Learning Note:** Level 1 mein sirf hifz (memorization) karo — rule yaad mat karo. "Cat" aur "Dog" ko bas pehchaano. Rules Level 2 mein aayenge. Yeh sequencing intentional hai.
 
 ---
 
@@ -93,6 +186,7 @@ Speaking                  Business English            Interviews & Exams
 - Monday, Tuesday, Wednesday, Thursday, Friday, Saturday, Sunday
 - **Practice:** Saat din baar baar likho
 - **Homework:** Aaj konsa din hai — English mein likho
+- 🧠 **Feynman Challenge — Module 1 Complete:** Notebook mein yeh likho: *"Days 1-5 mein mujhe kya seekha? Ek 10 saal ke bache ko kaise samjhata?"* — Fancy words nahi, seedhi baat. Jahan ruk jao = wahi gap hai.
 
 ---
 
@@ -108,11 +202,15 @@ Speaking                  Business English            Interviews & Exams
 
 ---
 
-### DAY 7
-**Topic:** Colors (Rangon ke naam)
+### DAY 7 — 🔄 SPACED REPETITION REVISION (Week 1)
+**Topic:** Colors (Rangon ke naam) + Week 1 Review
 - Red, Blue, Green, Yellow, White, Black, Orange, Pink, Purple, Brown
 - **Practice:** Har rang ka ek object batao
 - **Homework:** Apne kapre ke rang English mein likho
+- 🔄 **Spaced Rep — Week 1 Review:** Aaj sirf 10 minute extra nikaalo aur Days 1-6 ka quick review karo:
+  - Days 1-4: Numbers 1-100, Alphabet — bina dekhay likho (kitna yaad hai?)
+  - Day 5-6: Days of week + Months — ek baar bolo
+  - Jo yaad nahi — note karo aur kal dobara dekho (yeh normal hai — 50% bhoolna expected hai)
 
 ---
 
@@ -153,6 +251,7 @@ Speaking                  Business English            Interviews & Exams
 - Tomato, Potato, Onion, Carrot, Peas, Spinach, Cabbage, Cucumber, Brinjal, Garlic
 - **Practice:** Har sabzi ka naam 3 baar likho
 - **Homework:** "I eat potatoes" aisi 5 sentences
+- 🧠 **Feynman Challenge — Module 2 Complete:** Apne kisi ghar wale ya dost ko **sirf English** mein 30 second mein batao: *"Mera naam X hai, meri family mein Y hain, mujhe Z pasand hai."* — Jahan ruk jao = wahi vocabulary gap hai, notebook mein likho.
 
 ---
 
@@ -168,11 +267,14 @@ Speaking                  Business English            Interviews & Exams
 
 ---
 
-### DAY 14
-**Topic:** Food Items
+### DAY 14 — 🔄 SPACED REPETITION REVISION (Week 2)
+**Topic:** Food Items + Week 2 Review
 - Rice, Bread, Milk, Egg, Butter, Sugar, Tea, Soup, Juice, Water
 - **Practice:** "I drink tea" jaisi sentences
 - **Homework:** Apna favourite meal English mein describe karo
+- 🔄 **Spaced Rep — Week 2 Review:** 10 minute extra — Days 1-13 fast review:
+  - Body parts, Family, Animals, Fruits, Vegetables, Objects — bina dekhay kitna yaad hai?
+  - **Target:** 70%+ yaad ho to great! Agar kam ho to EnglishOS WarmupFlash zyada use karo
 
 ---
 
@@ -227,6 +329,7 @@ Speaking                  Business English            Interviews & Exams
 - Rule: He/She/It ke saath "s" lagao
 - **Practice:** 10 sentences
 - **Homework:** Roz ki 5 activities English mein likho
+- 🧠 **Feynman Challenge — Module 3 Complete:** Apni notebook mein yeh likho — *"SVO formula kya hai? Mujhe ek sentence banana ho to main kaise sochta hoon?"* — Agar ruk gaye to Day 13 dobara dekho. Connection — English grammar ka rule aur Urdu grammar ka farq kya hai?
 
 ---
 
@@ -234,12 +337,16 @@ Speaking                  Business English            Interviews & Exams
 
 ---
 
-### DAY 21
-**Topic:** Simple Present Tense — Negative
+### DAY 21 — 🔄 SPACED REPETITION REVISION (Week 3)
+**Topic:** Simple Present Tense — Negative + Week 3 Review
 - I do not eat. / He does not play.
 - Rule: Do not / Does not (He/She/It ke saath)
 - **Practice:** Day 20 ke sentences negative banao
 - **Homework:** 10 negative sentences
+- 🔄 **Spaced Rep — Week 3 Review:** 10 minute extra — Days 1-20 fast sweep:
+  - Vocabulary (Words Module): 100 words mein se bina dekhay kitne likh sakte ho?
+  - Sentences (Module 3): SVO formula se 5 quick sentences bolo bina soché
+  - **EnglishOS:** Morning WarmupFlash pe 7 din se aaye cards zaroor complete karo — yeh automatic spaced rep hai
 
 ---
 
@@ -295,12 +402,17 @@ Speaking                  Business English            Interviews & Exams
 
 ---
 
-### DAY 28
-**Topic:** This, That, These, Those
+### DAY 28 — 🔄 SPACED REPETITION REVISION (Week 4)
+**Topic:** This, That, These, Those + Week 4 Review
 - This is my pen. / That is your bag.
 - These are apples. / Those are mangoes.
 - **Practice:** 10 sentences
 - **Homework:** Apne aas paas ki cheezein describe karo
+- 🔄 **Spaced Rep — Week 4 Review (21-day mark):** Yeh revision sabse important hai — 21 din ka content!
+  - Aaj shaam 15 minute nikaalo: Days 1-7 material bina notes dekhay recall karo
+  - Jitna yaad hai likhna shuru karo — sab kuch jo aata hai
+  - Jo yaad nahi woh mark karo — Day 30 test se pehle woh gaps fill karo
+  - **DiSS Stakes check:** Day 1 pe jo commitment likhi thi — kya poori hui?
 
 ---
 
@@ -322,6 +434,8 @@ Speaking                  Business English            Interviews & Exams
 - **Test:** 30 questions (MCQ + Fill in the blanks + Short sentences)
 - **EnglishOS Gate:** Level 1 Gate pass karo → Level 2 (Village) unlock hoga!
 - **Achievement:** 🏕️ Base Camp Complete! Level 2 — Village unlock!
+- 🧠 **Feynman Challenge — Level 1 Final:** Kisi bhi insaan ko (ya khud ko mirror ke saamne) **sirf English** mein 1 minute mein yeh batao: *"Main kaun hoon, meri family kaisi hai, mujhe kya pasand hai, aur aaj main kya kar raha hoon."* — Yeh 30 din ki poori knowledge ka test hai.
+- 🔄 **Serial Mastery Check:** Level 1 complete → Ab Level 2 "maintenance mode" pe nahi jaata — Level 2 NAYA module hai. Level 1 ki knowledge Morning WarmupFlash maintain karegi. Ab poora focus Level 2 pe!
 
 ---
 
@@ -340,6 +454,19 @@ Speaking                  Business English            Interviews & Exams
 | Module 3 | Future Tense | Days 53–62 | Will, Going To, Articles, Comparatives |
 | Module 4 | Daily Conversations | Days 63–70 | Shopping, Restaurant, Directions |
 | Module 5 | Level 2 Gate | Days 71–75 | Revision & Gate Test |
+
+---
+
+### 🎯 DiSS BREAKDOWN — LEVEL 2
+
+| DiSS Step | Level 2 Mein Kaise Apply Hoga |
+|-----------|-------------------------------|
+| **Deconstruct** | Grammar = Tenses (Present, Past, Future) + Modal Verbs + Conversations — 3 alag building blocks |
+| **Selection (20%)** | 12 tenses mein se sirf **3 basic tenses** Level 2 mein seekho → yeh 3 hi 80% roz ki baat-cheet mein use hote hain |
+| **Sequence** | Present → Past → Future — yahi natural order hai. Past pehle seekhne se confusion hoti hai |
+| **Stakes** | Apne kisi dost ko batao ke tum 45 din mein Grammar Village complete karoge — unhe check karne ko kaho |
+
+> 🧠 **Meta Learning Bridge:** Level 1 mein jo 100 words seekhe the — Level 2 mein wahi words tenses mein use honge. "Eat" jaante ho to "I eat / I ate / I will eat" seekhna aasaan hai. Pehle wali knowledge nai knowledge ko carry karti hai.
 
 ---
 
@@ -416,12 +543,15 @@ Speaking                  Business English            Interviews & Exams
 
 ---
 
-### DAY 38
-**Topic:** Future Tense — Going To
+### DAY 38 — 🔄 SPACED REPETITION REVISION (Level 2, Week 1)
+**Topic:** Future Tense — Going To + Level 2 Week 1 Review
 - I am going to study. / She is going to cook.
 - Use: Planned future ke liye
 - **Practice:** 10 sentences
 - **Homework:** Agle hafte ke plans likho
+- 🔄 **Spaced Rep — Level 2 Week 1:** 10 min extra — Days 31-37 recap:
+  - Present Continuous + Past Simple tenses — bina dekhay 5 sentences bolo
+  - Level 1 ka koi ek topic jo kamzor lagta tha — EnglishOS WarmupFlash se review karo
 
 ---
 
@@ -478,11 +608,14 @@ Speaking                  Business English            Interviews & Exams
 
 ---
 
-### DAY 45
-**Topic:** Superlatives — Biggest, Fastest, Most Beautiful
+### DAY 45 — 🔄 SPACED REPETITION REVISION (Level 2, Week 2)
+**Topic:** Superlatives — Biggest, Fastest, Most Beautiful + Week 2 Review
 - He is the tallest student. / This is the most expensive car.
 - **Practice:** 10 superlative sentences
 - **Homework:** "The best/worst..." sentences
+- 🔄 **Spaced Rep — Level 2 Week 2:** Days 31-44 fast review:
+  - All 3 tenses (Present, Past, Future) — 3 sentences each bolo quickly
+  - 🧠 **Feynman Check:** Kisi ko explain karo: *"Present, Past aur Future tense mein farq kya hai? Ek example se samjhao."*
 
 ---
 
@@ -789,6 +922,9 @@ Speaking                  Business English            Interviews & Exams
 - **Gate Test:** 50-question comprehensive grammar test
 - **EnglishOS Gate:** Level 2 Gate pass karo → Level 3 (Town) unlock hoga!
 - **Achievement:** 🏘️ Village Complete! Level 3 — Town unlock!
+- 🔄 **Spaced Rep — Level 2 Final Review:** Days 31-74 ka complete sweep — all tenses ek saath practice karo
+- 🧠 **Feynman Challenge — Level 2 Final:** Ek chhoti si kahani (5-7 sentences) likho jisme Past, Present, aur Future tenses sab use ho. Plot: *"Kal kya hua, aaj kya ho raha hai, kal kya hoga."* — Yeh 45 din ki grammar ki asli test hai.
+- 🔄 **Serial Mastery Check:** Level 2 Grammar ab "maintenance mode" mein — Morning WarmupFlash handle karega. Ab 100% focus Level 3 (Town) pe. DiSS Stakes: nayi commitment likho.
 
 ---
 
@@ -807,6 +943,19 @@ Speaking                  Business English            Interviews & Exams
 | Module 3 | Short Stories | Days 100–108 | Read & retell South Asian life stories |
 | Module 4 | Reading Practice | Days 109–116 | Comprehension, summaries, writing types |
 | Module 5 | Level 3 Gate | Days 117–120 | Revision & Gate Test |
+
+---
+
+### 🎯 DiSS BREAKDOWN — LEVEL 3
+
+| DiSS Step | Level 3 Mein Kaise Apply Hoga |
+|-----------|-------------------------------|
+| **Deconstruct** | Intermediate English = 12 Tenses + 500 Words + Reading Comprehension + Basic Writing — 4 alag skills |
+| **Selection (20%)** | 12 tenses mein se **6 sabse common tenses** dhyaan se seekho → yeh 90% reading/writing mein milenge |
+| **Sequence** | Pehle tenses complete karo (grammar neenv), phir vocabulary badhao (material), phir reading/writing (application) |
+| **Stakes** | Ek notebook mein likhna shuru karo jisme tum rozana 5 sentences likhte ho — yeh notebook tumhari accountability hai |
+
+> 🧠 **Meta Learning Bridge:** Level 2 mein seekhe 3 tenses? Ab unhi ke variations hain — Present Perfect = Present ka ek advanced form. Naya nahi hai, bass pehle wale ki extension hai. Har naya tense pehle wale se connected hai.
 
 ---
 
@@ -1209,6 +1358,9 @@ Speaking                  Business English            Interviews & Exams
 - **Gate Test:** Full reading + writing + tenses test
 - **EnglishOS Gate:** Level 3 Gate pass karo → Level 4 (City) unlock hoga!
 - **Achievement:** 🏙️ Town Complete! Level 4 — City unlock!
+- 🔄 **Spaced Rep — Level 3 Final (21-day mark):** All 12 tenses list bina dekhay likhne ki koshish karo — kitni yaad hain?
+- 🧠 **Feynman Challenge — Level 3 Final:** Koi bhi short story (jo Level 3 mein parhi) ko apne shabdon mein **sirf English** mein retell karo — bina notes ke 3 minutes. Jahan ruk jao = vocabulary gap hai.
+- 🔄 **Serial Mastery Check:** Level 3 (Town) ab maintenance mode mein — WarmupFlash pe. Level 4 (City) pe poori taaqat lagao. Nayi DiSS Stakes: Level 4 mein ek real letter likhne ka commitment karo.
 
 ---
 
@@ -1228,6 +1380,19 @@ Speaking                  Business English            Interviews & Exams
 | Module 4 | Speaking Confidence | Days 151–160 | Speaking drills, self-talk, storytelling |
 | Module 5 | Idioms & Phrases | Days 161–170 | Top idioms and fixed expressions |
 | Module 6 | Level 4 Gate | Days 171–180 | Revision & Gate Test |
+
+---
+
+### 🎯 DiSS BREAKDOWN — LEVEL 4
+
+| DiSS Step | Level 4 Mein Kaise Apply Hoga |
+|-----------|-------------------------------|
+| **Deconstruct** | Upper-Intermediate = Writing Styles + Formal Letters + Complex Grammar + Speaking Confidence + Idioms — 5 alag skills |
+| **Selection (20%)** | Likhne mein sirf **5 linking words** master karo (However, Therefore, Moreover, In addition, As a result) → 80% formal writing inhi se banti hai |
+| **Sequence** | Pehle writing (controlled skill), phir speaking (free skill) — likhna seekhne ke baad bolna zyada organized hota hai |
+| **Stakes** | Is Level mein ek real letter likho aur kisi ko dikhao — teacher, dost, ya family — unki feedback lo. Real audience = real stakes |
+
+> 🧠 **Meta Learning Bridge:** Level 3 mein 500 words aur tenses seekhe — ab wahi tenses complex sentences mein use honge. "However" aur "Therefore" sirf conjunctions nahi — yeh Level 2-3 grammar ko professional writing mein convert karte hain.
 
 ---
 
@@ -1783,6 +1948,9 @@ Speaking                  Business English            Interviews & Exams
 - **Gate Test:** Full writing + speaking + idioms assessment
 - **EnglishOS Gate:** Level 4 Gate pass karo → Level 5 (Capital) unlock hoga!
 - **Achievement:** 🌆 City Complete! Level 5 — Capital unlock!
+- 🔄 **Spaced Rep — Level 4 Final:** Days 121-179 se ek paragraph essay likhne ki koshish karo — linking words (However, Therefore, Moreover) sab use hone chahiye
+- 🧠 **Feynman Challenge — Level 4 Final:** Kisi ko yeh samjhao — *"Formal aur informal English mein kya farq hai? Ek example letter do."* — Yeh Level 4 ki 60-din ki mehnat ki asli parakh hai.
+- 🔄 **Serial Mastery Check:** Level 4 Writing/Speaking ab maintenance mode mein. Nayi DiSS Stakes for Level 5: ek real professional email apne kisi contact ko likhne ka commitment karo.
 
 ---
 
@@ -1802,6 +1970,19 @@ Speaking                  Business English            Interviews & Exams
 | Module 4 | Phrasal Verbs | Days 211–220 | Top 20 phrasal verbs in context |
 | Module 5 | Business English | Days 221–230 | Meetings, presentations, IELTS prep |
 | Module 6 | Level 5 Gate | Days 231–240 | Revision & Gate Test |
+
+---
+
+### 🎯 DiSS BREAKDOWN — LEVEL 5
+
+| DiSS Step | Level 5 Mein Kaise Apply Hoga |
+|-----------|-------------------------------|
+| **Deconstruct** | Advanced English = Complex Grammar + Passive Voice + Idioms + Phrasal Verbs + Business English — 5 fully alag dimensions |
+| **Selection (20%)** | 5000 English idioms hain — sirf **top 30 most-used idioms** seekho → yeh 80% idioms jo native speakers use karte hain, cover ho jaate hain |
+| **Sequence** | Pehle grammar perfect karo (framework), phir idioms/phrasal verbs (texture), phir Business English (application) |
+| **Stakes** | Is Level mein ek real English email ya document likho — job application, formal complaint, ya report. Real document = real accountability |
+
+> 🧠 **Meta Learning Bridge:** Level 4 mein complex sentences seekhe. Ab wahi complex structures Passive Voice mein bhi apply honge. "The letter was written by her" = Level 4 complex sentence + naya passive form. Alag nahi lagega — extension lagega.
 
 ---
 
@@ -2346,6 +2527,9 @@ Speaking                  Business English            Interviews & Exams
 - **Gate Test:** Advanced grammar + idioms + business English comprehensive test
 - **EnglishOS Gate:** Level 5 Gate pass karo → Level 6 (World Stage) unlock hoga!
 - **Achievement:** 🏛️ Capital Complete! Level 6 — World Stage unlock!
+- 🔄 **Spaced Rep — Level 5 Final:** Days 181-239 se yeh test karo — bina notes ke, ek business email likho apne imaginary boss ko jo kisi problem ki report kare
+- 🧠 **Feynman Challenge — Level 5 Final:** Apne aap se yeh poochho — *"Passive Voice kab use karte hain? Idiom 'break the ice' ka matlab kya hai aur ek sentence mein use karo."* — Jo nahi aaya, wahi gap hai Level 6 se pehle fill karo.
+- 🔄 **Serial Mastery Check:** Level 5 Advanced English maintenance mode mein — WarmupFlash handle karega. Ab aakhri Level 6 ke liye DiSS Stakes: ek real interview ya English conversation ek hafte mein arrange karne ka commitment karo.
 
 ---
 
@@ -2365,6 +2549,19 @@ Speaking                  Business English            Interviews & Exams
 | Module 4 | IELTS / Exam Prep | Days 271–280 | IELTS Writing, Speaking, Reading, Listening |
 | Module 5 | Accent & Delivery | Days 281–290 | Pronunciation polish, stress, intonation |
 | Module 6 | Final Gate | Days 291–300 | 300-Day Final Assessment & Graduation |
+
+---
+
+### 🎯 DiSS BREAKDOWN — LEVEL 6
+
+| DiSS Step | Level 6 Mein Kaise Apply Hoga |
+|-----------|-------------------------------|
+| **Deconstruct** | Professional English = Emails + Interviews + Advanced Vocabulary + IELTS Prep + Accent & Delivery + Final Assessment — 6 real-world applications |
+| **Selection (20%)** | IELTS mein 4 sections hain — apna **sabse kamzor section** pehchano aur us pe sirf focus karo → woh section improve karna score ko sabse zyada lift karega |
+| **Sequence** | Pehle written skills polish karo (emails, vocab) → phir spoken skills (interviews, accent) → phir exam format practice → phir final gate |
+| **Stakes** | Is Level mein ek real interview ya English conversation schedule karo — job interview, English speaking club, ya YouTube par video upload karo. Real world = real stakes |
+
+> 🧠 **Meta Learning Bridge:** 240 din ki poori mehnat yahan connect hoti hai. Grammar (Level 2-3) → Writing (Level 4) → Advanced Expression (Level 5) → Ab yeh sab ek saath Professional English mein use hoga. Yahi hai **Polymath Compounding** — har skill pehli skills ke upar build karti hai.
 
 ---
 
@@ -2939,22 +3136,35 @@ City → Capital → World Stage
 
 ---
 
-## ENGLISHOS DAILY SCHEDULE
+## ENGLISHOS DAILY SCHEDULE — Polymath Framework Pe Based
 
 ```
 ☀️ MORNING MISSION (20 minutes)
-├── 5 min  — Spaced Repetition Review (WarmupFlash)
-├── 10 min — Today's Main Lesson (CoreDrop Cards)
-└── 5 min  — Quick Writing / Apply Practice
+├── 5 min  — [SPACED REPETITION] WarmupFlash: purane cards review karo
+│            (1 din, 3 din, 7 din, 21 din pehle seekhi cheezein automatically aayengi)
+├── 10 min — [DiSS SELECTION] Aaj ka Main Lesson (CoreDrop Cards)
+│            Sirf 20% jo 80% kaam karta hai — baaki optional hai
+└── 5 min  — [FEYNMAN] Aaj jo seekha — notebook mein apne words mein likho
 
 🌙 EVENING MISSION (40 minutes)
-├── 10 min — Reading practice / Feynman Moment
-├── 15 min — Speaking / Listening practice
+├── 10 min — Reading practice (Feynman Moment: summarize karo bina notes ke)
+├── 15 min — Speaking / Listening practice (DiSS Apply: real use karo)
 ├── 10 min — Grammar exercise (SentenceBuilder)
-└── 5 min  — New vocabulary (5 words, note karo)
+└── 5 min  — New vocabulary (5 words + 1 sentence each — context zaroori hai)
+
+🔄 WEEKLY REVISION (Har 7th Din — Extra 15 min)
+└── Pichle 7 din ka content bina notes dekhay recall karo
+    (Yeh Spaced Repetition ka 7-din revision hai — sabse important hai)
+```
+
+**Spaced Repetition Cycle — Kab Review Karo:**
+```
+Aaj kuch seekha → Kal dobara (1 din) → 3 din baad → 7 din baad → 21 din baad
+WarmupFlash yeh automatically track karta hai — sirf cards complete karo
 ```
 
 > **EnglishOS Tip:** Roz Morning aur Evening Mission complete karo — XP kamao, streak barqarar rakho, aur leaderboard pe upar aao!
+> **Polymath Tip:** *"Problem kabhi talent ki thi nahi. Problem seekhne ke tarike ki thi."* — Sahi method + consistency = mastery guaranteed.
 
 ---
 
@@ -2973,19 +3183,44 @@ City → Capital → World Stage
 
 ---
 
-## GOLDEN RULES FOR SUCCESS
+## GOLDEN RULES FOR SUCCESS — Polymath Method Pe Based
 
 ```
-RULE 1  → Roz ek ghanta, bina naagha ke
-RULE 2  → Sirf parho mat — likho, bolo, suno
-RULE 3  → Galti karna zaroori hai — galti se seekho
-RULE 4  → English environment banao apne aas paas
-RULE 5  → Har hafte apni progress check karo
-RULE 6  → Mushkil words ka notebook banao
-RULE 7  → English mein socho — translate mat karo
-RULE 8  → Movies, songs, podcasts ko learning banao
-RULE 9  → Ek insaan dhoondo jisse English mein baat karo
-RULE 10 → 300 din baad bhi ruko mat — lifelong learner bano
+━━━━━━━━━━━━━━ DiSS METHOD ━━━━━━━━━━━━━━
+RULE 1  → [Deconstruct] Pehle chhote tukde dekho — overwhelming feel hone pe Level
+          ka DiSS Breakdown padhna. Pahad nahi, sirf ek step.
+RULE 2  → [Selection] 20% pe focus karo jo 80% kaam de. 100 words = 50%
+          conversations. Sab seekhne ki koshish mat karo ek saath.
+RULE 3  → [Sequence] Is roadmap ki order tod mat — Level 1 bina Level 2 nahi.
+          Sequence scientific hai, personal nahi.
+RULE 4  → [Stakes] Har Level pe ek real commitment notebook mein likho.
+          Willpower pe mat raho — commitment pe raho.
+
+━━━━━━━━━━━━ FEYNMAN TECHNIQUE ━━━━━━━━━━━━
+RULE 5  → Har 🧠 Feynman Challenge ko skip mat karo — yeh asli samajh ki test hai.
+          Fancy words mat use karo — simple mein samjhao.
+RULE 6  → Jahan ruk jao = knowledge gap. Gap mein sharam nahi — woh sign hai
+          ke kis cheez pe dobara dhyan dena hai.
+
+━━━━━━━━━━━ SPACED REPETITION ━━━━━━━━━━━━
+RULE 7  → Har 🔄 Revision Day ko poori tarah complete karo — sirf nayi cheez
+          seekhna kaafi nahi, purani yaad rakhna bhi zaroori hai.
+RULE 8  → EnglishOS Morning WarmupFlash roz complete karo — yeh automatic
+          Spaced Rep hai. Skip = memory bucket mein hole.
+
+━━━━━━━━━━━━ SERIAL MASTERY ━━━━━━━━━━━━━
+RULE 9  → Ek waqt pe ek Level. Level 3 Level 2 Gate ke bina nahi.
+          Jumping = confusion = abandon.
+RULE 10 → Maintenance mode trust karo — WarmupFlash pehle wale Levels handle
+          karta hai. Tumhara job hai agle Level pe poori taaqat lagana.
+
+━━━━━━━━━━━ GENERAL RULES ━━━━━━━━━━━━━━━
+RULE 11 → Roz ek ghanta, bina naagha ke — consistency > intensity
+RULE 12 → English mein socho — translate mat karo (Level 3 se yeh shuru karo)
+RULE 13 → Galti se daro mat — galti = free feedback
+RULE 14 → Movies, podcasts, songs ko passive learning banao
+RULE 15 → Ek insaan dhoondo jisse English mein baat karo — real conversation
+          best stakes hai
 ```
 
 ---
